@@ -1,5 +1,4 @@
 import { SxProps, Theme, Typography } from "@mui/material";
-import React from "react";
 
 interface Props {
   percentage: number;

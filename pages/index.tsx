@@ -3,11 +3,17 @@ import Layout from "../src/components/layout";
 import { Box, Container, Paper, Typography } from "@mui/material";
 import TVLChart from "../src/components/tvl-chart";
 import PercentageChanged from "../src/components/percentage-changed";
+import PoolsTable from "../src/components/pools-table";
+import TokensTable from "../src/components/tokens-table";
+import TransactionsTable from "../src/components/transactions-table";
 
 export default function Home() {
   return (
     <Layout>
       <Container maxWidth="lg">
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          Soroswap Overview
+        </Typography>
         <Box display="flex" gap={1} justifyContent="space-between">
           <TVLChart />
           <VolumeChart />
@@ -39,6 +45,24 @@ export default function Home() {
             </Box>
           </Box>
         </Paper>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            Top Tokens
+          </Typography>
+          <TokensTable />
+        </Box>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            Top Pools
+          </Typography>
+          <PoolsTable />
+        </Box>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>
+            Transactions
+          </Typography>
+          <TransactionsTable />
+        </Box>
       </Container>
     </Layout>
   );
