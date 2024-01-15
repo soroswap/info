@@ -1,6 +1,6 @@
-import { Paper } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
-import ChartHeader from "./chart-header";
+import DWMButtons from "./dwm-buttons";
 
 const data = [
   {
@@ -55,7 +55,23 @@ const data = [
 const TVLChart = () => {
   return (
     <Paper sx={{ maxWidth: 600, py: 2, bgcolor: "white" }}>
-      <ChartHeader title="TVL" subtitle="$3.54b" />
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        px={2}
+        alignItems="center"
+        mb={2}
+      >
+        <Box>
+          <Typography variant="body2" color="black">
+            TVL
+          </Typography>
+          <Typography variant="h4" fontWeight={600}>
+            $3.54b
+          </Typography>
+        </Box>
+        <DWMButtons />
+      </Box>
       <ResponsiveContainer width={550} height={200}>
         <AreaChart
           width={500}

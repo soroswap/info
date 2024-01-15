@@ -1,37 +1,15 @@
 import { Box, Button, useTheme } from "@mui/material";
 
 const DWMButtons = () => {
-  const theme = useTheme();
   return (
     <Box display="flex" gap="8px">
-      <Button
-        sx={{
-          bgcolor: theme.palette.primary.main,
-          color: "white",
-          p: 0,
-          minWidth: 30,
-        }}
-      >
+      <Button variant="contained" sx={{ minWidth: 30, p: 0 }}>
         D
       </Button>
-      <Button
-        sx={{
-          bgcolor: theme.palette.primary.main,
-          color: "white",
-          p: 0,
-          minWidth: 30,
-        }}
-      >
+      <Button variant="contained" sx={{ minWidth: 30, p: 0 }}>
         W
       </Button>
-      <Button
-        sx={{
-          bgcolor: theme.palette.primary.main,
-          color: "white",
-          p: 0,
-          minWidth: 30,
-        }}
-      >
+      <Button variant="contained" sx={{ minWidth: 30, p: 0 }}>
         M
       </Button>
     </Box>

@@ -1,8 +1,9 @@
 import * as React from "react";
-import { formatNumberToMoney } from "../utils/utils";
+import { formatNumberToMoney } from "../../utils/utils";
 import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
+import PercentageChanged from "../percentage-changed";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -11,53 +12,31 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import useTable from "../hooks/use-table";
-
-interface Data {
-  pool: string;
-  tvl: number;
-  v24: number;
-  v7: number;
-}
-
-function createData(pool: string, tvl: number, v24: number, v7: number): Data {
-  return {
-    pool,
-    tvl,
-    v24,
-    v7,
-  };
-}
-
-const rows: Data[] = [
-  createData("ETH/USDT", 6139289, 6971544, 4791297),
-  createData("BTC/USDC", 12994939, 19421059, 19843850),
-  createData("ADA/ETH", 4369673, 18270992, 16446706),
-  createData("XRP/BTC", 2658405, 10138442, 19187029),
-  createData("LTC/ETH", 19059460, 14313574, 15025412),
-  createData("DOT/USDT", 9855014, 15094769, 15756642),
-  createData("LINK/USDC", 16310947, 8405003, 1859308),
-  createData("UNI/BTC", 3733989, 6717321, 12314030),
-  createData("AAVE/ETH", 3829729, 9031448, 10213830),
-  createData("SOL/USDT", 16515659, 12376324, 7672210),
-];
+import useTable from "../../hooks/use-table";
+import { TokensData } from "./data";
+import Token from "../token";
 
 interface HeadCell {
-  id: keyof Data;
+  id: keyof TokensData;
   label: string;
   numeric: boolean;
 }
 
 const headCells: readonly HeadCell[] = [
   {
-    id: "pool",
+    id: "name",
     numeric: false,
-    label: "Pool",
+    label: "Name",
   },
   {
-    id: "tvl",
+    id: "price",
     numeric: true,
-    label: "TVL",
+    label: "Price",
+  },
+  {
+    id: "change",
+    numeric: true,
+    label: "Price Change",
   },
   {
     id: "v24",
@@ -65,25 +44,25 @@ const headCells: readonly HeadCell[] = [
     label: "Volume 24H",
   },
   {
-    id: "v7",
+    id: "tvl",
     numeric: true,
-    label: "Volume 7D",
+    label: "TVL",
   },
 ];
 
-interface PoolsTableProps {
+interface TokensTableProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: keyof TokensData
   ) => void;
   order: "asc" | "desc";
   orderBy: string;
 }
 
-function PoolsTableHead(props: PoolsTableProps) {
+function TokensTableHead(props: TokensTableProps) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof TokensData) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -116,7 +95,7 @@ function PoolsTableHead(props: PoolsTableProps) {
   );
 }
 
-export default function PoolsTable() {
+export default function TokensTable({ rows }: { rows: TokensData[] }) {
   const {
     order,
     orderBy,
@@ -127,17 +106,17 @@ export default function PoolsTable() {
     page,
     handleChangePage,
     handleChangeRowsPerPage,
-  } = useTable<Data>({
+  } = useTable<TokensData>({
     rows,
     defaultOrder: "desc",
-    defaultOrderBy: "tvl",
+    defaultOrderBy: "change",
   });
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2, bgcolor: "white" }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <PoolsTableHead
+            <TokensTableHead
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
@@ -145,17 +124,38 @@ export default function PoolsTable() {
             <TableBody>
               {visibleRows.map((row, index) => {
                 return (
-                  <TableRow key={index}>
+                  <TableRow
+                    key={index}
+                    sx={{
+                      ":hover": {
+                        cursor: "pointer",
+                        bgcolor: "#f5f5f5",
+                      },
+                    }}
+                  >
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell align="left">{row.pool}</TableCell>
+                    <TableCell
+                      align="left"
+                      sx={{
+                        display: "flex",
+                        gap: "4px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Token token="ETH" />
+                      {row.name} ({row.symbol})
+                    </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.tvl)}
+                      {formatNumberToMoney(row.price)}
+                    </TableCell>
+                    <TableCell align="right">
+                      <PercentageChanged percentage={row.change} />
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.v24)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.v7)}
+                      {formatNumberToMoney(row.tvl)}
                     </TableCell>
                   </TableRow>
                 );

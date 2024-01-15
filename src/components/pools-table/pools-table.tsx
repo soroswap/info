@@ -1,9 +1,8 @@
 import * as React from "react";
-import { formatNumberToMoney } from "../utils/utils";
+import { formatNumberToMoney } from "../../utils/utils";
 import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import PercentageChanged from "./percentage-changed";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -12,69 +11,28 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import useTable from "../hooks/use-table";
-
-interface Data {
-  name: string;
-  symbol: string;
-  price: number;
-  change: number;
-  v24: number;
-  tvl: number;
-}
-
-function createData(
-  name: string,
-  symbol: string,
-  price: number,
-  change: number,
-  v24: number,
-  tvl: number
-): Data {
-  return {
-    name,
-    symbol,
-    price,
-    change,
-    v24,
-    tvl,
-  };
-}
-
-const rows: Data[] = [
-  createData("Tether USD", "USDT", 1690.71, 0.29, 14091979, 6184693),
-  createData("Bitcoin", "BTC", 2066.84, 1.22, 11397903, 29538868),
-  createData("Ethereum", "ETH", 981.2, -0.18, 1627262, 24308785),
-  createData("Ripple", "XRP", 4137.69, 2.35, 5502269, 19869732),
-  createData("Litecoin", "LTC", 1540.67, 2.96, 7745698, 28193539),
-  createData("Cardano", "ADA", 3408.92, -1.99, 6635886, 18750693),
-  createData("Polkadot", "DOT", 4303.12, 2.85, 5045217, 9525834),
-  createData("Chainlink", "LINK", 560.5, -2.32, 19535310, 10092550),
-  createData("Binance Coin", "BNB", 4370.79, -1.23, 19036235, 14006176),
-  createData("Solana", "SOL", 1782.48, -0.94, 2045126, 10102621),
-];
+import useTable from "../../hooks/use-table";
+import { PoolsData } from "./data";
+import { Card } from "@mui/material";
+import { useRouter } from "next/router";
+import Token from "../token";
 
 interface HeadCell {
-  id: keyof Data;
+  id: keyof PoolsData;
   label: string;
   numeric: boolean;
 }
 
 const headCells: readonly HeadCell[] = [
   {
-    id: "name",
+    id: "pool",
     numeric: false,
-    label: "Name",
+    label: "Pool",
   },
   {
-    id: "price",
+    id: "tvl",
     numeric: true,
-    label: "Price",
-  },
-  {
-    id: "change",
-    numeric: true,
-    label: "Price Change",
+    label: "TVL",
   },
   {
     id: "v24",
@@ -82,25 +40,25 @@ const headCells: readonly HeadCell[] = [
     label: "Volume 24H",
   },
   {
-    id: "tvl",
+    id: "v7",
     numeric: true,
-    label: "TVL",
+    label: "Volume 7D",
   },
 ];
 
-interface TokensTableProps {
+interface PoolsTableProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: keyof PoolsData
   ) => void;
   order: "asc" | "desc";
   orderBy: string;
 }
 
-function TokensTableHead(props: TokensTableProps) {
+function PoolsTableHead(props: PoolsTableProps) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof PoolsData) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -133,7 +91,13 @@ function TokensTableHead(props: TokensTableProps) {
   );
 }
 
-export default function TokensTable() {
+export default function PoolsTable({
+  rows,
+  emptyMessage = "No pools found",
+}: {
+  rows: PoolsData[];
+  emptyMessage?: string;
+}) {
   const {
     order,
     orderBy,
@@ -144,17 +108,28 @@ export default function TokensTable() {
     page,
     handleChangePage,
     handleChangeRowsPerPage,
-  } = useTable<Data>({
+  } = useTable<PoolsData>({
     rows,
     defaultOrder: "desc",
-    defaultOrderBy: "change",
+    defaultOrderBy: "tvl",
   });
+
+  const router = useRouter();
+
+  const onClickRow = (pool: string) => {
+    router.push(`/pools/${pool}`);
+  };
+
+  if (rows.length === 0) {
+    return <Card sx={{ p: 2, bgcolor: "white" }}>{emptyMessage}</Card>;
+  }
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2, bgcolor: "white" }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <TokensTableHead
+            <PoolsTableHead
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
@@ -162,22 +137,39 @@ export default function TokensTable() {
             <TableBody>
               {visibleRows.map((row, index) => {
                 return (
-                  <TableRow key={index}>
+                  <TableRow
+                    onClick={() => onClickRow(row.id)}
+                    key={index}
+                    sx={{
+                      ":hover": {
+                        cursor: "pointer",
+                        bgcolor: "#f5f5f5",
+                      },
+                    }}
+                  >
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell align="left">
-                      {row.name} ({row.symbol})
+                    <TableCell
+                      align="left"
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}
+                    >
+                      <Box display="flex" alignItems="center">
+                        <Token token="ETH" width={20} height={20} />
+                        <Token token="SOL" width={20} height={20} />
+                      </Box>
+                      {row.pool}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.price)}
-                    </TableCell>
-                    <TableCell align="right">
-                      <PercentageChanged percentage={row.change} />
+                      {formatNumberToMoney(row.tvl)}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.v24)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.tvl)}
+                      {formatNumberToMoney(row.v7)}
                     </TableCell>
                   </TableRow>
                 );

@@ -1,27 +1,41 @@
-import { AppBar, Box, Input, Typography, useTheme } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Container,
+  Input,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { ReactNode, useState } from "react";
 import BasicMenu from "./menu";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 const LINKS = [
   {
     label: "Overview",
+    href: "/",
   },
   {
     label: "Pools",
+    href: "/pools",
   },
   {
     label: "Tokens",
+    href: "/tokens",
   },
 ];
 
 export default function Layout({ children }: { children: ReactNode }) {
   const theme = useTheme();
+  const router = useRouter();
+  const currentPath = router.pathname;
 
-  const [active, setActive] = useState("Overview");
-
-  const handleChangeActive = (label: string) => {
-    setActive(label);
+  const isActive = (href: string) => {
+    if (href === "/") return currentPath === href;
+    return currentPath.includes(href);
   };
+
   return (
     <main>
       <AppBar position="fixed">
@@ -76,19 +90,19 @@ export default function Layout({ children }: { children: ReactNode }) {
               marginRight="12px"
             />
             {LINKS.map((link, idx) => (
-              <Typography
-                key={link.label}
-                onClick={() => handleChangeActive(link.label)}
-                sx={{
-                  cursor: "pointer",
-                  bgcolor: active === link.label ? "lightgray" : "",
-                  color: active === link.label ? "black" : "",
-                  padding: "4px 12px",
-                  borderRadius: "6px",
-                }}
-              >
-                {link.label}
-              </Typography>
+              <Link href={link.href} key={link.label}>
+                <Typography
+                  sx={{
+                    cursor: "pointer",
+                    bgcolor: isActive(link.href) ? "lightgray" : "",
+                    color: isActive(link.href) ? "black" : "",
+                    padding: "4px 12px",
+                    borderRadius: "6px",
+                  }}
+                >
+                  {link.label}
+                </Typography>
+              </Link>
             ))}
           </Box>
           <Box display="flex" gap="12px" flexGrow="1" justifyContent="flex-end">
@@ -107,7 +121,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         </Box>
       </AppBar>
       <Box mt="100px" p={4} bgcolor={theme.palette.background.default}>
-        {children}
+        <Container maxWidth="lg">{children}</Container>
       </Box>
     </main>
   );
