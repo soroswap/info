@@ -15,6 +15,8 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import useTable from "../../hooks/use-table";
 import { TokensData } from "./data";
 import Token from "../token";
+import { useRouter } from "next/router";
+import { Card } from "@mui/material";
 
 interface HeadCell {
   id: keyof TokensData;
@@ -95,7 +97,13 @@ function TokensTableHead(props: TokensTableProps) {
   );
 }
 
-export default function TokensTable({ rows }: { rows: TokensData[] }) {
+export default function TokensTable({
+  rows,
+  emptyMessage = "No tokens found",
+}: {
+  rows: TokensData[];
+  emptyMessage?: string;
+}) {
   const {
     order,
     orderBy,
@@ -111,9 +119,20 @@ export default function TokensTable({ rows }: { rows: TokensData[] }) {
     defaultOrder: "desc",
     defaultOrderBy: "change",
   });
+
+  const router = useRouter();
+
+  const onClickRow = (token: string) => {
+    router.push(`/tokens/${token}`);
+  };
+
+  if (rows.length === 0) {
+    return <Card sx={{ p: 2, bgcolor: "white" }}>{emptyMessage}</Card>;
+  }
+
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2, bgcolor: "white" }}>
+      <Paper sx={{ width: "100%", bgcolor: "white" }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <TokensTableHead
@@ -132,6 +151,7 @@ export default function TokensTable({ rows }: { rows: TokensData[] }) {
                         bgcolor: "#f5f5f5",
                       },
                     }}
+                    onClick={() => onClickRow(row.id)}
                   >
                     <TableCell>{index + 1}</TableCell>
                     <TableCell

@@ -17,14 +17,17 @@ import PoolChart from "../../../src/components/pool-chart";
 import Token from "../../../src/components/token";
 import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
 import useSavedPools from "../../../src/hooks/use-saved-pools";
-
-const PoolPage = () => {
+import TokenChart from "../../../src/components/token-chart";
+import PoolsTable from "../../../src/components/pools-table/pools-table";
+import { rows as poolRows } from "../../../src/components/pools-table/data";
+import useSavedTokens from "../../../src/hooks/use-saved-tokens";
+const TokenPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const { handleSavePool, isPoolSaved } = useSavedPools();
+  const { handleSavePool, isTokenSaved } = useSavedTokens();
 
-  const StarIcon = isPoolSaved(id as string) ? Star : StarBorderOutlined;
+  const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
 
   return (
     <Layout>
@@ -36,11 +39,11 @@ const PoolPage = () => {
               href: "/",
             },
             {
-              label: "Pools",
-              href: "/pools",
+              label: "Tokens",
+              href: "/tokens",
             },
             {
-              label: "ETH/SOL",
+              label: "ETH",
             },
           ]}
         />
@@ -67,9 +70,7 @@ const PoolPage = () => {
       </Box>
       <Box display="flex" alignItems="center" gap="6px" mt={4}>
         <Token token="ETH" />
-        <Token token="SOL" />
-        <Typography variant="h5">ETH/SOL</Typography>
-        <Chip label="0.3%" sx={{ fontSize: 16 }} />
+        <Typography variant="h5">Ether (ETH) </Typography>
       </Box>
       <Box
         display="flex"
@@ -79,25 +80,11 @@ const PoolPage = () => {
         gap={2}
         mt={2}
       >
-        <Box display="flex" gap="8px" flexWrap="wrap">
-          <Chip
-            label={
-              <Box display="flex" alignItems="center" gap="4px">
-                <Token token="ETH" width={20} height={20} />1 ETH = 95.06 SOL
-              </Box>
-            }
-            sx={{ fontSize: 16 }}
-          />
-          <Chip
-            label={
-              <Box display="flex" alignItems="center" gap="4px">
-                <Token token="SOL" width={20} height={20} />1 SOL = 0.236 ETH
-              </Box>
-            }
-            sx={{ fontSize: 16 }}
-          />
+        <Box display="flex" gap="8px" alignItems="center">
+          <Typography variant="h4">$2.56k</Typography>
+          <PercentageChanged percentage={-1.52} />
         </Box>
-        <Box display="flex" gap="8px">
+        <Box display="flex" gap={2}>
           <Button variant="contained">Add liquidity</Button>
           <Button variant="contained">Trade</Button>
         </Box>
@@ -105,41 +92,19 @@ const PoolPage = () => {
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12} md={4}>
           <Card sx={{ bgcolor: "white", p: 2, height: 410 }}>
-            <Paper sx={{ bgcolor: "#00000014", p: 2 }}>
-              <Typography>Total tokens locked</Typography>
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Typography
-                  fontSize={14}
-                  display="flex"
-                  gap="4px"
-                  alignItems="center"
-                >
-                  <Token token="ETH" width={20} height={20} />
-                  ETH
-                </Typography>
-                <Typography fontSize={14}>2.35k</Typography>
-              </Box>
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Typography
-                  fontSize={14}
-                  display="flex"
-                  gap="4px"
-                  alignItems="center"
-                >
-                  <Token token="SOL" width={20} height={20} />
-                  SOL
-                </Typography>{" "}
-                <Typography fontSize={14}>54.16k</Typography>
-              </Box>
-            </Paper>
             <Box mt={2}>
               <Typography>TVL</Typography>
               <Typography variant="h5">$3.40m</Typography>
               <PercentageChanged percentage={6.76} noParentheses />
             </Box>
             <Box mt={2}>
-              <Typography>Volume 24h</Typography>
+              <Typography>24h Trading Vol</Typography>
               <Typography variant="h5">$1.74m</Typography>
+              <PercentageChanged percentage={38.54} noParentheses />
+            </Box>
+            <Box mt={2}>
+              <Typography>7d Trading Vol</Typography>
+              <Typography variant="h5">$5.74m</Typography>
               <PercentageChanged percentage={38.54} noParentheses />
             </Box>
             <Box mt={2}>
@@ -150,10 +115,16 @@ const PoolPage = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Card sx={{ height: 410, bgcolor: "white" }}>
-            <PoolChart />
+            <TokenChart />
           </Card>
         </Grid>
       </Grid>
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" sx={{ mb: 1 }}>
+          Pools
+        </Typography>
+        <PoolsTable rows={poolRows} />
+      </Box>
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" sx={{ mb: 1 }}>
           Transactions
@@ -164,4 +135,4 @@ const PoolPage = () => {
   );
 };
 
-export default PoolPage;
+export default TokenPage;

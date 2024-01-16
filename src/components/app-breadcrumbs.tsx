@@ -2,7 +2,7 @@ import { Breadcrumbs, Typography } from "@mui/material";
 import Link from "next/link";
 
 type Breadcrumb = {
-  label: string;
+  label: string | JSX.Element;
   href?: string;
 };
 

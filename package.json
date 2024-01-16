@@ -1,11 +1,11 @@
 {
-  "name": "material-ui-nextjs-pages-router-ts",
-  "version": "5.0.0",
+  "name": "soroswap-info",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3100",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3100",
     "lint": "next lint",
     "post-update": "echo \"codesandbox preview only, need an update\" && pnpm update --latest"
   },
@@ -21,11 +21,14 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "recharts": "^2.10.4"
+    "react-slick": "^0.29.0",
+    "recharts": "^2.10.4",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "latest",
+    "@types/react-slick": "^0.23.13",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "typescript": "latest"

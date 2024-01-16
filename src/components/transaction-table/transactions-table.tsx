@@ -136,7 +136,7 @@ export default function TransactionsTable({
   });
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2, bgcolor: "white" }}>
+      <Paper sx={{ width: "100%", bgcolor: "white" }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <TransactionsTableHead

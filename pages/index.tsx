@@ -1,6 +1,6 @@
 import VolumeChart from "../src/components/volume-chart";
 import Layout from "../src/components/layout";
-import { Box, Container, Paper, Typography } from "@mui/material";
+import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import TVLChart from "../src/components/tvl-chart";
 import PercentageChanged from "../src/components/percentage-changed";
 import PoolsTable from "../src/components/pools-table/pools-table";
@@ -16,10 +16,14 @@ export default function Home() {
       <Typography variant="h6" sx={{ mb: 1 }}>
         Soroswap Overview
       </Typography>
-      <Box display="flex" gap={1} justifyContent="space-between">
-        <TVLChart />
-        <VolumeChart />
-      </Box>
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={6}>
+          <TVLChart />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <VolumeChart />
+        </Grid>
+      </Grid>
       <Paper
         sx={{
           bgcolor: "white",
@@ -29,23 +33,23 @@ export default function Home() {
           width: "100%",
         }}
       >
-        <Box display="flex" gap={4}>
-          <Box display="flex" gap="4px">
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={4} display="flex" gap="4px">
             <Typography>Volume 24H:</Typography>
             <Typography fontWeight={600}>$1.76b</Typography>
             <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
-          </Box>
-          <Box display="flex" gap="4px">
+          </Grid>
+          <Grid item xs={12} md={4} display="flex" gap="4px">
             <Typography>Fees 24H:</Typography>
             <Typography fontWeight={600}>$2.23m</Typography>
             <PercentageChanged percentage={8.21} sx={{ fontWeight: 600 }} />
-          </Box>
-          <Box display="flex" gap="4px">
+          </Grid>
+          <Grid item xs={12} md={4} display="flex" gap="4px">
             <Typography>TVL:</Typography>
             <Typography fontWeight={600}>$3.52b</Typography>
             <PercentageChanged percentage={5.67} sx={{ fontWeight: 600 }} />
-          </Box>
-        </Box>
+          </Grid>
+        </Grid>
       </Paper>
       <Box sx={{ mt: 4 }}>
         <Typography variant="h6" sx={{ mb: 1 }}>
