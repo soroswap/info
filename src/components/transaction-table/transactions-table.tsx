@@ -15,6 +15,7 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import TimeAgo from "javascript-time-ago";
 import useTable from "../../hooks/use-table";
 import { ActionName, TransactionsData } from "./data";
+import { Link, Tab, Tabs } from "@mui/material";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
@@ -37,11 +38,6 @@ interface HeadCell {
 }
 
 const headCells: readonly HeadCell[] = [
-  {
-    id: "name",
-    numeric: false,
-    label: "Type",
-  },
   {
     id: "value",
     numeric: true,
@@ -76,10 +72,13 @@ interface TransactionsTableProps {
   ) => void;
   order: "asc" | "desc";
   orderBy: string;
+  setCurrentFilter: React.Dispatch<React.SetStateAction<"All" | ActionName>>;
+  currentFilter: "All" | ActionName;
 }
 
 function TransactionsTableHead(props: TransactionsTableProps) {
-  const { order, orderBy, onRequestSort } = props;
+  const { order, orderBy, onRequestSort, setCurrentFilter, currentFilter } =
+    props;
   const createSortHandler =
     (property: keyof TransactionsData) =>
     (event: React.MouseEvent<unknown>) => {
@@ -89,6 +88,30 @@ function TransactionsTableHead(props: TransactionsTableProps) {
   return (
     <TableHead>
       <TableRow>
+        <TableCell>
+          <Tabs value={currentFilter} onChange={(e, v) => setCurrentFilter(v)}>
+            <Tab
+              label="All"
+              value="All"
+              sx={{ fontSize: 14, p: 0.5, minWidth: 30 }}
+            />
+            <Tab
+              label="Swaps"
+              value="Swap"
+              sx={{ fontSize: 14, p: 0.5, minWidth: 30 }}
+            />
+            <Tab
+              label="Adds"
+              value="Add"
+              sx={{ fontSize: 14, p: 0.5, minWidth: 30 }}
+            />
+            <Tab
+              label="Removes"
+              value="Remove"
+              sx={{ fontSize: 14, p: 0.5, minWidth: 30 }}
+            />
+          </Tabs>
+        </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -134,18 +157,32 @@ export default function TransactionsTable({
     defaultOrder: "desc",
     defaultOrderBy: "time",
   });
+
+  const [currentFilter, setCurrentFilter] = React.useState<"All" | ActionName>(
+    "All"
+  );
+
+  const filteredRows = React.useMemo(() => {
+    if (currentFilter === "All") {
+      return visibleRows;
+    }
+    return visibleRows.filter((row) => row.name === currentFilter);
+  }, [currentFilter, visibleRows]);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", bgcolor: "white" }}>
-        <TableContainer>
+        <TableContainer sx={{ minHeight: 610 }}>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <TransactionsTableHead
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
+              setCurrentFilter={setCurrentFilter}
+              currentFilter={currentFilter}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {filteredRows.map((row, index) => {
                 return (
                   <TableRow
                     key={index}
@@ -157,7 +194,13 @@ export default function TransactionsTable({
                     }}
                   >
                     <TableCell align="left">
-                      {formatName(row.name, row.symbol0, row.symbol1)}
+                      <Link
+                        href={`https://stellar.expert/explorer/testnet/tx/sometxhash`}
+                        target="_blank"
+                        underline="hover"
+                      >
+                        {formatName(row.name, row.symbol0, row.symbol1)}
+                      </Link>
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.value)}
@@ -169,7 +212,13 @@ export default function TransactionsTable({
                       {row.amount1} {row.symbol1}
                     </TableCell>
                     <TableCell align="right">
-                      {shortenAddress(row.account)}
+                      <Link
+                        href={`https://stellar.expert/explorer/public/account/${row.account}`}
+                        target="_blank"
+                        underline="hover"
+                      >
+                        {shortenAddress(row.account)}
+                      </Link>
                     </TableCell>
                     <TableCell align="right">
                       {timeAgo.format(row.time * 1000)}

@@ -1,33 +1,28 @@
-import {
-  Box,
-  Button,
-  Card,
-  Chip,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Card, Grid, Link, Typography } from "@mui/material";
 import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
 import { rows } from "../../../src/components/transaction-table/data";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
 import Layout from "../../../src/components/layout";
 import PercentageChanged from "../../../src/components/percentage-changed";
-import PoolChart from "../../../src/components/pool-chart";
 import Token from "../../../src/components/token";
 import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
-import useSavedPools from "../../../src/hooks/use-saved-pools";
 import TokenChart from "../../../src/components/token-chart";
 import PoolsTable from "../../../src/components/pools-table/pools-table";
 import { rows as poolRows } from "../../../src/components/pools-table/data";
 import useSavedTokens from "../../../src/hooks/use-saved-tokens";
+import useMounted from "../../../src/hooks/use-mounted";
 const TokenPage = () => {
   const router = useRouter();
+  const mounted = useMounted();
+
   const { id } = router.query;
 
   const { handleSavePool, isTokenSaved } = useSavedTokens();
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
+
+  if (!mounted) return null;
 
   return (
     <Layout>
@@ -43,7 +38,19 @@ const TokenPage = () => {
               href: "/tokens",
             },
             {
-              label: "ETH",
+              label: (
+                <Box>
+                  ETH{" "}
+                  <Link
+                    sx={{ cursor: "pointer" }}
+                    underline="hover"
+                    href="https://stellar.expert/explorer/public/asset/ETH-GBFXOHVAS43OIWNIO7XLRJAHT3BICFEIKOJLZVXNT572MISM4CMGSOCC-1"
+                    target="_blank"
+                  >
+                    (0x2260...C599)
+                  </Link>
+                </Box>
+              ),
             },
           ]}
         />

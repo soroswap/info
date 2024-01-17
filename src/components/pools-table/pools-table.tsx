@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import useTable from "../../hooks/use-table";
 import { PoolsData } from "./data";
-import { Card } from "@mui/material";
+import { Card, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import Token from "../token";
 
@@ -43,6 +43,16 @@ const headCells: readonly HeadCell[] = [
     id: "v7",
     numeric: true,
     label: "Volume 7D",
+  },
+  {
+    id: "fees24",
+    numeric: true,
+    label: "Fees 24H",
+  },
+  {
+    id: "feesYearly",
+    numeric: true,
+    label: "Fees Yearly",
   },
 ];
 
@@ -154,6 +164,7 @@ export default function PoolsTable({
                         display: "flex",
                         alignItems: "center",
                         gap: "4px",
+                        height: 70,
                       }}
                     >
                       <Box display="flex" alignItems="center">
@@ -170,6 +181,47 @@ export default function PoolsTable({
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.v7)}
+                    </TableCell>
+                    <TableCell align="right">
+                      {formatNumberToMoney(row.fees24)}
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography color="brown" fontSize={14}>
+                        {row.feesYearly}%
+                      </Typography>
+                      <Box display="flex" justifyContent="flex-end">
+                        <Box
+                          bgcolor="lightgray"
+                          borderRadius={1}
+                          px={1}
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          gap="4px"
+                        >
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="black"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M6.916 5.353l1.27 1.396 1.26-1.387.554.605-1.814 1.995-1.27-1.396-2.002 2.201-1.075-1.18L2.553 9 2 8.395l1.84-2.022 1.074 1.181 2.002-2.2z"
+                              fill="black"
+                            ></path>
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M6.916 3l1.27 1.396 1.26-1.387.554.605-1.814 1.995-1.27-1.396-2.002 2.201-1.075-1.18-1.286 1.413L2 6.042 3.84 4.02 4.913 5.2 6.916 3z"
+                              fill="black"
+                            ></path>
+                          </svg>
+                          <Typography fontSize={10}>6.33 - 10.33%</Typography>
+                        </Box>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 );

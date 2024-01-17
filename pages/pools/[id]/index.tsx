@@ -17,6 +17,7 @@ import PoolChart from "../../../src/components/pool-chart";
 import Token from "../../../src/components/token";
 import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
 import useSavedPools from "../../../src/hooks/use-saved-pools";
+import Link from "next/link";
 
 const PoolPage = () => {
   const router = useRouter();
@@ -81,20 +82,34 @@ const PoolPage = () => {
       >
         <Box display="flex" gap="8px" flexWrap="wrap">
           <Chip
+            sx={{
+              ":hover": {
+                bgcolor: "lightgray",
+              },
+              fontSize: 16,
+            }}
             label={
-              <Box display="flex" alignItems="center" gap="4px">
-                <Token token="ETH" width={20} height={20} />1 ETH = 95.06 SOL
-              </Box>
+              <Link href="/tokens/123">
+                <Box display="flex" alignItems="center" gap="4px">
+                  <Token token="ETH" width={20} height={20} />1 ETH = 95.06 SOL
+                </Box>
+              </Link>
             }
-            sx={{ fontSize: 16 }}
           />
           <Chip
+            sx={{
+              ":hover": {
+                bgcolor: "lightgray",
+              },
+              fontSize: 16,
+            }}
             label={
-              <Box display="flex" alignItems="center" gap="4px">
-                <Token token="SOL" width={20} height={20} />1 SOL = 0.236 ETH
-              </Box>
+              <Link href="/tokens/123">
+                <Box display="flex" alignItems="center" gap="4px">
+                  <Token token="SOL" width={20} height={20} />1 SOL = 0.236 ETH
+                </Box>
+              </Link>
             }
-            sx={{ fontSize: 16 }}
           />
         </Box>
         <Box display="flex" gap="8px">
