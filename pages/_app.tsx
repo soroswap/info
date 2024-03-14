@@ -8,14 +8,20 @@ import "../src/styles/globals.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
   return (
-    <AppCacheProvider {...props}>
-      <ThemeProvider theme={theme("light")}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </AppCacheProvider>
+    <QueryClientProvider client={queryClient}>
+      <AppCacheProvider {...props}>
+        <ThemeProvider theme={theme("light")}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </AppCacheProvider>
+    </QueryClientProvider>
   );
 }
