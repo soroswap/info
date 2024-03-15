@@ -10,7 +10,15 @@ import "slick-carousel/slick/slick-theme.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchInterval: Infinity,
+      staleTime: Infinity,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;

@@ -1,12 +1,13 @@
 import { Box, Typography } from "@mui/material";
+import { useQueryTokens } from "../../src/hooks/tokens";
 import Layout from "../../src/components/layout";
-import TopMovers from "../../src/components/top-movers";
 import TokensTable from "../../src/components/tokens-table/tokens-table";
-import { rows } from "../../src/components/tokens-table/data";
+import TopMovers from "../../src/components/top-movers";
 import useSavedTokens from "../../src/hooks/use-saved-tokens";
 
 const TokensPage = () => {
   const { savedTokens } = useSavedTokens();
+  const tokens = useQueryTokens();
   return (
     <Layout>
       <Box>
@@ -14,7 +15,7 @@ const TokensPage = () => {
           Your Watchlist
         </Typography>
         <TokensTable
-          rows={savedTokens}
+          rows={savedTokens ?? []}
           emptyMessage="Saved tokens will appear here"
         />
       </Box>
@@ -25,7 +26,7 @@ const TokensPage = () => {
         <Typography variant="h6" sx={{ mb: 1 }}>
           All Tokens
         </Typography>
-        <TokensTable rows={rows} />
+        <TokensTable rows={tokens.data ?? []} isLoading={tokens.isLoading} />
       </Box>
     </Layout>
   );

@@ -11,5 +11,6 @@ export const useQueryPool = ({ poolAddress }: { poolAddress: string }) => {
   return useQuery({
     queryKey: [key, poolAddress],
     queryFn: () => fetchPool({ poolAddress }),
+    enabled: !!poolAddress,
   });
 };

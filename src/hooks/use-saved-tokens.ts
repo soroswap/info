@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
-import { rows } from "../components/tokens-table/data";
+import { useQueryTokens } from "./tokens";
 
 const key = "savedTokensIds";
 
 const useSavedTokens = () => {
+  const tokens = useQueryTokens();
+
   const [savedTokensIds, setSavedTokensIds] = useState<string[]>([]);
-  const savedTokens = rows.filter((row) => savedTokensIds.includes(row.id));
+  const savedTokens = tokens.data?.filter((row) =>
+    savedTokensIds.includes(row.token)
+  );
 
   useEffect(() => {
     const savedTokensIds = localStorage.getItem(key) || "[]";

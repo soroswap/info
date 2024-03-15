@@ -1,5 +1,9 @@
 import * as React from "react";
+import { Card, Skeleton } from "@mui/material";
 import { formatNumberToMoney } from "../../utils/utils";
+import { Token } from "../../types/tokens";
+import { TokensData } from "./data";
+import { useRouter } from "next/router";
 import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -12,11 +16,8 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import TokenImage from "../token";
 import useTable from "../../hooks/use-table";
-import { TokensData } from "./data";
-import Token from "../token";
-import { useRouter } from "next/router";
-import { Card } from "@mui/material";
 
 interface HeadCell {
   id: keyof TokensData;
@@ -100,9 +101,11 @@ function TokensTableHead(props: TokensTableProps) {
 export default function TokensTable({
   rows,
   emptyMessage = "No tokens found",
+  isLoading = false,
 }: {
-  rows: TokensData[];
+  rows: Token[];
   emptyMessage?: string;
+  isLoading?: boolean;
 }) {
   const {
     order,
@@ -114,10 +117,10 @@ export default function TokensTable({
     page,
     handleChangePage,
     handleChangeRowsPerPage,
-  } = useTable<TokensData>({
+  } = useTable<Token>({
     rows,
     defaultOrder: "desc",
-    defaultOrderBy: "change",
+    defaultOrderBy: "priceChange24h",
   });
 
   const router = useRouter();
@@ -125,6 +128,10 @@ export default function TokensTable({
   const onClickRow = (token: string) => {
     router.push(`/tokens/${token}`);
   };
+
+  if (isLoading) {
+    return <Skeleton variant="rounded" height={300} />;
+  }
 
   if (rows.length === 0) {
     return <Card sx={{ p: 2, bgcolor: "white" }}>{emptyMessage}</Card>;
@@ -151,7 +158,7 @@ export default function TokensTable({
                         bgcolor: "#f5f5f5",
                       },
                     }}
-                    onClick={() => onClickRow(row.id)}
+                    onClick={() => onClickRow(row.token)}
                   >
                     <TableCell>{index + 1}</TableCell>
                     <TableCell
@@ -162,17 +169,17 @@ export default function TokensTable({
                         alignItems: "center",
                       }}
                     >
-                      <Token token="ETH" />
-                      {row.name} ({row.symbol})
+                      <TokenImage token="ETH" />
+                      Ethereum (ETH)
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}
                     </TableCell>
                     <TableCell align="right">
-                      <PercentageChanged percentage={row.change} />
+                      <PercentageChanged percentage={row.priceChange24h} />
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.v24)}
+                      {formatNumberToMoney(row.volume24h)}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.tvl)}

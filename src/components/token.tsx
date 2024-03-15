@@ -11,7 +11,7 @@ interface TokenProps extends ImgHTMLAttributes<HTMLImageElement> {
   token: Token;
 }
 
-const Token: React.FC<TokenProps> = ({ token, ...imgProps }) => {
+const TokenImage: React.FC<TokenProps> = ({ token, ...imgProps }) => {
   return (
     <img
       src={`/tokens/${tokenMap[token]}`}
@@ -23,4 +23,4 @@ const Token: React.FC<TokenProps> = ({ token, ...imgProps }) => {
   );
 };
 
-export default Token;
+export default TokenImage;

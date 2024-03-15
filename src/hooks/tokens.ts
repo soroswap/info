@@ -11,5 +11,6 @@ export const useQueryToken = ({ tokenAddress }: { tokenAddress: string }) => {
   return useQuery({
     queryKey: [key, tokenAddress],
     queryFn: () => fetchToken({ tokenAddress }),
+    enabled: !!tokenAddress,
   });
 };

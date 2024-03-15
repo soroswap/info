@@ -1,5 +1,9 @@
 import * as React from "react";
+import { Card, Skeleton, Typography } from "@mui/material";
 import { formatNumberToMoney } from "../../utils/utils";
+import { Pool } from "../../types/pools";
+import { PoolsData } from "./data";
+import { useRouter } from "next/router";
 import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -11,11 +15,8 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import useTable from "../../hooks/use-table";
-import { PoolsData } from "./data";
-import { Card, Typography } from "@mui/material";
-import { useRouter } from "next/router";
 import Token from "../token";
+import useTable from "../../hooks/use-table";
 
 interface HeadCell {
   id: keyof PoolsData;
@@ -104,9 +105,11 @@ function PoolsTableHead(props: PoolsTableProps) {
 export default function PoolsTable({
   rows,
   emptyMessage = "No pools found",
+  isLoading = false,
 }: {
-  rows: PoolsData[];
+  rows: Pool[];
   emptyMessage?: string;
+  isLoading?: boolean;
 }) {
   const {
     order,
@@ -118,7 +121,7 @@ export default function PoolsTable({
     page,
     handleChangePage,
     handleChangeRowsPerPage,
-  } = useTable<PoolsData>({
+  } = useTable<Pool>({
     rows,
     defaultOrder: "desc",
     defaultOrderBy: "tvl",
@@ -129,6 +132,10 @@ export default function PoolsTable({
   const onClickRow = (pool: string) => {
     router.push(`/pools/${pool}`);
   };
+
+  if (isLoading) {
+    return <Skeleton variant="rounded" height={300} />;
+  }
 
   if (rows.length === 0) {
     return <Card sx={{ p: 2, bgcolor: "white" }}>{emptyMessage}</Card>;
@@ -148,7 +155,7 @@ export default function PoolsTable({
               {visibleRows.map((row, index) => {
                 return (
                   <TableRow
-                    onClick={() => onClickRow(row.id)}
+                    onClick={() => onClickRow(row.pool)}
                     key={index}
                     sx={{
                       ":hover": {
@@ -171,19 +178,19 @@ export default function PoolsTable({
                         <Token token="ETH" width={20} height={20} />
                         <Token token="SOL" width={20} height={20} />
                       </Box>
-                      {row.pool}
+                      ETH/SOL
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.tvl)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.v24)}
+                      {formatNumberToMoney(row.volume24h)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.v7)}
+                      {formatNumberToMoney(row.volume7d)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.fees24)}
+                      {formatNumberToMoney(row.fees24h)}
                     </TableCell>
                     <TableCell align="right">
                       <Typography color="brown" fontSize={14}>

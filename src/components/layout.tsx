@@ -12,6 +12,10 @@ import { ReactNode, useState } from "react";
 import BasicMenu from "./menu";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useQueryToken } from "../hooks/tokens";
+import { XLM_ADDRESS } from "../constants/constants";
+import { formatNumberToMoney } from "../utils/utils";
+import LoadingSkeleton from "./loading-skeleton";
 
 const LINKS = [
   {
@@ -38,6 +42,8 @@ export default function Layout({ children }: { children: ReactNode }) {
     if (href === "/") return currentPath === href;
     return currentPath.includes(href);
   };
+
+  const xlm = useQueryToken({ tokenAddress: XLM_ADDRESS });
 
   return (
     <main>
@@ -73,8 +79,17 @@ export default function Layout({ children }: { children: ReactNode }) {
                 />
               </Box>
               <Box display="flex" alignItems="center" gap="2px">
-                <Typography fontSize={12}>Eth Price:</Typography>
-                <Typography fontSize={12}>$2.6k</Typography>
+                <Typography fontSize={12}>XLM Price:</Typography>
+                <LoadingSkeleton
+                  isLoading={xlm.isLoading}
+                  height={15}
+                  width={80}
+                  style={{ background: "gray" }}
+                >
+                  <Typography fontSize={12}>
+                    {formatNumberToMoney(xlm.data?.price)}
+                  </Typography>
+                </LoadingSkeleton>
               </Box>
             </Box>
             <Box display="flex" gap="16px">

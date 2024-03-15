@@ -9,21 +9,31 @@ import {
 } from "@mui/material";
 import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
 import { rows } from "../../../src/components/transaction-table/data";
+import { useQueryPool } from "../../../src/hooks/pools";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
 import Layout from "../../../src/components/layout";
+import Link from "next/link";
+import LoadingSkeleton from "../../../src/components/loading-skeleton";
 import PercentageChanged from "../../../src/components/percentage-changed";
 import PoolChart from "../../../src/components/pool-chart";
 import Token from "../../../src/components/token";
 import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
 import useSavedPools from "../../../src/hooks/use-saved-pools";
-import Link from "next/link";
+import {
+  formatNumberToMoney,
+  getExpectedAmountOfOne,
+  getSoroswapAddLiquidityUrl,
+  getSoroswapSwapUrl,
+} from "../../../src/utils/utils";
 
 const PoolPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
   const { handleSavePool, isPoolSaved } = useSavedPools();
+
+  const pool = useQueryPool({ poolAddress: id as string });
 
   const StarIcon = isPoolSaved(id as string) ? Star : StarBorderOutlined;
 
@@ -81,40 +91,75 @@ const PoolPage = () => {
         mt={2}
       >
         <Box display="flex" gap="8px" flexWrap="wrap">
-          <Chip
-            sx={{
-              ":hover": {
-                bgcolor: "lightgray",
-              },
-              fontSize: 16,
-            }}
-            label={
-              <Link href="/tokens/123">
-                <Box display="flex" alignItems="center" gap="4px">
-                  <Token token="ETH" width={20} height={20} />1 ETH = 95.06 SOL
-                </Box>
-              </Link>
-            }
-          />
-          <Chip
-            sx={{
-              ":hover": {
-                bgcolor: "lightgray",
-              },
-              fontSize: 16,
-            }}
-            label={
-              <Link href="/tokens/123">
-                <Box display="flex" alignItems="center" gap="4px">
-                  <Token token="SOL" width={20} height={20} />1 SOL = 0.236 ETH
-                </Box>
-              </Link>
-            }
-          />
+          <LoadingSkeleton isLoading={pool.isLoading}>
+            <Chip
+              sx={{
+                ":hover": {
+                  bgcolor: "lightgray",
+                },
+                fontSize: 16,
+              }}
+              label={
+                <Link href="/tokens/123">
+                  <Box display="flex" alignItems="center" gap="4px">
+                    <Token token="ETH" width={20} height={20} />1 ETH ={" "}
+                    {getExpectedAmountOfOne(
+                      pool.data?.reserve0,
+                      pool.data?.reserve1
+                    )}{" "}
+                    SOL
+                  </Box>
+                </Link>
+              }
+            />
+          </LoadingSkeleton>
+          <LoadingSkeleton isLoading={pool.isLoading}>
+            <Chip
+              sx={{
+                ":hover": {
+                  bgcolor: "lightgray",
+                },
+                fontSize: 16,
+              }}
+              label={
+                <Link href="/tokens/123">
+                  <Box display="flex" alignItems="center" gap="4px">
+                    <Token token="SOL" width={20} height={20} />1 SOL ={" "}
+                    {getExpectedAmountOfOne(
+                      pool.data?.reserve1,
+                      pool.data?.reserve0
+                    )}{" "}
+                    ETH
+                  </Box>
+                </Link>
+              }
+            />
+          </LoadingSkeleton>
         </Box>
         <Box display="flex" gap="8px">
-          <Button variant="contained">Add liquidity</Button>
-          <Button variant="contained">Trade</Button>
+          <LoadingSkeleton isLoading={pool.isLoading} height={36.5} width={100}>
+            <Button variant="contained">
+              <a
+                href={getSoroswapAddLiquidityUrl(
+                  pool.data?.token0,
+                  pool.data?.token1
+                )}
+                target="_blank"
+              >
+                Add liquidity
+              </a>
+            </Button>
+          </LoadingSkeleton>
+          <LoadingSkeleton isLoading={pool.isLoading} height={36.5} width={100}>
+            <Button variant="contained">
+              <a
+                href={getSoroswapSwapUrl(pool.data?.token0, pool.data?.token1)}
+                target="_blank"
+              >
+                Trade
+              </a>
+            </Button>
+          </LoadingSkeleton>
         </Box>
       </Box>
       <Grid container spacing={2} mt={2}>
@@ -123,43 +168,71 @@ const PoolPage = () => {
             <Paper sx={{ bgcolor: "#00000014", p: 2 }}>
               <Typography>Total tokens locked</Typography>
               <Box display="flex" justifyContent="space-between" mt={1}>
-                <Typography
-                  fontSize={14}
-                  display="flex"
-                  gap="4px"
-                  alignItems="center"
+                <LoadingSkeleton
+                  isLoading={pool.isLoading}
+                  variant="text"
+                  height={20}
                 >
-                  <Token token="ETH" width={20} height={20} />
-                  ETH
-                </Typography>
-                <Typography fontSize={14}>2.35k</Typography>
+                  <Typography
+                    fontSize={14}
+                    display="flex"
+                    gap="4px"
+                    alignItems="center"
+                  >
+                    <Token token="ETH" width={20} height={20} />
+                    ETH
+                  </Typography>
+                  <Typography fontSize={14}>
+                    {formatNumberToMoney(pool.data?.reserve0)}
+                  </Typography>
+                </LoadingSkeleton>
               </Box>
               <Box display="flex" justifyContent="space-between" mt={1}>
-                <Typography
-                  fontSize={14}
-                  display="flex"
-                  gap="4px"
-                  alignItems="center"
+                <LoadingSkeleton
+                  isLoading={pool.isLoading}
+                  variant="text"
+                  height={20}
                 >
-                  <Token token="SOL" width={20} height={20} />
-                  SOL
-                </Typography>{" "}
-                <Typography fontSize={14}>54.16k</Typography>
+                  <Typography
+                    fontSize={14}
+                    display="flex"
+                    gap="4px"
+                    alignItems="center"
+                  >
+                    <Token token="SOL" width={20} height={20} />
+                    SOL
+                  </Typography>{" "}
+                  <Typography fontSize={14}>
+                    {formatNumberToMoney(pool.data?.reserve1)}
+                  </Typography>
+                </LoadingSkeleton>
               </Box>
             </Paper>
             <Box mt={2}>
               <Typography>TVL</Typography>
-              <Typography variant="h5">$3.40m</Typography>
+              <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+                <Typography variant="h5">
+                  {formatNumberToMoney(pool.data?.tvl)}
+                </Typography>
+              </LoadingSkeleton>
               <PercentageChanged percentage={6.76} noParentheses />
             </Box>
             <Box mt={2}>
               <Typography>Volume 24h</Typography>
-              <Typography variant="h5">$1.74m</Typography>
+              <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+                <Typography variant="h5">
+                  {formatNumberToMoney(pool.data?.volume24h)}
+                </Typography>
+              </LoadingSkeleton>
               <PercentageChanged percentage={38.54} noParentheses />
             </Box>
             <Box mt={2}>
               <Typography>24h Fees</Typography>
-              <Typography variant="h5">$5.22k</Typography>
+              <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+                <Typography variant="h5">
+                  {formatNumberToMoney(pool.data?.fees24h)}
+                </Typography>
+              </LoadingSkeleton>
             </Box>
           </Card>
         </Grid>

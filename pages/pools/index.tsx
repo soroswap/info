@@ -1,11 +1,12 @@
 import { Box, Typography } from "@mui/material";
-import { rows } from "../../src/components/pools-table/data";
+import { useQueryPools } from "../../src/hooks/pools";
 import Layout from "../../src/components/layout";
 import PoolsTable from "../../src/components/pools-table/pools-table";
 import useSavedPools from "../../src/hooks/use-saved-pools";
 
 const PoolsPage = () => {
   const { savedPools } = useSavedPools();
+  const pools = useQueryPools();
   return (
     <Layout>
       <Box>
@@ -13,7 +14,7 @@ const PoolsPage = () => {
           Your Watchlist
         </Typography>
         <PoolsTable
-          rows={savedPools}
+          rows={savedPools ?? []}
           emptyMessage="Saved pools will appear here"
         />
       </Box>
@@ -21,7 +22,7 @@ const PoolsPage = () => {
         <Typography variant="h6" sx={{ mb: 1 }}>
           All Pools
         </Typography>
-        <PoolsTable rows={rows} />
+        <PoolsTable rows={pools.data ?? []} isLoading={pools.isLoading} />
       </Box>
     </Layout>
   );

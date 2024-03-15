@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { rows } from "../components/pools-table/data";
+import { useQueryPools } from "./pools";
 
 const key = "savedPoolsIds";
 
 const useSavedPools = () => {
+  const pools = useQueryPools();
   const [savedPoolsIds, setSavedPoolsIds] = useState<string[]>([]);
-  const savedPools = rows.filter((row) => savedPoolsIds.includes(row.id));
+  const savedPools = pools.data?.filter((row) =>
+    savedPoolsIds.includes(row.pool)
+  );
 
   useEffect(() => {
     const savedPoolsIds = localStorage.getItem(key) || "[]";

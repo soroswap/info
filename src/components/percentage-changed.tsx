@@ -11,6 +11,7 @@ const PercentageChanged = ({ percentage, noParentheses, sx }: Props) => {
   const color = percentage > 0 ? "green" : "red";
 
   const getText = () => {
+    if (!percentage) return "0%";
     const text = `${arrow} ${Math.abs(percentage)}%`;
     if (noParentheses) {
       return text;
