@@ -1,7 +1,13 @@
 # info
 Analytics site for Soroswap
+
+## Configure
 ```
-touch .env
+cp .env.example
+```
+Edit environmental variables
+
+```
 bash docker/run.sh
 yarn 
 yarn dev
