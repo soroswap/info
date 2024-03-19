@@ -8,13 +8,14 @@ const tokenMap: Record<Token, string> = {
 };
 
 interface TokenProps extends ImgHTMLAttributes<HTMLImageElement> {
-  token: Token;
+  token?: Token;
+  imageUrl?: string;
 }
 
-const TokenImage: React.FC<TokenProps> = ({ token, ...imgProps }) => {
+const TokenImage: React.FC<TokenProps> = ({ imageUrl, ...imgProps }) => {
   return (
     <img
-      src={`/tokens/${tokenMap[token]}`}
+      src={imageUrl}
       style={{ borderRadius: "100%" }}
       width="26px"
       height="26px"

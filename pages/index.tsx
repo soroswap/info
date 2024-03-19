@@ -63,7 +63,7 @@ export default function Home() {
               <Typography>Volume 24H:</Typography>
               <LoadingSkeleton isLoading={soroswapVolume.isLoading} height={20}>
                 <Typography fontWeight={600}>
-                  {formatNumberToMoney(soroswapVolume.data)}
+                  {formatNumberToMoney(soroswapVolume.data?.volume)}
                 </Typography>
                 <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
               </LoadingSkeleton>
@@ -79,7 +79,7 @@ export default function Home() {
               <Typography>Fees 24H:</Typography>
               <LoadingSkeleton isLoading={soroswapFees.isLoading} height={20}>
                 <Typography fontWeight={600}>
-                  {formatNumberToMoney(soroswapFees.data)}
+                  {formatNumberToMoney(soroswapFees.data?.fees)}
                 </Typography>
                 <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
               </LoadingSkeleton>
@@ -95,7 +95,7 @@ export default function Home() {
               <Typography>TVL:</Typography>
               <LoadingSkeleton isLoading={soroswapTVL.isLoading} height={20}>
                 <Typography fontWeight={600}>
-                  {formatNumberToMoney(soroswapTVL.data)}
+                  {formatNumberToMoney(soroswapTVL.data?.tvl)}
                 </Typography>
                 <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
               </LoadingSkeleton>

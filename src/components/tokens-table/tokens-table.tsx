@@ -107,6 +107,7 @@ export default function TokensTable({
   emptyMessage?: string;
   isLoading?: boolean;
 }) {
+  console.log('🚀 ~ rows:', rows)
   const {
     order,
     orderBy,
@@ -169,8 +170,8 @@ export default function TokensTable({
                         alignItems: "center",
                       }}
                     >
-                      <TokenImage token="ETH" />
-                      Ethereum (ETH)
+                      <TokenImage imageUrl={row.logo} />
+                      {row.name}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}
