@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'; 
 import { AppProps } from "next/app";
 import { AppCacheProvider } from "@mui/material-nextjs/v14-pagesRouter";
 import { ThemeProvider } from "@mui/material/styles";
@@ -28,6 +29,7 @@ export default function MyApp(props: AppProps) {
         <ThemeProvider theme={theme("light")}>
           <CssBaseline />
           <Component {...pageProps} />
+          <Analytics />
         </ThemeProvider>
       </AppCacheProvider>
     </QueryClientProvider>
