@@ -8,14 +8,14 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { ReactNode, useState } from "react";
-import BasicMenu from "./menu";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useQueryToken } from "../hooks/tokens";
+import { ReactNode } from "react";
 import { XLM_ADDRESS } from "../constants/constants";
+import { useQueryToken } from "../hooks/tokens";
 import { formatNumberToMoney } from "../utils/utils";
 import LoadingSkeleton from "./loading-skeleton";
+import BasicMenu from "./menu";
 
 const LINKS = [
   {
@@ -93,9 +93,8 @@ export default function Layout({ children }: { children: ReactNode }) {
               </Box>
             </Box>
             <Box display="flex" gap="16px">
-              <Typography fontSize={12}>V2 Analytics</Typography>
-              <Typography fontSize={12}>Docs</Typography>
-              <Typography fontSize={12}>App</Typography>
+              <Link href={'https://docs.soroswap.finance'} target="_blank">Docs</Link>
+              <Link href={'https://app.soroswap.finance'} target="_blank">App</Link>
             </Box>
           </Box>
         )}
