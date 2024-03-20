@@ -1,34 +1,33 @@
+import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
   Card,
   Grid,
   Link,
-  Skeleton,
-  Typography,
+  Typography
 } from "@mui/material";
-import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
-import { rows } from "../../../src/components/transaction-table/data";
-import { rows as poolRows } from "../../../src/components/pools-table/data";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
 import Layout from "../../../src/components/layout";
+import LoadingSkeleton from "../../../src/components/loading-skeleton";
 import PercentageChanged from "../../../src/components/percentage-changed";
 import PoolsTable from "../../../src/components/pools-table/pools-table";
 import Token from "../../../src/components/token";
 import TokenChart from "../../../src/components/token-chart";
+import { rows } from "../../../src/components/transaction-table/data";
 import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
-import useMounted from "../../../src/hooks/use-mounted";
-import useSavedTokens from "../../../src/hooks/use-saved-tokens";
 import { useQueryPools } from "../../../src/hooks/pools";
 import { useQueryToken } from "../../../src/hooks/tokens";
+import useMounted from "../../../src/hooks/use-mounted";
+import useSavedTokens from "../../../src/hooks/use-saved-tokens";
 import {
   formatNumberToMoney,
   getSoroswapAddLiquidityUrl,
   getSoroswapSwapUrl,
+  openInNewTab,
   shortenAddress,
 } from "../../../src/utils/utils";
-import LoadingSkeleton from "../../../src/components/loading-skeleton";
 
 const TokenPage = () => {
   const router = useRouter();
@@ -43,6 +42,8 @@ const TokenPage = () => {
   const pools = useQueryPools();
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
+
+  const stellarExpertUrl = `https://stellar.expert/explorer/public/asset/${id}`
 
   if (!mounted) return null;
 
@@ -66,7 +67,7 @@ const TokenPage = () => {
                   <Link
                     sx={{ cursor: "pointer" }}
                     underline="hover"
-                    href={`https://stellar.expert/explorer/public/asset/${id}`}
+                    href={stellarExpertUrl}
                     target="_blank"
                   >
                     ({shortenAddress(id as string)})
@@ -88,6 +89,7 @@ const TokenPage = () => {
           />
           <OpenInNew
             fontSize="small"
+            onClick={() => openInNewTab(stellarExpertUrl)}
             sx={{
               ":hover": {
                 cursor: "pointer",
