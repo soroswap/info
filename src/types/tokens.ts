@@ -11,4 +11,6 @@ export interface Token {
   volume7d: number;
   tvlSlippage7d: number;
   tvlSlippage24h: number;
+  volume24hChange: number;
+  volume7dChange: number;
 }

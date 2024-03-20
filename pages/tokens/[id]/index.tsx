@@ -106,10 +106,10 @@ const TokenPage = () => {
           width={40}
           variant="circular"
         >
-          <Token token="ETH" />
+          <Token imageUrl={token.data?.logo} />
         </LoadingSkeleton>
         <LoadingSkeleton isLoading={token.isLoading} variant="text">
-          <Typography variant="h5">Ether (ETH) </Typography>
+          <Typography variant="h5">{token.data?.name} ({token.data?.symbol}) </Typography>
         </LoadingSkeleton>
       </Box>
       <Box
@@ -125,7 +125,7 @@ const TokenPage = () => {
             <Typography variant="h4">
               {formatNumberToMoney(token.data?.price)}
             </Typography>
-            <PercentageChanged percentage={-1.52} />
+            <PercentageChanged percentage={token.data?.priceChange24h ?? 0} />
           </LoadingSkeleton>
         </Box>
         <Box display="flex" gap={2}>
@@ -167,7 +167,7 @@ const TokenPage = () => {
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={6.76} noParentheses />
+              <PercentageChanged percentage={token.data?.tvlSlippage24h ?? 0} noParentheses />
             </Box>
             <Box mt={2}>
               <Typography>24h Trading Vol</Typography>
@@ -177,23 +177,23 @@ const TokenPage = () => {
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={38.54} noParentheses />
+              <PercentageChanged percentage={token.data?.volume24hChange ?? 0} noParentheses />
             </Box>
             <Box mt={2}>
               <Typography>7d Trading Vol</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatNumberToMoney(token.data?.volume24h)}
+                  {formatNumberToMoney(token.data?.volume7d)}
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={38.54} noParentheses />
+              <PercentageChanged percentage={token.data?.volume7dChange ?? 0} noParentheses />
             </Box>
             <Box mt={2}>
               <Typography>24h Fees</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatNumberToMoney(token.data?.volume24h)}
+                  {formatNumberToMoney(token.data?.fees24h)}
                 </Typography>
               </LoadingSkeleton>
             </Box>
