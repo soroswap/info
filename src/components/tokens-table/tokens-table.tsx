@@ -171,7 +171,7 @@ export default function TokensTable({
                       }}
                     >
                       <TokenImage imageUrl={row.logo} />
-                      {row.name}
+                      {row.name??row.symbol}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}
