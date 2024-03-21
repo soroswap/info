@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Card, Skeleton, Typography } from "@mui/material";
-import { formatNumberToMoney } from "../../utils/utils";
+import { formatNumberToMoney, shortenAddress } from "../../utils/utils";
 import { Pool } from "../../types/pools";
 import { PoolsData } from "./data";
 import { useRouter } from "next/router";
@@ -175,10 +175,10 @@ export default function PoolsTable({
                       }}
                     >
                       <Box display="flex" alignItems="center">
-                        <Token token="ETH" width={20} height={20} />
-                        <Token token="SOL" width={20} height={20} />
+                        <Token imageUrl={row.token0.logo} width={20} height={20} />
+                        <Token imageUrl={row.token1.logo} width={20} height={20} />
                       </Box>
-                      ETH/SOL
+                     {row.token0.name??row.token0.symbol??shortenAddress(row.token0.contract)} / {row.token1.name??row.token1.symbol??shortenAddress(row.token1.contract) }
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.tvl)}
@@ -197,37 +197,6 @@ export default function PoolsTable({
                         {row.feesYearly}%
                       </Typography>
                       <Box display="flex" justifyContent="flex-end">
-                        <Box
-                          bgcolor="lightgray"
-                          borderRadius={1}
-                          px={1}
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                          gap="4px"
-                        >
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="black"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M6.916 5.353l1.27 1.396 1.26-1.387.554.605-1.814 1.995-1.27-1.396-2.002 2.201-1.075-1.18L2.553 9 2 8.395l1.84-2.022 1.074 1.181 2.002-2.2z"
-                              fill="black"
-                            ></path>
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M6.916 3l1.27 1.396 1.26-1.387.554.605-1.814 1.995-1.27-1.396-2.002 2.201-1.075-1.18-1.286 1.413L2 6.042 3.84 4.02 4.913 5.2 6.916 3z"
-                              fill="black"
-                            ></path>
-                          </svg>
-                          <Typography fontSize={10}>6.33 - 10.33%</Typography>
-                        </Box>
                       </Box>
                     </TableCell>
                   </TableRow>
