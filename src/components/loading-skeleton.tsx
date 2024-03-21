@@ -4,7 +4,7 @@ import React from "react";
 interface Props {
   isLoading: boolean;
   children: React.ReactNode;
-  width?: number;
+  width?: number | string;
   height?: number;
   variant?: SkeletonTypeMap["props"]["variant"];
   [key: string]: any;

@@ -1,12 +1,5 @@
 import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Card,
-  Grid,
-  Link,
-  Typography
-} from "@mui/material";
+import { Box, Button, Card, Grid, Link, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
 import Layout from "../../../src/components/layout";
@@ -43,7 +36,7 @@ const TokenPage = () => {
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
 
-  const stellarExpertUrl = `https://stellar.expert/explorer/public/asset/${id}`
+  const stellarExpertUrl = `https://stellar.expert/explorer/public/asset/${id}`;
 
   if (!mounted) return null;
 
@@ -109,7 +102,9 @@ const TokenPage = () => {
           <Token imageUrl={token.data?.logo} />
         </LoadingSkeleton>
         <LoadingSkeleton isLoading={token.isLoading} variant="text">
-          <Typography variant="h5">{token.data?.name} ({token.data?.symbol}) </Typography>
+          <Typography variant="h5">
+            {token.data?.name} ({token.data?.symbol}){" "}
+          </Typography>
         </LoadingSkeleton>
       </Box>
       <Box
@@ -167,7 +162,10 @@ const TokenPage = () => {
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={token.data?.tvlSlippage24h ?? 0} noParentheses />
+              <PercentageChanged
+                percentage={token.data?.tvlSlippage24h ?? 0}
+                noParentheses
+              />
             </Box>
             <Box mt={2}>
               <Typography>24h Trading Vol</Typography>
@@ -177,7 +175,10 @@ const TokenPage = () => {
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={token.data?.volume24hChange ?? 0} noParentheses />
+              <PercentageChanged
+                percentage={token.data?.volume24hChange ?? 0}
+                noParentheses
+              />
             </Box>
             <Box mt={2}>
               <Typography>7d Trading Vol</Typography>
@@ -187,7 +188,10 @@ const TokenPage = () => {
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={token.data?.volume7dChange ?? 0} noParentheses />
+              <PercentageChanged
+                percentage={token.data?.volume7dChange ?? 0}
+                noParentheses
+              />
             </Box>
             <Box mt={2}>
               <Typography>24h Fees</Typography>
@@ -201,7 +205,7 @@ const TokenPage = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Card sx={{ height: 410, bgcolor: "white" }}>
-            <TokenChart />
+            <TokenChart tokenAddress={id as string} />
           </Card>
         </Grid>
       </Grid>

@@ -107,7 +107,6 @@ export default function TokensTable({
   emptyMessage?: string;
   isLoading?: boolean;
 }) {
-  console.log('🚀 ~ rows:', rows)
   const {
     order,
     orderBy,
@@ -171,7 +170,7 @@ export default function TokensTable({
                       }}
                     >
                       <TokenImage imageUrl={row.logo} />
-                      {row.name??row.symbol}
+                      {row.name ?? row.symbol}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}
