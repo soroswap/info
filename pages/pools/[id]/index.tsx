@@ -34,6 +34,8 @@ const PoolPage = () => {
   const { handleSavePool, isPoolSaved } = useSavedPools();
 
   const pool = useQueryPool({ poolAddress: id as string });
+  const token0 = pool.data?.token0.contract;
+  const token1 = pool.data?.token1.contract;
 
   const StarIcon = isPoolSaved(id as string) ? Star : StarBorderOutlined;
 
@@ -141,8 +143,8 @@ const PoolPage = () => {
             <Button variant="contained">
               <a
                 href={getSoroswapAddLiquidityUrl(
-                  pool.data?.token0,
-                  pool.data?.token1
+                  token0,
+                  token1
                 )}
                 target="_blank"
               >
@@ -153,7 +155,7 @@ const PoolPage = () => {
           <LoadingSkeleton isLoading={pool.isLoading} height={36.5} width={100}>
             <Button variant="contained">
               <a
-                href={getSoroswapSwapUrl(pool.data?.token0, pool.data?.token1)}
+                href={getSoroswapSwapUrl(token0, token1)}
                 target="_blank"
               >
                 Trade
