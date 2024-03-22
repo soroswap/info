@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
 import Layout from "../../../src/components/layout";
 import LoadingSkeleton from "../../../src/components/loading-skeleton";
-import PercentageChanged from "../../../src/components/percentage-changed";
 import PoolsTable from "../../../src/components/pools-table/pools-table";
 import Token from "../../../src/components/token";
 import TokenChart from "../../../src/components/token-chart";
@@ -56,7 +55,7 @@ const TokenPage = () => {
             {
               label: (
                 <Box>
-                  ETH{" "}
+                  {token.data?.asset.code}{" "}
                   <Link
                     sx={{ cursor: "pointer" }}
                     underline="hover"
@@ -99,12 +98,10 @@ const TokenPage = () => {
           width={40}
           variant="circular"
         >
-          <Token imageUrl={token.data?.logo} />
+          <Token imageUrl={token.data?.asset.icon} />
         </LoadingSkeleton>
         <LoadingSkeleton isLoading={token.isLoading} variant="text">
-          <Typography variant="h5">
-            {token.data?.name} ({token.data?.symbol}){" "}
-          </Typography>
+          <Typography variant="h5">{token.data?.name} ({token.data?.asset.code}) </Typography>
         </LoadingSkeleton>
       </Box>
       <Box
@@ -131,7 +128,7 @@ const TokenPage = () => {
           >
             <Button variant="contained">
               <a
-                href={getSoroswapAddLiquidityUrl(token.data?.token)}
+                href={getSoroswapAddLiquidityUrl(token.data?.asset.contract)}
                 target="_blank"
               >
                 Add liquidity
@@ -144,7 +141,7 @@ const TokenPage = () => {
             width={100}
           >
             <Button variant="contained">
-              <a href={getSoroswapSwapUrl(token.data?.token)} target="_blank">
+              <a href={getSoroswapSwapUrl(token.data?.asset.contract)} target="_blank">
                 Trade
               </a>
             </Button>

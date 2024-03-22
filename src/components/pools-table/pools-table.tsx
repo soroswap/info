@@ -1,10 +1,4 @@
-import * as React from "react";
 import { Card, Skeleton, Typography } from "@mui/material";
-import { formatNumberToMoney, roundNumber, shortenAddress } from "../../utils/utils";
-import { Pool } from "../../types/pools";
-import { PoolsData } from "./data";
-import { useRouter } from "next/router";
-import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -15,8 +9,14 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import Token from "../token";
+import { visuallyHidden } from "@mui/utils";
+import { useRouter } from "next/router";
+import * as React from "react";
 import useTable from "../../hooks/use-table";
+import { Pool } from "../../types/pools";
+import { formatNumberToMoney, roundNumber, shouldShortenCode } from "../../utils/utils";
+import Token from "../token";
+import { PoolsData } from "./data";
 
 interface HeadCell {
   id: keyof PoolsData;
@@ -153,6 +153,7 @@ export default function PoolsTable({
             />
             <TableBody>
               {visibleRows.map((row, index) => {
+                console.log('🚀 « row:', row);
                 return (
                   <TableRow
                     onClick={() => onClickRow(row.pool)}
@@ -175,10 +176,10 @@ export default function PoolsTable({
                       }}
                     >
                       <Box display="flex" alignItems="center">
-                        <Token imageUrl={row.token0.logo} width={20} height={20} />
-                        <Token imageUrl={row.token1.logo} width={20} height={20} />
+                        <Token imageUrl={row.token0.icon} width={20} height={20} />
+                        <Token imageUrl={row.token1.icon} width={20} height={20} />
                       </Box>
-                     {row.token0.name??row.token0.symbol??shortenAddress(row.token0.contract)} / {row.token1.name??row.token1.symbol??shortenAddress(row.token1.contract) }
+                      {shouldShortenCode(row.token0.code)} / {shouldShortenCode(row.token1.code)}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.tvl)}

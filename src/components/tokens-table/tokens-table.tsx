@@ -1,13 +1,6 @@
-import * as React from "react";
 import { Card, Skeleton } from "@mui/material";
-import { formatNumberToMoney } from "../../utils/utils";
-import { Token } from "../../types/tokens";
-import { TokensData } from "./data";
-import { useRouter } from "next/router";
-import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import PercentageChanged from "../percentage-changed";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -16,8 +9,14 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import TokenImage from "../token";
+import { visuallyHidden } from "@mui/utils";
+import { useRouter } from "next/router";
+import * as React from "react";
 import useTable from "../../hooks/use-table";
+import { Token } from "../../types/tokens";
+import { formatNumberToMoney } from "../../utils/utils";
+import TokenImage from "../token";
+import { TokensData } from "./data";
 
 interface HeadCell {
   id: keyof TokensData;
@@ -158,7 +157,7 @@ export default function TokensTable({
                         bgcolor: "#f5f5f5",
                       },
                     }}
-                    onClick={() => onClickRow(row.token)}
+                    onClick={() => onClickRow(row.asset.contract)}
                   >
                     <TableCell>{index + 1}</TableCell>
                     <TableCell
@@ -169,8 +168,8 @@ export default function TokensTable({
                         alignItems: "center",
                       }}
                     >
-                      <TokenImage imageUrl={row.logo} />
-                      {row.name ?? row.symbol}
+                      <TokenImage imageUrl={row.asset.icon} />
+                      {row.asset.name??row.asset.code}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}

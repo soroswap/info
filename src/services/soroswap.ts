@@ -1,3 +1,4 @@
+import { RouterEvents } from "../types/router-events";
 import axiosInstance from "./axios";
 
 export const fetchSoroswapFees24h = async () => {
@@ -36,3 +37,16 @@ export const fetchSoroswapVolumeChart = async () => {
   );
   return data;
 };
+
+export const fetchSoroswapRouterEvents = async (topic2?: string, first?: number, offset?: number) => {
+  const { data } = await axiosInstance.post<RouterEvents>(
+    `/events/router?network=MAINNET`,
+    {
+      topic2,
+      first,
+      offset,
+    },
+    );
+  return data;
+};
+  

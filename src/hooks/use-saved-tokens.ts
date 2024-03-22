@@ -8,7 +8,7 @@ const useSavedTokens = () => {
 
   const [savedTokensIds, setSavedTokensIds] = useState<string[]>([]);
   const savedTokens = tokens.data?.filter((row) =>
-    savedTokensIds.includes(row.token)
+    savedTokensIds.includes(row.asset.contract)
   );
 
   useEffect(() => {

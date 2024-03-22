@@ -1,8 +1,5 @@
-import * as React from "react";
-import { formatNumberToMoney } from "../../utils/utils";
-import { visuallyHidden } from "@mui/utils";
+import { Link, Tab, Tabs } from "@mui/material";
 import Box from "@mui/material/Box";
-import en from "javascript-time-ago/locale/en";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,17 +9,16 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import { visuallyHidden } from "@mui/utils";
 import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
+import * as React from "react";
 import useTable from "../../hooks/use-table";
+import { formatNumberToMoney, shortenAddress } from "../../utils/utils";
 import { ActionName, TransactionsData } from "./data";
-import { Link, Tab, Tabs } from "@mui/material";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
-
-const shortenAddress = (address: string) => {
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
 
 const formatName = (name: ActionName, symbol0: string, symbol1: string) => {
   if (name === "Swap") {
