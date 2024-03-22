@@ -4,6 +4,8 @@ const soroswapAppUrl = process.env.NEXT_PUBLIC_SOROSWAP_APP_URL;
 
 export const formatNumberToMoney = (number: number | undefined) => {
   if (!number) return "$0.00";
+  if (typeof number !== "number") return "$0.00";
+
   if (number > 1000000000) {
     return `$${(number / 1000000000).toFixed(2)}b`;
   }
@@ -74,6 +76,6 @@ export const getSoroswapSwapUrl = (
 };
 
 export const openInNewTab = (url: string) => {
-  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-  if (newWindow) newWindow.opener = null
-}
+  const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+  if (newWindow) newWindow.opener = null;
+};

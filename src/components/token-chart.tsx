@@ -11,6 +11,12 @@ import {
 import ChartSwitcher from "./chart-switcher";
 import React from "react";
 import RenderIf from "./render-if";
+import {
+  useQueryTokenPriceChart,
+  useQueryTokenTVLChart,
+  useQueryTokenVolumeChart,
+} from "../hooks/tokens";
+import LoadingSkeleton from "./loading-skeleton";
 
 const data = [
   {
@@ -79,7 +85,11 @@ const tabs = [
     value: "price",
   },
 ];
-const TokenChart = () => {
+const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
+  const tvlChart = useQueryTokenTVLChart({ tokenAddress });
+  const priceChart = useQueryTokenPriceChart({ tokenAddress });
+  const volumeChart = useQueryTokenVolumeChart({ tokenAddress });
+
   const [value, setValue] = React.useState<Charts>("volume");
 
   const handleChange = (newValue: Charts) => {
@@ -101,48 +111,90 @@ const TokenChart = () => {
         </Box>
         <ChartSwitcher value={value} handleChange={handleChange} tabs={tabs} />
       </Box>
-      <RenderIf isTrue={value === "volume" || value === "price"}>
-        <ResponsiveContainer width="100%" height="100%" minHeight={320}>
-          <AreaChart
-            width={500}
-            height={400}
-            data={data}
-            margin={{
-              top: 0,
-              right: 0,
-              left: 0,
-              bottom: 0,
-            }}
-          >
-            <XAxis dataKey="month" />
-            <Tooltip content={<></>} />
-            <Area
-              type="monotone"
-              dataKey="tvl"
-              stroke="#8884d8"
-              fill="#8884d8"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+      <RenderIf isTrue={value === "volume"}>
+        <LoadingSkeleton
+          width="100%"
+          isLoading={volumeChart.isLoading}
+          height={320}
+        >
+          <ResponsiveContainer width="100%" height="100%" minHeight={320}>
+            <AreaChart
+              width={500}
+              height={400}
+              data={volumeChart.data ?? []}
+              margin={{
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              <XAxis dataKey="date" />
+              <Tooltip />
+              <Area
+                type="monotone"
+                dataKey="volume"
+                stroke="#8884d8"
+                fill="#8884d8"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </LoadingSkeleton>
       </RenderIf>
       <RenderIf isTrue={value === "tvl"}>
-        <ResponsiveContainer width="100%" height="100%" minHeight={320}>
-          <BarChart
-            width={500}
-            height={300}
-            data={data}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <XAxis dataKey="month" />
-            <Tooltip content={<></>} />
-            <Bar dataKey="tvl" fill="#82ca9d" />
-          </BarChart>
-        </ResponsiveContainer>
+        <LoadingSkeleton
+          isLoading={tvlChart.isLoading}
+          height={320}
+          width="100%"
+        >
+          <ResponsiveContainer width="100%" height="100%" minHeight={320}>
+            <BarChart
+              width={500}
+              height={300}
+              data={tvlChart.data ?? []}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <XAxis dataKey="date" />
+              <Tooltip />
+              <Bar dataKey="tvl" fill="#82ca9d" />
+            </BarChart>
+          </ResponsiveContainer>
+        </LoadingSkeleton>
+      </RenderIf>
+      <RenderIf isTrue={value === "price"}>
+        <LoadingSkeleton
+          width="100%"
+          isLoading={priceChart.isLoading}
+          height={320}
+        >
+          <ResponsiveContainer width="100%" height="100%" minHeight={320}>
+            <AreaChart
+              width={500}
+              height={400}
+              data={priceChart.data ?? []}
+              margin={{
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              <XAxis dataKey="date" />
+              <Tooltip />
+              <Area
+                type="monotone"
+                dataKey="price"
+                stroke="#8884d8"
+                fill="#8884d8"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </LoadingSkeleton>
       </RenderIf>
     </Box>
   );
