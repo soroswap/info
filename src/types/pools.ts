@@ -1,7 +1,7 @@
 export interface Pool {
   pool: string;
-  token0: string;
-  token1: string;
+  token0: PoolToken;
+  token1: PoolToken;
   reserve0: number;
   reserve1: number;
   tvl: number;
@@ -10,4 +10,11 @@ export interface Pool {
   fees24h: number;
   feesYearly: number;
   liquidity: number;
+}
+
+export interface PoolToken {
+  name: string;
+  symbol: string;
+  logo: string;
+  contract: string;
 }
