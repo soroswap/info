@@ -238,7 +238,7 @@ const PoolPage = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <Card sx={{ height: 410, bgcolor: "white" }}>
-            <PoolChart />
+            <PoolChart poolAddress={id as string} />
           </Card>
         </Grid>
       </Grid>

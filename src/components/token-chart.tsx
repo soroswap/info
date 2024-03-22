@@ -18,73 +18,8 @@ import {
 } from "../hooks/tokens";
 import LoadingSkeleton from "./loading-skeleton";
 
-const data = [
-  {
-    month: "Jan",
-    tvl: 4000,
-  },
-  {
-    month: "Feb",
-    tvl: 3000,
-  },
-  {
-    month: "Mar",
-    tvl: 2000,
-  },
-  {
-    month: "Apr",
-    tvl: 3500,
-  },
-  {
-    month: "May",
-    tvl: 2800,
-  },
-  {
-    month: "Jun",
-    tvl: 3200,
-  },
-  {
-    month: "Jul",
-    tvl: 4500,
-  },
-  {
-    month: "Aug",
-    tvl: 3300,
-  },
-  {
-    month: "Sep",
-    tvl: 3900,
-  },
-  {
-    month: "Oct",
-    tvl: 4200,
-  },
-  {
-    month: "Nov",
-    tvl: 3100,
-  },
-  {
-    month: "Dec",
-    tvl: 3700,
-  },
-];
-
 type Charts = "volume" | "tvl" | "price";
 
-const tabs = [
-  {
-    label: "Volume",
-    value: "volume",
-  },
-  {
-    label: "TVL",
-    value: "tvl",
-  },
-  {
-    label: "Price",
-    value: "price",
-  },
-];
 const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
   const tvlChart = useQueryTokenTVLChart({ tokenAddress });
   const priceChart = useQueryTokenPriceChart({ tokenAddress });
@@ -95,21 +30,43 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
   const handleChange = (newValue: Charts) => {
     setValue(newValue);
   };
+
+  const getAvailableTabs = () => {
+    const availableTabs = [];
+    if (volumeChart.data) {
+      availableTabs.push({
+        label: "Volume",
+        value: "volume",
+      });
+    }
+    if (tvlChart.data) {
+      availableTabs.push({
+        label: "TVL",
+        value: "tvl",
+      });
+    }
+    if (priceChart.data) {
+      availableTabs.push({
+        label: "Price",
+        value: "price",
+      });
+    }
+    return availableTabs;
+  };
   return (
     <Box sx={{ py: 2 }}>
       <Box
         display="flex"
-        justifyContent="space-between"
+        justifyContent="flex-end"
         px={2}
         alignItems="center"
         mb={2}
       >
-        <Box>
-          <Typography variant="h5" fontWeight={600}>
-            $391.5k
-          </Typography>
-        </Box>
-        <ChartSwitcher value={value} handleChange={handleChange} tabs={tabs} />
+        <ChartSwitcher
+          value={value}
+          handleChange={handleChange}
+          tabs={getAvailableTabs()}
+        />
       </Box>
       <RenderIf isTrue={value === "volume"}>
         <LoadingSkeleton
@@ -129,7 +86,15 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
                 bottom: 0,
               }}
             >
-              <XAxis dataKey="date" />
+              <XAxis
+                dataKey="date"
+                tickFormatter={(tick) =>
+                  new Date(tick).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "numeric",
+                  })
+                }
+              />
               <Tooltip />
               <Area
                 type="monotone"
@@ -159,7 +124,15 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
                 bottom: 5,
               }}
             >
-              <XAxis dataKey="date" />
+              <XAxis
+                dataKey="date"
+                tickFormatter={(tick) =>
+                  new Date(tick).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "numeric",
+                  })
+                }
+              />
               <Tooltip />
               <Bar dataKey="tvl" fill="#82ca9d" />
             </BarChart>
@@ -184,7 +157,15 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
                 bottom: 0,
               }}
             >
-              <XAxis dataKey="date" />
+              <XAxis
+                dataKey="date"
+                tickFormatter={(tick) =>
+                  new Date(tick).toLocaleDateString("en-US", {
+                    day: "numeric",
+                    month: "numeric",
+                  })
+                }
+              />
               <Tooltip />
               <Area
                 type="monotone"

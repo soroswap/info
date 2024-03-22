@@ -3,6 +3,8 @@ import {
   fetchSoroswapTVL,
   fetchSoroswapFees24h,
   fetchSoroswapVolume24h,
+  fetchSoroswapVolumeChart,
+  fetchSoroswapTVLChart,
 } from "../services/soroswap";
 
 const key = "soroswap";
@@ -22,5 +24,19 @@ export const useQuerySoroswapVolume24h = () => {
   return useQuery({
     queryKey: [key, "volume24h"],
     queryFn: fetchSoroswapVolume24h,
+  });
+};
+
+export const useQuerySoroswapVolumeChart = () => {
+  return useQuery({
+    queryKey: [key, "volume-chart"],
+    queryFn: fetchSoroswapVolumeChart,
+  });
+};
+
+export const useQuerySoroswapTVLChart = () => {
+  return useQuery({
+    queryKey: [key, "tvl-chart"],
+    queryFn: fetchSoroswapTVLChart,
   });
 };
