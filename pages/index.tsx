@@ -1,21 +1,20 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
-import { rows as txRows } from "../src/components/transaction-table/data";
+import Head from "next/head";
+import Layout from "../src/components/layout";
+import LoadingSkeleton from "../src/components/loading-skeleton";
+import PercentageChanged from "../src/components/percentage-changed";
+import PoolsTable from "../src/components/pools-table/pools-table";
+import RouterEventsTable from "../src/components/router-events-table/router-events-table";
+import TokensTable from "../src/components/tokens-table/tokens-table";
+import TVLChart from "../src/components/tvl-chart";
+import VolumeChart from "../src/components/volume-chart";
 import { useQueryPools } from "../src/hooks/pools";
 import {
   useQuerySoroswapFees24h,
   useQuerySoroswapTVL,
-  useQuerySoroswapVolume24h,
+  useQuerySoroswapVolume24h
 } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
-import Head from "next/head";
-import Layout from "../src/components/layout";
-import PercentageChanged from "../src/components/percentage-changed";
-import PoolsTable from "../src/components/pools-table/pools-table";
-import TokensTable from "../src/components/tokens-table/tokens-table";
-import TransactionsTable from "../src/components/transaction-table/transactions-table";
-import TVLChart from "../src/components/tvl-chart";
-import VolumeChart from "../src/components/volume-chart";
-import LoadingSkeleton from "../src/components/loading-skeleton";
 import { formatNumberToMoney } from "../src/utils/utils";
 
 export default function Home() {
@@ -119,7 +118,7 @@ export default function Home() {
           <Typography variant="h6" sx={{ mb: 1 }}>
             Transactions
           </Typography>
-          <TransactionsTable rows={txRows} />
+          <RouterEventsTable/>
         </Box>
       </Layout>
     </>

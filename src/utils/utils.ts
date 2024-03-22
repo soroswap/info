@@ -16,10 +16,10 @@ export const formatNumberToMoney = (number: number | undefined) => {
   return `$${number.toFixed(7)}`;
 };
 
-export const shortenAddress = (address: string | undefined) => {
-  if (!address) return "";
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
-};
+export function shortenAddress(address: string, chars = 4): string {
+  if (!address) return '';
+  return `${address.substring(0, chars)}...${address.substring(56 - chars)}`;
+}
 
 export const getExpectedAmountOfOne = (
   reserve0: number | undefined,
@@ -76,4 +76,29 @@ export const getSoroswapSwapUrl = (
 export const openInNewTab = (url: string) => {
   const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
   if (newWindow) newWindow.opener = null
+}
+
+export const toCamelCase = (text: string): string => {
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
+export const adjustAmountByDecimals = (amount: number, decimals: number | undefined): string => {
+  const defaultDecimals = 7;
+  const actualDecimals = decimals ?? defaultDecimals;
+
+  // Convert the amount to a string for manipulation
+  let amountStr = amount.toString();
+
+  // Prepend zeros if the amount is too short to have decimal places
+  while (amountStr.length <= actualDecimals) {
+    amountStr = '0' + amountStr;
+  }
+
+  // Insert decimal point at the correct position
+  const integerPart = amountStr.slice(0, -actualDecimals);
+  const decimalPart = amountStr.slice(-actualDecimals);
+  const result = integerPart + '.' + decimalPart;
+
+  // Optional: Remove trailing zeros after the decimal point
+  return result.replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
 }
