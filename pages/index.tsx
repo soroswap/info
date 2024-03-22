@@ -64,7 +64,7 @@ export default function Home() {
                 <Typography fontWeight={600}>
                   {formatNumberToMoney(soroswapVolume.data?.volume)}
                 </Typography>
-                <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
+                {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
               </LoadingSkeleton>
             </Grid>
             <Grid
@@ -80,7 +80,7 @@ export default function Home() {
                 <Typography fontWeight={600}>
                   {formatNumberToMoney(soroswapFees.data?.fees)}
                 </Typography>
-                <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
+                {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
               </LoadingSkeleton>
             </Grid>
             <Grid
@@ -96,7 +96,7 @@ export default function Home() {
                 <Typography fontWeight={600}>
                   {formatNumberToMoney(soroswapTVL.data?.tvl)}
                 </Typography>
-                <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
+                {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
               </LoadingSkeleton>
             </Grid>
           </Grid>

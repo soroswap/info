@@ -15,7 +15,6 @@ import * as React from "react";
 import useTable from "../../hooks/use-table";
 import { Token } from "../../types/tokens";
 import { formatNumberToMoney } from "../../utils/utils";
-import PercentageChanged from "../percentage-changed";
 import TokenImage from "../token";
 import { TokensData } from "./data";
 
@@ -36,11 +35,11 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     label: "Price",
   },
-  {
+/*   {
     id: "change",
     numeric: true,
     label: "Price Change",
-  },
+  }, */
   {
     id: "v24",
     numeric: true,
@@ -107,7 +106,6 @@ export default function TokensTable({
   emptyMessage?: string;
   isLoading?: boolean;
 }) {
-  console.log('🚀 ~ rows:', rows)
   const {
     order,
     orderBy,
@@ -176,9 +174,9 @@ export default function TokensTable({
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}
                     </TableCell>
-                    <TableCell align="right">
+                {/*     <TableCell align="right">
                       <PercentageChanged percentage={row.priceChange24h} />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="right">
                       {formatNumberToMoney(row.volume24h)}
                     </TableCell>

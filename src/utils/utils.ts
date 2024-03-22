@@ -4,6 +4,8 @@ const soroswapAppUrl = process.env.NEXT_PUBLIC_SOROSWAP_APP_URL;
 
 export const formatNumberToMoney = (number: number | undefined) => {
   if (!number) return "$0.00";
+  if (typeof number !== "number") return "$0.00";
+
   if (number > 1000000000) {
     return `$${(number / 1000000000).toFixed(2)}b`;
   }
@@ -74,31 +76,36 @@ export const getSoroswapSwapUrl = (
 };
 
 export const openInNewTab = (url: string) => {
-  const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-  if (newWindow) newWindow.opener = null
-}
+  const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+  if (newWindow) newWindow.opener = null;
+};
+
+export const roundNumber = (number: number, decimals: number): number => {
+  return Number(number.toFixed(decimals));
+};
 
 export const toCamelCase = (text: string): string => {
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
 
 export const adjustAmountByDecimals = (amount: number, decimals: number | undefined): string => {
   const defaultDecimals = 7;
   const actualDecimals = decimals ?? defaultDecimals;
 
-  // Convert the amount to a string for manipulation
   let amountStr = amount.toString();
 
-  // Prepend zeros if the amount is too short to have decimal places
   while (amountStr.length <= actualDecimals) {
     amountStr = '0' + amountStr;
   }
 
-  // Insert decimal point at the correct position
   const integerPart = amountStr.slice(0, -actualDecimals);
   const decimalPart = amountStr.slice(-actualDecimals);
   const result = integerPart + '.' + decimalPart;
 
-  // Optional: Remove trailing zeros after the decimal point
   return result.replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
+}
+
+export const shouldShortenCode = (contract: string) => {
+  if (contract.length > 10) return shortenAddress(contract)
+  return contract
 }

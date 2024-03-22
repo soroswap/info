@@ -3,7 +3,9 @@ import {
   fetchSoroswapFees24h,
   fetchSoroswapRouterEvents,
   fetchSoroswapTVL,
+  fetchSoroswapTVLChart,
   fetchSoroswapVolume24h,
+  fetchSoroswapVolumeChart,
 } from "../services/soroswap";
 import { RouterEventType } from "../types/router-events";
 
@@ -24,6 +26,20 @@ export const useQuerySoroswapVolume24h = () => {
   return useQuery({
     queryKey: [key, "volume24h"],
     queryFn: fetchSoroswapVolume24h,
+  });
+};
+
+export const useQuerySoroswapVolumeChart = () => {
+  return useQuery({
+    queryKey: [key, "volume-chart"],
+    queryFn: fetchSoroswapVolumeChart,
+  });
+};
+
+export const useQuerySoroswapTVLChart = () => {
+  return useQuery({
+    queryKey: [key, "tvl-chart"],
+    queryFn: fetchSoroswapTVLChart,
   });
 };
 

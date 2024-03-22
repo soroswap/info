@@ -1,10 +1,4 @@
-import * as React from "react";
 import { Card, Skeleton, Typography } from "@mui/material";
-import { formatNumberToMoney } from "../../utils/utils";
-import { Pool } from "../../types/pools";
-import { PoolsData } from "./data";
-import { useRouter } from "next/router";
-import { visuallyHidden } from "@mui/utils";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -15,8 +9,14 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import Token from "../token";
+import { visuallyHidden } from "@mui/utils";
+import { useRouter } from "next/router";
+import * as React from "react";
 import useTable from "../../hooks/use-table";
+import { Pool } from "../../types/pools";
+import { formatNumberToMoney, roundNumber, shouldShortenCode } from "../../utils/utils";
+import Token from "../token";
+import { PoolsData } from "./data";
 
 interface HeadCell {
   id: keyof PoolsData;
@@ -153,6 +153,7 @@ export default function PoolsTable({
             />
             <TableBody>
               {visibleRows.map((row, index) => {
+                console.log('🚀 « row:', row);
                 return (
                   <TableRow
                     onClick={() => onClickRow(row.pool)}
@@ -175,10 +176,10 @@ export default function PoolsTable({
                       }}
                     >
                       <Box display="flex" alignItems="center">
-                        <Token token="ETH" width={20} height={20} />
-                        <Token token="SOL" width={20} height={20} />
+                        <Token imageUrl={row.token0.icon} width={20} height={20} />
+                        <Token imageUrl={row.token1.icon} width={20} height={20} />
                       </Box>
-                      ETH/SOL
+                      {shouldShortenCode(row.token0.code)} / {shouldShortenCode(row.token1.code)}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.tvl)}
@@ -194,40 +195,9 @@ export default function PoolsTable({
                     </TableCell>
                     <TableCell align="right">
                       <Typography color="brown" fontSize={14}>
-                        {row.feesYearly}%
+                        {roundNumber(row.feesYearly, 2)}%
                       </Typography>
                       <Box display="flex" justifyContent="flex-end">
-                        <Box
-                          bgcolor="lightgray"
-                          borderRadius={1}
-                          px={1}
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                          gap="4px"
-                        >
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="black"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M6.916 5.353l1.27 1.396 1.26-1.387.554.605-1.814 1.995-1.27-1.396-2.002 2.201-1.075-1.18L2.553 9 2 8.395l1.84-2.022 1.074 1.181 2.002-2.2z"
-                              fill="black"
-                            ></path>
-                            <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M6.916 3l1.27 1.396 1.26-1.387.554.605-1.814 1.995-1.27-1.396-2.002 2.201-1.075-1.18-1.286 1.413L2 6.042 3.84 4.02 4.913 5.2 6.916 3z"
-                              fill="black"
-                            ></path>
-                          </svg>
-                          <Typography fontSize={10}>6.33 - 10.33%</Typography>
-                        </Box>
                       </Box>
                     </TableCell>
                   </TableRow>

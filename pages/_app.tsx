@@ -1,4 +1,4 @@
-import { Analytics } from '@vercel/analytics/react'; 
+import { Analytics } from "@vercel/analytics/react";
 import { AppProps } from "next/app";
 import { AppCacheProvider } from "@mui/material-nextjs/v14-pagesRouter";
 import { ThemeProvider } from "@mui/material/styles";

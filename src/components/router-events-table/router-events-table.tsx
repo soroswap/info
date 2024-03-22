@@ -6,7 +6,6 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import TimeAgo from "javascript-time-ago";
@@ -15,20 +14,15 @@ import * as React from "react";
 import { useQuerySoroswapRouterEvents } from "../../hooks/soroswap";
 import { RouterEventType } from "../../types/router-events";
 import { TokenType } from "../../types/tokens";
-import { adjustAmountByDecimals, shortenAddress, toCamelCase } from "../../utils/utils";
+import { adjustAmountByDecimals, shortenAddress, shouldShortenCode, toCamelCase } from "../../utils/utils";
 import { TransactionsData } from "../transaction-table/data";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
-const shoudlShortenCode = (contract: string) => {
-  if (contract.length > 10) return shortenAddress(contract)
-  return contract
-}
-
 const formatEvent = (event: RouterEventType, symbol0: string, symbol1: string) => {
   if (event === "init") return toCamelCase(event)
-  return `${toCamelCase(event)} ${shoudlShortenCode(symbol0)} ${event === "swap" ? "for" : "and"} ${shoudlShortenCode(symbol1)}`;
+  return `${toCamelCase(event)} ${shouldShortenCode(symbol0)} ${event === "swap" ? "for" : "and"} ${shouldShortenCode(symbol1)}`;
 };
 
 interface HeadCell {
@@ -133,7 +127,7 @@ function RouterEventsTableHead(props: RouterEventsTableProps) {
 
 export default function RouterEventsTable() {
   const [topic, setTopic] = React.useState<RouterEventType>();
-  const {data: routerEvents, isLoading} = useQuerySoroswapRouterEvents(topic, 100, undefined);
+  const {data: routerEvents, isLoading} = useQuerySoroswapRouterEvents(topic, 150, undefined);
   console.log('🚀 « routerEvents:', routerEvents);
   
   // const {
@@ -213,10 +207,10 @@ export default function RouterEventsTable() {
                       </Link>
                     </TableCell>
                     <TableCell align="right">
-                      {token_a_amount} {shoudlShortenCode(token_a?.code ?? "")}
+                      {token_a_amount} {shouldShortenCode(token_a?.code ?? "")}
                     </TableCell>
                     <TableCell align="right">
-                      {token_b_amount} {shoudlShortenCode(token_b?.code ?? "")}
+                      {token_b_amount} {shouldShortenCode(token_b?.code ?? "")}
                     </TableCell>
                     <TableCell align="right">
                       <Link
@@ -245,7 +239,7 @@ export default function RouterEventsTable() {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
+        {/* <TablePagination
           component="div"
           count={routerEvents?.totalCount!}
           rowsPerPage={10}
@@ -253,7 +247,7 @@ export default function RouterEventsTable() {
           onPageChange={() => console.log("handleChangePage")}
           onRowsPerPageChange={() => console.log("handleChangeRowsPerPage")}
           rowsPerPageOptions={[]}
-        />
+        /> */}
       </Paper>
     </Box>
   );
