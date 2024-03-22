@@ -36,11 +36,11 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     label: "Price",
   },
-  {
+/*   {
     id: "change",
     numeric: true,
     label: "Price Change",
-  },
+  }, */
   {
     id: "v24",
     numeric: true,
@@ -175,9 +175,9 @@ export default function TokensTable({
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}
                     </TableCell>
-                    <TableCell align="right">
+                {/*     <TableCell align="right">
                       <PercentageChanged percentage={row.priceChange24h} />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="right">
                       {formatNumberToMoney(row.volume24h)}
                     </TableCell>
