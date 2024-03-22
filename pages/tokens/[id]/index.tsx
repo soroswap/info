@@ -125,7 +125,7 @@ const TokenPage = () => {
             <Typography variant="h4">
               {formatNumberToMoney(token.data?.price)}
             </Typography>
-            <PercentageChanged percentage={token.data?.priceChange24h ?? 0} />
+            {/* <PercentageChanged percentage={token.data?.priceChange24h ?? 0} /> */}
           </LoadingSkeleton>
         </Box>
         <Box display="flex" gap={2}>
@@ -167,7 +167,7 @@ const TokenPage = () => {
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={token.data?.tvlSlippage24h ?? 0} noParentheses />
+              {/* <PercentageChanged percentage={token.data?.tvlSlippage24h ?? 0} noParentheses /> */}
             </Box>
             <Box mt={2}>
               <Typography>24h Trading Vol</Typography>
@@ -177,7 +177,7 @@ const TokenPage = () => {
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={token.data?.volume24hChange ?? 0} noParentheses />
+              {/* <PercentageChanged percentage={token.data?.volume24hChange ?? 0} noParentheses /> */}
             </Box>
             <Box mt={2}>
               <Typography>7d Trading Vol</Typography>
@@ -187,7 +187,7 @@ const TokenPage = () => {
                 </Typography>
               </LoadingSkeleton>
 
-              <PercentageChanged percentage={token.data?.volume7dChange ?? 0} noParentheses />
+              {/* <PercentageChanged percentage={token.data?.volume7dChange ?? 0} noParentheses /> */}
             </Box>
             <Box mt={2}>
               <Typography>24h Fees</Typography>
