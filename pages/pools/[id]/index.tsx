@@ -37,8 +37,15 @@ const PoolPage = () => {
   const pool = useQueryPool({ poolAddress: id as string });
   const token0 = pool.data?.token0;
   const token1 = pool.data?.token1;
-  const token0code = token0?.code??token0?.code==token0?.contract?shortenAddress(token0?.contract??""):"";
-  const token1code = token1?.code??token0?.code==token0?.contract?shortenAddress(token0?.contract??""):"";
+  console.log('🚀 ~ PoolPage ~ token1:', token1);
+  if (token0?.code == token0?.contract && token0) {
+    token0.code = shortenAddress(token0?.contract);
+  }
+  if (token1?.code == token1?.contract && token1) {
+    token1.code = shortenAddress(token1?.contract);
+  }
+  const token0code = token0?.code??"";
+  const token1code = token1?.code??"";
   console.log('🚀 ~ PoolPage ~ token1code:', token1code);
 
   const StarIcon = isPoolSaved(id as string) ? Star : StarBorderOutlined;
