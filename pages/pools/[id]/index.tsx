@@ -25,6 +25,7 @@ import {
   getExpectedAmountOfOne,
   getSoroswapAddLiquidityUrl,
   getSoroswapSwapUrl,
+  shortenAddress,
 } from "../../../src/utils/utils";
 
 const PoolPage = () => {
@@ -34,8 +35,11 @@ const PoolPage = () => {
   const { handleSavePool, isPoolSaved } = useSavedPools();
 
   const pool = useQueryPool({ poolAddress: id as string });
-  const token0 = pool.data?.token0.contract;
-  const token1 = pool.data?.token1.contract;
+  const token0 = pool.data?.token0;
+  const token1 = pool.data?.token1;
+  const token0code = token0?.code??token0?.code==token0?.contract?shortenAddress(token0?.contract??""):"";
+  const token1code = token1?.code??token0?.code==token0?.contract?shortenAddress(token0?.contract??""):"";
+  console.log('🚀 ~ PoolPage ~ token1code:', token1code);
 
   const StarIcon = isPoolSaved(id as string) ? Star : StarBorderOutlined;
 
@@ -53,7 +57,7 @@ const PoolPage = () => {
               href: "/pools",
             },
             {
-              label: "ETH/SOL",
+              label: `${token0code}/${token1code}`,
             },
           ]}
         />
@@ -79,9 +83,9 @@ const PoolPage = () => {
         </Box>
       </Box>
       <Box display="flex" alignItems="center" gap="6px" mt={4}>
-        <Token token="ETH" />
-        <Token token="SOL" />
-        <Typography variant="h5">ETH/SOL</Typography>
+        <Token imageUrl={token0?.icon} />
+        <Token imageUrl={token1?.icon} />
+        <Typography variant="h5">{token0code}/{token1code}</Typography>
         <Chip label="0.3%" sx={{ fontSize: 16 }} />
       </Box>
       <Box
@@ -104,12 +108,12 @@ const PoolPage = () => {
               label={
                 <Link href="/tokens/123">
                   <Box display="flex" alignItems="center" gap="4px">
-                    <Token token="ETH" width={20} height={20} />1 ETH ={" "}
+                    <Token imageUrl={token0?.icon} width={20} height={20} />1 {token0code} ={" "}
                     {getExpectedAmountOfOne(
                       pool.data?.reserve0,
                       pool.data?.reserve1
                     )}{" "}
-                    SOL
+                    {token1code}
                   </Box>
                 </Link>
               }
@@ -126,12 +130,12 @@ const PoolPage = () => {
               label={
                 <Link href="/tokens/123">
                   <Box display="flex" alignItems="center" gap="4px">
-                    <Token token="SOL" width={20} height={20} />1 SOL ={" "}
+                    <Token imageUrl={token1?.icon} width={20} height={20} />1 {token1code} ={" "}
                     {getExpectedAmountOfOne(
                       pool.data?.reserve1,
                       pool.data?.reserve0
                     )}{" "}
-                    ETH
+                    {token0code}
                   </Box>
                 </Link>
               }
@@ -143,8 +147,8 @@ const PoolPage = () => {
             <Button variant="contained">
               <a
                 href={getSoroswapAddLiquidityUrl(
-                  token0,
-                  token1
+                  token0?.contract,
+                  token1?.contract
                 )}
                 target="_blank"
               >
@@ -155,7 +159,7 @@ const PoolPage = () => {
           <LoadingSkeleton isLoading={pool.isLoading} height={36.5} width={100}>
             <Button variant="contained">
               <a
-                href={getSoroswapSwapUrl(token0, token1)}
+                href={getSoroswapSwapUrl(token0?.contract, token1?.contract)}
                 target="_blank"
               >
                 Trade
@@ -181,8 +185,8 @@ const PoolPage = () => {
                     gap="4px"
                     alignItems="center"
                   >
-                    <Token token="ETH" width={20} height={20} />
-                    ETH
+                    <Token imageUrl={token0?.icon} width={20} height={20} />
+                    {token0code}
                   </Typography>
                   <Typography fontSize={14}>
                     {formatNumberToMoney(pool.data?.reserve0)}
@@ -201,8 +205,8 @@ const PoolPage = () => {
                     gap="4px"
                     alignItems="center"
                   >
-                    <Token token="SOL" width={20} height={20} />
-                    SOL
+                    <Token imageUrl={token1?.icon} width={20} height={20} />
+                    {token1code}
                   </Typography>{" "}
                   <Typography fontSize={14}>
                     {formatNumberToMoney(pool.data?.reserve1)}
@@ -217,7 +221,6 @@ const PoolPage = () => {
                   {formatNumberToMoney(pool.data?.tvl)}
                 </Typography>
               </LoadingSkeleton>
-              <PercentageChanged percentage={6.76} noParentheses />
             </Box>
             <Box mt={2}>
               <Typography>Volume 24h</Typography>
@@ -226,7 +229,6 @@ const PoolPage = () => {
                   {formatNumberToMoney(pool.data?.volume24h)}
                 </Typography>
               </LoadingSkeleton>
-              <PercentageChanged percentage={38.54} noParentheses />
             </Box>
             <Box mt={2}>
               <Typography>24h Fees</Typography>
@@ -244,12 +246,12 @@ const PoolPage = () => {
           </Card>
         </Grid>
       </Grid>
-      <Box sx={{ mt: 4 }}>
+      {/* <Box sx={{ mt: 4 }}>
         <Typography variant="h6" sx={{ mb: 1 }}>
           Transactions
         </Typography>
         <TransactionsTable rows={rows} />
-      </Box>
+      </Box> */}
     </Layout>
   );
 };

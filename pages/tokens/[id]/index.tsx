@@ -212,12 +212,12 @@ const TokenPage = () => {
         </Typography>
         <PoolsTable rows={pools.data ?? []} isLoading={pools.isLoading} />
       </Box>
-      <Box sx={{ mt: 4 }}>
+      {/* <Box sx={{ mt: 4 }}>
         <Typography variant="h6" sx={{ mb: 1 }}>
           Transactions
         </Typography>
         <TransactionsTable rows={rows} />
-      </Box>
+      </Box> */}
     </Layout>
   );
 };
