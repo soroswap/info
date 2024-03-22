@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Card, Skeleton, Typography } from "@mui/material";
-import { formatNumberToMoney, shortenAddress } from "../../utils/utils";
+import { formatNumberToMoney, roundNumber, shortenAddress } from "../../utils/utils";
 import { Pool } from "../../types/pools";
 import { PoolsData } from "./data";
 import { useRouter } from "next/router";
@@ -194,7 +194,7 @@ export default function PoolsTable({
                     </TableCell>
                     <TableCell align="right">
                       <Typography color="brown" fontSize={14}>
-                        {row.feesYearly}%
+                        {roundNumber(row.feesYearly, 2)}%
                       </Typography>
                       <Box display="flex" justifyContent="flex-end">
                       </Box>

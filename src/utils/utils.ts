@@ -79,3 +79,7 @@ export const openInNewTab = (url: string) => {
   const newWindow = window.open(url, "_blank", "noopener,noreferrer");
   if (newWindow) newWindow.opener = null;
 };
+
+export const roundNumber = (number: number, decimals: number): number => {
+  return Number(number.toFixed(decimals));
+};
