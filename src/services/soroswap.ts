@@ -49,4 +49,8 @@ export const fetchSoroswapRouterEvents = async (topic2?: string, first?: number,
     );
   return data;
 };
-  
+
+export const fetchPoolsOfToken = async (contract: string) => {
+  const { data } = await axiosInstance.get(`/info/pools/${contract}?network=MAINNET`)
+  return data
+}

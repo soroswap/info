@@ -7,9 +7,7 @@ import LoadingSkeleton from "../../../src/components/loading-skeleton";
 import PoolsTable from "../../../src/components/pools-table/pools-table";
 import Token from "../../../src/components/token";
 import TokenChart from "../../../src/components/token-chart";
-import { rows } from "../../../src/components/transaction-table/data";
-import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
-import { useQueryPools } from "../../../src/hooks/pools";
+import { useQuerySoroswapPoolsOfToken } from "../../../src/hooks/soroswap";
 import { useQueryToken } from "../../../src/hooks/tokens";
 import useMounted from "../../../src/hooks/use-mounted";
 import useSavedTokens from "../../../src/hooks/use-saved-tokens";
@@ -31,7 +29,7 @@ const TokenPage = () => {
 
   const token = useQueryToken({ tokenAddress: id as string });
 
-  const pools = useQueryPools();
+  const pools = useQuerySoroswapPoolsOfToken(id as string);
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
 
