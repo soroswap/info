@@ -2,7 +2,6 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import Head from "next/head";
 import Layout from "../src/components/layout";
 import LoadingSkeleton from "../src/components/loading-skeleton";
-import PercentageChanged from "../src/components/percentage-changed";
 import PoolsTable from "../src/components/pools-table/pools-table";
 import RouterEventsTable from "../src/components/router-events-table/router-events-table";
 import TokensTable from "../src/components/tokens-table/tokens-table";
@@ -12,7 +11,7 @@ import { useQueryPools } from "../src/hooks/pools";
 import {
   useQuerySoroswapFees24h,
   useQuerySoroswapTVL,
-  useQuerySoroswapVolume24h
+  useQuerySoroswapVolume24h,
 } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
 import { formatNumberToMoney } from "../src/utils/utils";
@@ -118,7 +117,7 @@ export default function Home() {
           <Typography variant="h6" sx={{ mb: 1 }}>
             Transactions
           </Typography>
-          <RouterEventsTable/>
+          <RouterEventsTable />
         </Box>
       </Layout>
     </>

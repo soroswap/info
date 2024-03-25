@@ -36,7 +36,12 @@ const TokenPriceChange = ({ i }: { i: number }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/tokens/${i}`);
+    router.push({
+      pathname: `/tokens/${i}`,
+      query: {
+        network: router.query.network,
+      },
+    });
   };
 
   return (

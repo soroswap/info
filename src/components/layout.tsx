@@ -16,6 +16,7 @@ import { useQueryToken } from "../hooks/tokens";
 import { formatNumberToMoney } from "../utils/utils";
 import LoadingSkeleton from "./loading-skeleton";
 import BasicMenu from "./menu";
+import NetworkSelector from "./network-selector";
 
 const LINKS = [
   {
@@ -93,8 +94,12 @@ export default function Layout({ children }: { children: ReactNode }) {
               </Box>
             </Box>
             <Box display="flex" gap="16px">
-              <Link href={'https://docs.soroswap.finance'} target="_blank">Docs</Link>
-              <Link href={'https://app.soroswap.finance'} target="_blank">App</Link>
+              <Link href={"https://docs.soroswap.finance"} target="_blank">
+                Docs
+              </Link>
+              <Link href={"https://app.soroswap.finance"} target="_blank">
+                App
+              </Link>
             </Box>
           </Box>
         )}
@@ -135,6 +140,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             justifyContent="flex-end"
             gap={2}
           >
+            <NetworkSelector />
             <Input
               placeholder="Search pools or tokens"
               sx={{

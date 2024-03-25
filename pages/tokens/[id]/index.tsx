@@ -7,7 +7,6 @@ import LoadingSkeleton from "../../../src/components/loading-skeleton";
 import PoolsTable from "../../../src/components/pools-table/pools-table";
 import Token from "../../../src/components/token";
 import TokenChart from "../../../src/components/token-chart";
-import { useQuerySoroswapPoolsOfToken } from "../../../src/hooks/soroswap";
 import { useQueryToken } from "../../../src/hooks/tokens";
 import useMounted from "../../../src/hooks/use-mounted";
 import useSavedTokens from "../../../src/hooks/use-saved-tokens";
@@ -18,6 +17,7 @@ import {
   openInNewTab,
   shortenAddress,
 } from "../../../src/utils/utils";
+import { useQueryPoolsByTokenAddress } from "../../../src/hooks/pools";
 
 const TokenPage = () => {
   const router = useRouter();
@@ -29,7 +29,7 @@ const TokenPage = () => {
 
   const token = useQueryToken({ tokenAddress: id as string });
 
-  const pools = useQuerySoroswapPoolsOfToken(id as string);
+  const pools = useQueryPoolsByTokenAddress({ tokenAddress: id as string });
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
 
@@ -99,7 +99,9 @@ const TokenPage = () => {
           <Token imageUrl={token.data?.asset.icon} />
         </LoadingSkeleton>
         <LoadingSkeleton isLoading={token.isLoading} variant="text">
-          <Typography variant="h5">{token.data?.name} ({token.data?.asset.code}) </Typography>
+          <Typography variant="h5">
+            {token.data?.name} ({token.data?.asset.code}){" "}
+          </Typography>
         </LoadingSkeleton>
       </Box>
       <Box
@@ -139,7 +141,10 @@ const TokenPage = () => {
             width={100}
           >
             <Button variant="contained">
-              <a href={getSoroswapSwapUrl(token.data?.asset.contract)} target="_blank">
+              <a
+                href={getSoroswapSwapUrl(token.data?.asset.contract)}
+                target="_blank"
+              >
                 Trade
               </a>
             </Button>

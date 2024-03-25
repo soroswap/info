@@ -5,19 +5,29 @@ import {
   fetchPoolTVLChart,
   fetchPoolVolumeChart,
   fetchPools,
+  fetchPoolsByTokenAddress,
 } from "../services/pools";
+import useQueryNetwork from "./use-query-network";
 
 const key = "pools";
 
 export const useQueryPools = () => {
-  return useQuery({ queryKey: [key], queryFn: fetchPools });
+  const { network, isValidQuery } = useQueryNetwork();
+
+  return useQuery({
+    queryKey: [key, network],
+    queryFn: fetchPools,
+    enabled: isValidQuery,
+  });
 };
 
 export const useQueryPool = ({ poolAddress }: { poolAddress: string }) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
   return useQuery({
-    queryKey: [key, poolAddress],
+    queryKey: [key, network, poolAddress],
     queryFn: () => fetchPool({ poolAddress }),
-    enabled: !!poolAddress,
+    enabled: !!poolAddress && isValidQuery,
   });
 };
 
@@ -26,10 +36,12 @@ export const useQueryPoolTVLChart = ({
 }: {
   poolAddress: string;
 }) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
   return useQuery({
-    queryKey: [key, poolAddress, "tvl-chart"],
+    queryKey: [key, network, poolAddress, "tvl-chart"],
     queryFn: () => fetchPoolTVLChart({ poolAddress }),
-    enabled: !!poolAddress,
+    enabled: !!poolAddress && isValidQuery,
   });
 };
 
@@ -38,10 +50,12 @@ export const useQueryPoolFeesChart = ({
 }: {
   poolAddress: string;
 }) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
   return useQuery({
-    queryKey: [key, poolAddress, "fees-chart"],
+    queryKey: [key, network, poolAddress, "fees-chart"],
     queryFn: () => fetchPoolFeesChart({ poolAddress }),
-    enabled: !!poolAddress,
+    enabled: !!poolAddress && isValidQuery,
   });
 };
 
@@ -50,9 +64,25 @@ export const useQueryPoolVolumeChart = ({
 }: {
   poolAddress: string;
 }) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
   return useQuery({
-    queryKey: [key, poolAddress, "volume-chart"],
+    queryKey: [key, network, poolAddress, "volume-chart"],
     queryFn: () => fetchPoolVolumeChart({ poolAddress }),
-    enabled: !!poolAddress,
+    enabled: !!poolAddress && isValidQuery,
+  });
+};
+
+export const useQueryPoolsByTokenAddress = ({
+  tokenAddress,
+}: {
+  tokenAddress: string;
+}) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
+  return useQuery({
+    queryKey: [key, network, tokenAddress],
+    queryFn: () => fetchPoolsByTokenAddress({ tokenAddress }),
+    enabled: !!tokenAddress && isValidQuery,
   });
 };

@@ -14,7 +14,11 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import useTable from "../../hooks/use-table";
 import { Pool } from "../../types/pools";
-import { formatNumberToMoney, roundNumber, shouldShortenCode } from "../../utils/utils";
+import {
+  formatNumberToMoney,
+  roundNumber,
+  shouldShortenCode,
+} from "../../utils/utils";
 import Token from "../token";
 import { PoolsData } from "./data";
 
@@ -130,7 +134,12 @@ export default function PoolsTable({
   const router = useRouter();
 
   const onClickRow = (pool: string) => {
-    router.push(`/pools/${pool}`);
+    router.push({
+      pathname: `/pools/${pool}`,
+      query: {
+        network: router.query.network,
+      },
+    });
   };
 
   if (isLoading) {
@@ -153,7 +162,6 @@ export default function PoolsTable({
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                console.log('🚀 « row:', row);
                 return (
                   <TableRow
                     onClick={() => onClickRow(row.pool)}
@@ -176,10 +184,19 @@ export default function PoolsTable({
                       }}
                     >
                       <Box display="flex" alignItems="center">
-                        <Token imageUrl={row.token0.icon} width={20} height={20} />
-                        <Token imageUrl={row.token1.icon} width={20} height={20} />
+                        <Token
+                          imageUrl={row.token0.icon}
+                          width={20}
+                          height={20}
+                        />
+                        <Token
+                          imageUrl={row.token1.icon}
+                          width={20}
+                          height={20}
+                        />
                       </Box>
-                      {shouldShortenCode(row.token0.code)} / {shouldShortenCode(row.token1.code)}
+                      {shouldShortenCode(row.token0.code)} /{" "}
+                      {shouldShortenCode(row.token1.code)}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.tvl)}
@@ -197,8 +214,7 @@ export default function PoolsTable({
                       <Typography color="brown" fontSize={14}>
                         {roundNumber(row?.feesYearly ?? 0, 2)}%
                       </Typography>
-                      <Box display="flex" justifyContent="flex-end">
-                      </Box>
+                      <Box display="flex" justifyContent="flex-end"></Box>
                     </TableCell>
                   </TableRow>
                 );

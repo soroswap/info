@@ -125,7 +125,12 @@ export default function TokensTable({
   const router = useRouter();
 
   const onClickRow = (token: string) => {
-    router.push(`/tokens/${token}`);
+    router.push({
+      pathname: `/tokens/${token}`,
+      query: {
+        network: router.query.network,
+      },
+    });
   };
 
   if (isLoading) {

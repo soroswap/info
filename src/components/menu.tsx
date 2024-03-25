@@ -1,70 +1,43 @@
-import * as React from "react";
-import { Box, Popover, Typography, useTheme } from "@mui/material";
-import Button from "@mui/material/Button";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-
-const ITEMS = [
-  { label: "About" },
-  { label: "Docs" },
-  { label: "Github" },
-  { label: "Discord" },
-];
+import { MoreHoriz } from "@mui/icons-material";
+import { Box, useTheme } from "@mui/material";
+import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 
 export default function BasicMenu() {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   return (
     <Box>
-      <Button
-        variant="contained"
-        onClick={handleClick}
-        sx={{
-          minWidth: 30,
-          width: 40,
-          bgcolor: "#f2f2f2",
-          ":hover": { bgcolor: "#f2f2f2" },
+      <Menu
+        menuStyle={{
+          fontSize: 16,
+          marginTop: 5,
         }}
+        menuButton={
+          <MenuButton
+            style={{
+              height: 40,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              padding: "0px 12px",
+              fontFamily: theme.typography.fontFamily,
+              fontSize: 16,
+              backgroundColor: "#f2f2f2",
+              color: "black",
+              border: "none",
+              borderRadius: 4,
+            }}
+          >
+            <MoreHoriz />
+          </MenuButton>
+        }
+        transition
       >
-        <MoreHorizIcon sx={{ color: "black" }} />
-      </Button>
-      <Popover
-        open={open}
-        anchorEl={anchorEl}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-      >
-        <Box
-          bgcolor={theme.palette.primary.main}
-          color="white"
-          width="100px"
-          p="12px 6px"
-        >
-          {ITEMS.map((item, idx) => (
-            <Typography
-              key={idx}
-              sx={{
-                p: 1,
-                borderRadius: 1,
-                cursor: "pointer",
-                ":hover": { bgcolor: "#f2f2f2", color: "black" },
-              }}
-            >
-              {item.label}
-            </Typography>
-          ))}
-        </Box>
-      </Popover>
+        <MenuItem>About</MenuItem>
+        <MenuItem>Docs</MenuItem>
+        <MenuItem>Github</MenuItem>
+        <MenuItem>Discord</MenuItem>
+      </Menu>
     </Box>
   );
 }
