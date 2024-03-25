@@ -6,18 +6,27 @@ import {
   fetchTokenVolumeChart,
   fetchTokens,
 } from "../services/tokens";
+import useQueryNetwork from "./use-query-network";
 
 const key = "tokens";
 
 export const useQueryTokens = () => {
-  return useQuery({ queryKey: [key], queryFn: fetchTokens });
+  const { network, isValidQuery } = useQueryNetwork();
+
+  return useQuery({
+    queryKey: [key, network],
+    queryFn: fetchTokens,
+    enabled: isValidQuery,
+  });
 };
 
 export const useQueryToken = ({ tokenAddress }: { tokenAddress: string }) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
   return useQuery({
-    queryKey: [key, tokenAddress],
+    queryKey: [key, network, tokenAddress],
     queryFn: () => fetchToken({ tokenAddress }),
-    enabled: !!tokenAddress,
+    enabled: !!tokenAddress && isValidQuery,
   });
 };
 
@@ -26,10 +35,12 @@ export const useQueryTokenTVLChart = ({
 }: {
   tokenAddress: string;
 }) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
   return useQuery({
-    queryKey: [key, tokenAddress, "tvl-chart"],
+    queryKey: [key, network, tokenAddress, "tvl-chart"],
     queryFn: () => fetchTokenTVLChart({ tokenAddress }),
-    enabled: !!tokenAddress,
+    enabled: !!tokenAddress && isValidQuery,
   });
 };
 
@@ -38,10 +49,12 @@ export const useQueryTokenPriceChart = ({
 }: {
   tokenAddress: string;
 }) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
   return useQuery({
-    queryKey: [key, tokenAddress, "price-chart"],
+    queryKey: [key, network, tokenAddress, "price-chart"],
     queryFn: () => fetchTokenPriceChart({ tokenAddress }),
-    enabled: !!tokenAddress,
+    enabled: !!tokenAddress && isValidQuery,
   });
 };
 
@@ -50,9 +63,11 @@ export const useQueryTokenVolumeChart = ({
 }: {
   tokenAddress: string;
 }) => {
+  const { network, isValidQuery } = useQueryNetwork();
+
   return useQuery({
-    queryKey: [key, tokenAddress, "volume-chart"],
+    queryKey: [key, network, tokenAddress, "volume-chart"],
     queryFn: () => fetchTokenVolumeChart({ tokenAddress }),
-    enabled: !!tokenAddress,
+    enabled: !!tokenAddress && isValidQuery,
   });
 };

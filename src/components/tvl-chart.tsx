@@ -5,6 +5,7 @@ import LoadingSkeleton from "./loading-skeleton";
 
 const TVLChart = () => {
   const tvlChart = useQuerySoroswapTVLChart();
+
   return (
     <Paper sx={{ maxWidth: 600, py: 2, bgcolor: "white" }}>
       <Box

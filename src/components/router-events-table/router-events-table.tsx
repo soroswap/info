@@ -14,15 +14,26 @@ import * as React from "react";
 import { useQuerySoroswapRouterEvents } from "../../hooks/soroswap";
 import { RouterEventType } from "../../types/router-events";
 import { TokenType } from "../../types/tokens";
-import { adjustAmountByDecimals, shortenAddress, shouldShortenCode, toCamelCase } from "../../utils/utils";
+import {
+  adjustAmountByDecimals,
+  shortenAddress,
+  shouldShortenCode,
+  toCamelCase,
+} from "../../utils/utils";
 import { TransactionsData } from "../transaction-table/data";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
-const formatEvent = (event: RouterEventType, symbol0: string, symbol1: string) => {
-  if (event === "init") return toCamelCase(event)
-  return `${toCamelCase(event)} ${shouldShortenCode(symbol0)} ${event === "swap" ? "for" : "and"} ${shouldShortenCode(symbol1)}`;
+const formatEvent = (
+  event: RouterEventType,
+  symbol0: string,
+  symbol1: string
+) => {
+  if (event === "init") return toCamelCase(event);
+  return `${toCamelCase(event)} ${shouldShortenCode(symbol0)} ${
+    event === "swap" ? "for" : "and"
+  } ${shouldShortenCode(symbol1)}`;
 };
 
 interface HeadCell {
@@ -65,8 +76,7 @@ interface RouterEventsTableProps {
 }
 
 function RouterEventsTableHead(props: RouterEventsTableProps) {
-  const { setTopic, topic } =
-    props;
+  const { setTopic, topic } = props;
   // const createSortHandler =
   //   (property: keyof TransactionsData) =>
   //   (event: React.MouseEvent<unknown>) => {
@@ -77,10 +87,13 @@ function RouterEventsTableHead(props: RouterEventsTableProps) {
     <TableHead>
       <TableRow>
         <TableCell>
-          <Tabs value={topic} onChange={(e, v) => setTopic(v)}>
+          <Tabs
+            value={topic ?? "all"}
+            onChange={(e, v) => setTopic(v === "all" ? null : v)}
+          >
             <Tab
               label="All"
-              value={null}
+              value="all"
               sx={{ fontSize: 14, p: 0.5, minWidth: 30 }}
             />
             <Tab
@@ -107,9 +120,9 @@ function RouterEventsTableHead(props: RouterEventsTableProps) {
             // sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
-              // active={orderBy === headCell.id}
-              // direction={orderBy === headCell.id ? order : "asc"}
-              // onClick={createSortHandler(headCell.id)}
+            // active={orderBy === headCell.id}
+            // direction={orderBy === headCell.id ? order : "asc"}
+            // onClick={createSortHandler(headCell.id)}
             >
               {/* {headCell.label}
               {orderBy === headCell.id ? (
@@ -127,9 +140,12 @@ function RouterEventsTableHead(props: RouterEventsTableProps) {
 
 export default function RouterEventsTable() {
   const [topic, setTopic] = React.useState<RouterEventType>();
-  const {data: routerEvents, isLoading} = useQuerySoroswapRouterEvents(topic, 150, undefined);
-  console.log('🚀 « routerEvents:', routerEvents);
-  
+  const { data: routerEvents, isLoading } = useQuerySoroswapRouterEvents(
+    topic,
+    150,
+    undefined
+  );
+
   // const {
   //   order,
   //   orderBy,
@@ -149,44 +165,55 @@ export default function RouterEventsTable() {
   if (isLoading) {
     return <Skeleton variant="rounded" height={300} />;
   }
-  
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", bgcolor: "white" }}>
         <TableContainer sx={{ minHeight: 610 }}>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <RouterEventsTableHead
-              setTopic={setTopic}
-              topic={topic}
-            />
+            <RouterEventsTableHead setTopic={setTopic} topic={topic} />
             <TableBody>
               {routerEvents?.edges.map((edge, index) => {
-                let token_a: TokenType | undefined
-                let token_b: TokenType | undefined
-                let token_a_amount = "0"
-                let token_b_amount = "0"
+                let token_a: TokenType | undefined;
+                let token_b: TokenType | undefined;
+                let token_a_amount = "0";
+                let token_b_amount = "0";
 
                 switch (edge.node.topic2) {
                   case "swap":
                     if (edge.node.data.path) {
-                      token_a = edge.node.data.path[0]
-                      token_b = edge.node.data.path[edge.node.data.path.length - 1]
+                      token_a = edge.node.data.path[0];
+                      token_b =
+                        edge.node.data.path[edge.node.data.path.length - 1];
                     }
                     if (edge.node.data.amounts) {
-                      token_a_amount = adjustAmountByDecimals(edge.node.data.amounts[0], token_a?.decimals)
-                      token_b_amount = adjustAmountByDecimals(edge.node.data.amounts[edge.node.data.amounts.length - 1], token_b?.decimals)
-                    } 
+                      token_a_amount = adjustAmountByDecimals(
+                        edge.node.data.amounts[0],
+                        token_a?.decimals
+                      );
+                      token_b_amount = adjustAmountByDecimals(
+                        edge.node.data.amounts[
+                          edge.node.data.amounts.length - 1
+                        ],
+                        token_b?.decimals
+                      );
+                    }
                     break;
                   case "add":
                   case "remove":
-                    token_a = edge.node.data.token_a
-                    token_b = edge.node.data.token_b
-                    token_a_amount = adjustAmountByDecimals(edge.node.data.amount_a ?? 0, token_a?.decimals)
-                    token_b_amount = adjustAmountByDecimals(edge.node.data.amount_b ?? 0, token_b?.decimals)
+                    token_a = edge.node.data.token_a;
+                    token_b = edge.node.data.token_b;
+                    token_a_amount = adjustAmountByDecimals(
+                      edge.node.data.amount_a ?? 0,
+                      token_a?.decimals
+                    );
+                    token_b_amount = adjustAmountByDecimals(
+                      edge.node.data.amount_b ?? 0,
+                      token_b?.decimals
+                    );
                     break;
                 }
 
-                console.log('🚀 « edge:', edge);
                 return (
                   <TableRow
                     key={index}
@@ -203,7 +230,11 @@ export default function RouterEventsTable() {
                         target="_blank"
                         underline="hover"
                       >
-                        {formatEvent(edge.node?.topic2, token_a?.code ?? "", token_b?.code ?? "")}
+                        {formatEvent(
+                          edge.node?.topic2,
+                          token_a?.code ?? "",
+                          token_b?.code ?? ""
+                        )}
                       </Link>
                     </TableCell>
                     <TableCell align="right">
@@ -222,7 +253,9 @@ export default function RouterEventsTable() {
                       </Link>
                     </TableCell>
                     <TableCell align="right">
-                      {timeAgo.format(edge.node.txInfoByTx.ledgerByLedger.closeTime * 1000)}
+                      {timeAgo.format(
+                        edge.node.txInfoByTx.ledgerByLedger.closeTime * 1000
+                      )}
                     </TableCell>
                   </TableRow>
                 );

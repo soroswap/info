@@ -35,7 +35,7 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     label: "Price",
   },
-/*   {
+  /*   {
     id: "change",
     numeric: true,
     label: "Price Change",
@@ -125,7 +125,12 @@ export default function TokensTable({
   const router = useRouter();
 
   const onClickRow = (token: string) => {
-    router.push(`/tokens/${token}`);
+    router.push({
+      pathname: `/tokens/${token}`,
+      query: {
+        network: router.query.network,
+      },
+    });
   };
 
   if (isLoading) {
@@ -169,12 +174,12 @@ export default function TokensTable({
                       }}
                     >
                       <TokenImage imageUrl={row.asset.icon} />
-                      {row.asset.name??row.asset.code}
+                      {row.asset.name ?? row.asset.code}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}
                     </TableCell>
-                {/*     <TableCell align="right">
+                    {/*     <TableCell align="right">
                       <PercentageChanged percentage={row.priceChange24h} />
                     </TableCell> */}
                     <TableCell align="right">
