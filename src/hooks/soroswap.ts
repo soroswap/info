@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
+  fetchPoolsOfToken,
   fetchSoroswapFees24h,
   fetchSoroswapRouterEvents,
   fetchSoroswapTVL,
@@ -49,3 +50,10 @@ export const useQuerySoroswapRouterEvents = (topic2?: RouterEventType, first?: n
     queryFn: () => fetchSoroswapRouterEvents(topic2, first, offset),
   });
 };
+
+export const useQuerySoroswapPoolsOfToken = (contract: string) => {
+  return useQuery({
+    queryKey: ['poolsOfToken', contract],
+    queryFn: () => fetchPoolsOfToken(contract),
+  })
+}

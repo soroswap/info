@@ -195,7 +195,7 @@ export default function PoolsTable({
                     </TableCell>
                     <TableCell align="right">
                       <Typography color="brown" fontSize={14}>
-                        {roundNumber(row.feesYearly, 2)}%
+                        {roundNumber(row?.feesYearly ?? 0, 2)}%
                       </Typography>
                       <Box display="flex" justifyContent="flex-end">
                       </Box>
