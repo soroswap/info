@@ -35,7 +35,7 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     label: "Price",
   },
-/*   {
+  /*   {
     id: "change",
     numeric: true,
     label: "Price Change",
@@ -119,7 +119,7 @@ export default function TokensTable({
   } = useTable<Token>({
     rows,
     defaultOrder: "desc",
-    defaultOrderBy: "priceChange24h",
+    defaultOrderBy: "tvl",
   });
 
   const router = useRouter();
@@ -169,12 +169,12 @@ export default function TokensTable({
                       }}
                     >
                       <TokenImage imageUrl={row.asset.icon} />
-                      {row.asset.name??row.asset.code}
+                      {row.asset.name ?? row.asset.code}
                     </TableCell>
                     <TableCell align="right">
                       {formatNumberToMoney(row.price)}
                     </TableCell>
-                {/*     <TableCell align="right">
+                    {/*     <TableCell align="right">
                       <PercentageChanged percentage={row.priceChange24h} />
                     </TableCell> */}
                     <TableCell align="right">
