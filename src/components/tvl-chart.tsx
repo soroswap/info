@@ -2,6 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuerySoroswapTVLChart } from "../hooks/soroswap";
 import LoadingSkeleton from "./loading-skeleton";
+import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 
 const TVLChart = () => {
   const tvlChart = useQuerySoroswapTVLChart();
@@ -36,12 +37,7 @@ const TVLChart = () => {
           >
             <XAxis
               dataKey="date"
-              tickFormatter={(tick) =>
-                new Date(tick).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "numeric",
-                })
-              }
+              tickFormatter={(tick) => xAxisChartFormatter(tick)}
             />
             <Tooltip />
             <Area

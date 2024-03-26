@@ -17,6 +17,7 @@ import {
   useQueryTokenVolumeChart,
 } from "../hooks/tokens";
 import LoadingSkeleton from "./loading-skeleton";
+import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 
 type Charts = "volume" | "tvl" | "price";
 
@@ -88,12 +89,7 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
             >
               <XAxis
                 dataKey="date"
-                tickFormatter={(tick) =>
-                  new Date(tick).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "numeric",
-                  })
-                }
+                tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
               <Tooltip />
               <Area
@@ -126,12 +122,7 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
             >
               <XAxis
                 dataKey="date"
-                tickFormatter={(tick) =>
-                  new Date(tick).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "numeric",
-                  })
-                }
+                tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
               <Tooltip />
               <Bar dataKey="tvl" fill="#82ca9d" />
@@ -159,12 +150,7 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
             >
               <XAxis
                 dataKey="date"
-                tickFormatter={(tick) =>
-                  new Date(tick).toLocaleDateString("en-US", {
-                    day: "numeric",
-                    month: "numeric",
-                  })
-                }
+                tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
               <Tooltip />
               <Area
