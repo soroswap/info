@@ -1,4 +1,5 @@
 import { Pool } from "../types/pools";
+import { fillDatesAndSort } from "../utils/complete-chart";
 import axiosInstance from "./axios";
 
 export const fetchPools = async () => {
@@ -23,7 +24,10 @@ export const fetchPoolTVLChart = async ({
   const { data } = await axiosInstance.get<{ tvl: number; date: string }[]>(
     `/info/pool/tvl-chart/${poolAddress}?protocols=soroswap`
   );
-  return data;
+
+  const filledData = fillDatesAndSort(data, "tvl");
+
+  return filledData;
 };
 
 export const fetchPoolFeesChart = async ({
@@ -34,7 +38,10 @@ export const fetchPoolFeesChart = async ({
   const { data } = await axiosInstance.get<{ fees: number; date: string }[]>(
     `/info/pool/fees-chart/${poolAddress}?protocols=soroswap`
   );
-  return data;
+
+  const filledData = fillDatesAndSort(data, "fees");
+
+  return filledData;
 };
 
 export const fetchPoolVolumeChart = async ({
@@ -45,7 +52,10 @@ export const fetchPoolVolumeChart = async ({
   const { data } = await axiosInstance.get<{ volume: number; date: string }[]>(
     `/info/pool/volume-chart/${poolAddress}?protocols=soroswap`
   );
-  return data;
+
+  const filledData = fillDatesAndSort(data, "volume");
+
+  return filledData;
 };
 
 export const fetchPoolsByTokenAddress = async ({
