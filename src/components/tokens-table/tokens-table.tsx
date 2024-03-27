@@ -16,10 +16,9 @@ import useTable from "../../hooks/use-table";
 import { Token } from "../../types/tokens";
 import { formatNumberToMoney } from "../../utils/utils";
 import TokenImage from "../token";
-import { TokensData } from "./data";
 
 interface HeadCell {
-  id: keyof TokensData;
+  id: keyof Token;
   label: string;
   numeric: boolean;
 }
@@ -41,7 +40,7 @@ const headCells: readonly HeadCell[] = [
     label: "Price Change",
   }, */
   {
-    id: "v24",
+    id: "volume24h",
     numeric: true,
     label: "Volume 24H",
   },
@@ -55,7 +54,7 @@ const headCells: readonly HeadCell[] = [
 interface TokensTableProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof TokensData
+    property: keyof Token
   ) => void;
   order: "asc" | "desc";
   orderBy: string;
@@ -64,7 +63,7 @@ interface TokensTableProps {
 function TokensTableHead(props: TokensTableProps) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler =
-    (property: keyof TokensData) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof Token) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 

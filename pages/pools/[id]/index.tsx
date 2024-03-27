@@ -8,7 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
-import { rows } from "../../../src/components/transaction-table/data";
 import { useQueryPool } from "../../../src/hooks/pools";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
