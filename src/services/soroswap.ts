@@ -1,5 +1,7 @@
-import { RouterEvents } from "../types/router-events";
+import { RouterEventsAPIResponse } from "../types/router-events";
+import { TokenType } from "../types/tokens";
 import { fillDatesAndSort } from "../utils/complete-chart";
+import { adjustAmountByDecimals } from "../utils/utils";
 import axiosInstance from "./axios";
 
 export const fetchSoroswapFees24h = async () => {
@@ -50,10 +52,14 @@ export const fetchSoroswapRouterEvents = async (
   first?: number,
   offset?: number
 ) => {
-  const { data } = await axiosInstance.post<RouterEvents>(`/events/router`, {
-    topic2,
-    first,
-    offset,
-  });
+  const { data } = await axiosInstance.post<RouterEventsAPIResponse>(
+    `/events/router`,
+    {
+      topic2,
+      first,
+      offset,
+    }
+  );
+
   return data;
 };

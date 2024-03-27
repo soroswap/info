@@ -20,10 +20,9 @@ import {
   shouldShortenCode,
 } from "../../utils/utils";
 import Token from "../token";
-import { PoolsData } from "./data";
 
 interface HeadCell {
-  id: keyof PoolsData;
+  id: keyof Pool;
   label: string;
   numeric: boolean;
 }
@@ -40,17 +39,17 @@ const headCells: readonly HeadCell[] = [
     label: "TVL",
   },
   {
-    id: "v24",
+    id: "volume24h",
     numeric: true,
     label: "Volume 24H",
   },
   {
-    id: "v7",
+    id: "volume7d",
     numeric: true,
     label: "Volume 7D",
   },
   {
-    id: "fees24",
+    id: "fees24h",
     numeric: true,
     label: "Fees 24H",
   },
@@ -64,7 +63,7 @@ const headCells: readonly HeadCell[] = [
 interface PoolsTableProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof PoolsData
+    property: keyof Pool
   ) => void;
   order: "asc" | "desc";
   orderBy: string;
@@ -73,7 +72,7 @@ interface PoolsTableProps {
 function PoolsTableHead(props: PoolsTableProps) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler =
-    (property: keyof PoolsData) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof Pool) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 

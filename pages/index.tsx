@@ -3,7 +3,6 @@ import Head from "next/head";
 import Layout from "../src/components/layout";
 import LoadingSkeleton from "../src/components/loading-skeleton";
 import PoolsTable from "../src/components/pools-table/pools-table";
-import RouterEventsTable from "../src/components/router-events-table/router-events-table";
 import TokensTable from "../src/components/tokens-table/tokens-table";
 import TVLChart from "../src/components/tvl-chart";
 import VolumeChart from "../src/components/volume-chart";
@@ -15,6 +14,7 @@ import {
 } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
 import { formatNumberToMoney } from "../src/utils/utils";
+import TransactionsTable from "../src/components/transaction-table/transactions-table";
 
 export default function Home() {
   const pools = useQueryPools();
@@ -117,7 +117,7 @@ export default function Home() {
           <Typography variant="h6" sx={{ mb: 1 }}>
             Transactions
           </Typography>
-          <RouterEventsTable />
+          <TransactionsTable />
         </Box>
       </Layout>
     </>

@@ -1,4 +1,4 @@
-import { Link, Tab, Tabs } from "@mui/material";
+import { Link, Skeleton, Tab, Tabs } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -14,38 +14,32 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import * as React from "react";
 import useTable from "../../hooks/use-table";
-import { formatNumberToMoney, shortenAddress } from "../../utils/utils";
-import { ActionName, TransactionsData } from "./data";
+import {
+  formatEvent,
+  shortenAddress,
+  shouldShortenCode,
+} from "../../utils/utils";
+import { useQuerySoroswapRouterEvents } from "../../hooks/soroswap";
+import { RouterEventAPI, RouterEventType } from "../../types/router-events";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
-const formatName = (name: ActionName, symbol0: string, symbol1: string) => {
-  if (name === "Swap") {
-    return `Swap ${symbol0} for ${symbol1}`;
-  }
-  return `${name} ${symbol0} and ${symbol1}`;
-};
-
 interface HeadCell {
-  id: keyof TransactionsData;
+  id: keyof RouterEventAPI;
   label: string;
   numeric: boolean;
+  sortable?: boolean;
 }
 
 const headCells: readonly HeadCell[] = [
   {
-    id: "value",
-    numeric: true,
-    label: "Value",
-  },
-  {
-    id: "amount0",
+    id: "amountA",
     numeric: true,
     label: "Token Amount",
   },
   {
-    id: "amount1",
+    id: "amountB",
     numeric: true,
     label: "Token Amount",
   },
@@ -55,29 +49,32 @@ const headCells: readonly HeadCell[] = [
     label: "Account",
   },
   {
-    id: "time",
+    id: "timestamp",
     numeric: true,
     label: "Time",
+    sortable: true,
   },
 ];
 
 interface TransactionsTableProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof TransactionsData
+    property: keyof RouterEventAPI
   ) => void;
   order: "asc" | "desc";
   orderBy: string;
-  setCurrentFilter: React.Dispatch<React.SetStateAction<"All" | ActionName>>;
-  currentFilter: "All" | ActionName;
+  setCurrentFilter: React.Dispatch<
+    React.SetStateAction<"All" | RouterEventType>
+  >;
+  currentFilter: "All" | RouterEventType;
 }
 
 function TransactionsTableHead(props: TransactionsTableProps) {
   const { order, orderBy, onRequestSort, setCurrentFilter, currentFilter } =
     props;
+
   const createSortHandler =
-    (property: keyof TransactionsData) =>
-    (event: React.MouseEvent<unknown>) => {
+    (property: keyof RouterEventAPI) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -114,18 +111,24 @@ function TransactionsTableHead(props: TransactionsTableProps) {
             align={headCell.numeric ? "right" : "left"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.sortable ? (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : "asc"}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === "desc"
+                      ? "sorted descending"
+                      : "sorted ascending"}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            ) : (
+              <>{headCell.label}</>
+            )}
           </TableCell>
         ))}
       </TableRow>
@@ -133,11 +136,20 @@ function TransactionsTableHead(props: TransactionsTableProps) {
   );
 }
 
-export default function TransactionsTable({
-  rows,
-}: {
-  rows: TransactionsData[];
-}) {
+export default function TransactionsTable() {
+  const [currentFilter, setCurrentFilter] = React.useState<
+    "All" | RouterEventType
+  >("All");
+
+  const topic: RouterEventType | undefined =
+    currentFilter === "All"
+      ? undefined
+      : (currentFilter.toLowerCase() as RouterEventType);
+
+  const routerEvents = useQuerySoroswapRouterEvents(topic, 1000, undefined);
+
+  const rows = routerEvents.data ?? [];
+
   const {
     order,
     orderBy,
@@ -148,22 +160,15 @@ export default function TransactionsTable({
     page,
     handleChangePage,
     handleChangeRowsPerPage,
-  } = useTable<TransactionsData>({
+  } = useTable<RouterEventAPI>({
     rows,
     defaultOrder: "desc",
-    defaultOrderBy: "time",
+    defaultOrderBy: "timestamp",
   });
 
-  const [currentFilter, setCurrentFilter] = React.useState<"All" | ActionName>(
-    "All"
-  );
-
-  const filteredRows = React.useMemo(() => {
-    if (currentFilter === "All") {
-      return visibleRows;
-    }
-    return visibleRows.filter((row) => row.name === currentFilter);
-  }, [currentFilter, visibleRows]);
+  if (routerEvents.isLoading) {
+    return <Skeleton variant="rounded" height={300} />;
+  }
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -178,7 +183,7 @@ export default function TransactionsTable({
               currentFilter={currentFilter}
             />
             <TableBody>
-              {filteredRows.map((row, index) => {
+              {visibleRows.map((row, index) => {
                 return (
                   <TableRow
                     key={index}
@@ -191,21 +196,22 @@ export default function TransactionsTable({
                   >
                     <TableCell align="left">
                       <Link
-                        href={`https://stellar.expert/explorer/testnet/tx/sometxhash`}
+                        href={`https://stellar.expert/explorer/public/tx/${row.txHash}`}
                         target="_blank"
                         underline="hover"
                       >
-                        {formatName(row.name, row.symbol0, row.symbol1)}
+                        {formatEvent(
+                          row.event,
+                          row.tokenA?.code ?? "",
+                          row.tokenB?.code ?? ""
+                        )}
                       </Link>
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.value)}
+                      {row.amountA} {shouldShortenCode(row.tokenA?.code ?? "")}
                     </TableCell>
                     <TableCell align="right">
-                      {row.amount0} {row.symbol0}
-                    </TableCell>
-                    <TableCell align="right">
-                      {row.amount1} {row.symbol1}
+                      {row.amountB} {shouldShortenCode(row.tokenB?.code ?? "")}
                     </TableCell>
                     <TableCell align="right">
                       <Link
@@ -213,11 +219,11 @@ export default function TransactionsTable({
                         target="_blank"
                         underline="hover"
                       >
-                        {shortenAddress(row.account)}
+                        {shortenAddress(row.account ?? "")}
                       </Link>
                     </TableCell>
                     <TableCell align="right">
-                      {timeAgo.format(row.time * 1000)}
+                      {timeAgo.format(row.timestamp)}
                     </TableCell>
                   </TableRow>
                 );
