@@ -32,14 +32,14 @@ export default function Home() {
         <Typography variant="h6" sx={{ mb: 1 }}>
           Soroswap Overview
         </Typography>
-        {/* <Grid container spacing={4}>
+        <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <TVLChart />
           </Grid>
-          <Grid item xs={12} md={6}>
+{/*           <Grid item xs={12} md={6}>
             <VolumeChart />
-          </Grid>
-        </Grid> */}
+          </Grid> */}
+        </Grid>
         <Paper
           sx={{
             bgcolor: "white",
