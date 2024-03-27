@@ -7,4 +7,27 @@ const axiosInstance = axios.create({
   },
 });
 
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const network = queryParams.get("network");
+
+    const url = new URL(config.url as string, config.baseURL);
+
+    const isValid = network === "mainnet" || network === "testnet";
+
+    if (isValid) {
+      url.searchParams.set("network", network.toUpperCase());
+    } else {
+      throw new Error("Invalid network");
+    }
+
+    config.url = url.toString();
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 export default axiosInstance;

@@ -2,6 +2,7 @@ import { Box, Paper, Typography } from "@mui/material";
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuerySoroswapVolumeChart } from "../hooks/soroswap";
 import LoadingSkeleton from "./loading-skeleton";
+import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 
 const VolumeChart = () => {
   const volumeChart = useQuerySoroswapVolumeChart();
@@ -41,12 +42,7 @@ const VolumeChart = () => {
             <Tooltip />
             <XAxis
               dataKey="date"
-              tickFormatter={(tick) =>
-                new Date(tick).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "numeric",
-                })
-              }
+              tickFormatter={(tick) => xAxisChartFormatter(tick)}
             />
             <Bar dataKey="volume" fill="#8884d8" />
           </BarChart>

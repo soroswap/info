@@ -2,7 +2,6 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import Head from "next/head";
 import Layout from "../src/components/layout";
 import LoadingSkeleton from "../src/components/loading-skeleton";
-import PercentageChanged from "../src/components/percentage-changed";
 import PoolsTable from "../src/components/pools-table/pools-table";
 import RouterEventsTable from "../src/components/router-events-table/router-events-table";
 import TokensTable from "../src/components/tokens-table/tokens-table";

@@ -37,16 +37,14 @@ const PoolPage = () => {
   const pool = useQueryPool({ poolAddress: id as string });
   const token0 = pool.data?.token0;
   const token1 = pool.data?.token1;
-  console.log('🚀 ~ PoolPage ~ token1:', token1);
   if (token0?.code == token0?.contract && token0) {
     token0.code = shortenAddress(token0?.contract);
   }
   if (token1?.code == token1?.contract && token1) {
     token1.code = shortenAddress(token1?.contract);
   }
-  const token0code = token0?.code??"";
-  const token1code = token1?.code??"";
-  console.log('🚀 ~ PoolPage ~ token1code:', token1code);
+  const token0code = token0?.code ?? "";
+  const token1code = token1?.code ?? "";
 
   const StarIcon = isPoolSaved(id as string) ? Star : StarBorderOutlined;
 
@@ -92,7 +90,9 @@ const PoolPage = () => {
       <Box display="flex" alignItems="center" gap="6px" mt={4}>
         <Token imageUrl={token0?.icon} />
         <Token imageUrl={token1?.icon} />
-        <Typography variant="h5">{token0code}/{token1code}</Typography>
+        <Typography variant="h5">
+          {token0code}/{token1code}
+        </Typography>
         <Chip label="0.3%" sx={{ fontSize: 16 }} />
       </Box>
       <Box
@@ -115,7 +115,8 @@ const PoolPage = () => {
               label={
                 <Link href="/tokens/123">
                   <Box display="flex" alignItems="center" gap="4px">
-                    <Token imageUrl={token0?.icon} width={20} height={20} />1 {token0code} ={" "}
+                    <Token imageUrl={token0?.icon} width={20} height={20} />1{" "}
+                    {token0code} ={" "}
                     {getExpectedAmountOfOne(
                       pool.data?.reserve0,
                       pool.data?.reserve1
@@ -137,7 +138,8 @@ const PoolPage = () => {
               label={
                 <Link href="/tokens/123">
                   <Box display="flex" alignItems="center" gap="4px">
-                    <Token imageUrl={token1?.icon} width={20} height={20} />1 {token1code} ={" "}
+                    <Token imageUrl={token1?.icon} width={20} height={20} />1{" "}
+                    {token1code} ={" "}
                     {getExpectedAmountOfOne(
                       pool.data?.reserve1,
                       pool.data?.reserve0

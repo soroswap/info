@@ -134,7 +134,12 @@ export default function PoolsTable({
   const router = useRouter();
 
   const onClickRow = (pool: string) => {
-    router.push(`/pools/${pool}`);
+    router.push({
+      pathname: `/pools/${pool}`,
+      query: {
+        network: router.query.network,
+      },
+    });
   };
 
   if (isLoading) {
@@ -157,7 +162,6 @@ export default function PoolsTable({
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                console.log("🚀 « row:", row);
                 return (
                   <TableRow
                     onClick={() => onClickRow(row.pool)}
