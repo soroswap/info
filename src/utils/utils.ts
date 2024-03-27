@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { RouterEventType } from "../types/router-events";
 
 const soroswapAppUrl = process.env.NEXT_PUBLIC_SOROSWAP_APP_URL;
 
@@ -19,7 +20,7 @@ export const formatNumberToMoney = (number: number | undefined) => {
 };
 
 export function shortenAddress(address: string, chars = 4): string {
-  if (!address) return '';
+  if (!address) return "";
   return `${address.substring(0, chars)}...${address.substring(56 - chars)}`;
 }
 
@@ -85,27 +86,41 @@ export const roundNumber = (number: number, decimals: number): number => {
 };
 
 export const toCamelCase = (text: string): string => {
-return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
-}
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+};
 
-export const adjustAmountByDecimals = (amount: number, decimals: number | undefined): string => {
+export const adjustAmountByDecimals = (
+  amount: number,
+  decimals: number | undefined
+): string => {
   const defaultDecimals = 7;
   const actualDecimals = decimals ?? defaultDecimals;
 
   let amountStr = amount.toString();
 
   while (amountStr.length <= actualDecimals) {
-    amountStr = '0' + amountStr;
+    amountStr = "0" + amountStr;
   }
 
   const integerPart = amountStr.slice(0, -actualDecimals);
   const decimalPart = amountStr.slice(-actualDecimals);
-  const result = integerPart + '.' + decimalPart;
+  const result = integerPart + "." + decimalPart;
 
-  return result.replace(/(\.\d*[1-9])0+$|\.0*$/, '$1');
-}
+  return result.replace(/(\.\d*[1-9])0+$|\.0*$/, "$1");
+};
 
 export const shouldShortenCode = (contract: string) => {
-  if (contract.length > 10) return shortenAddress(contract)
-  return contract
-}
+  if (contract.length > 10) return shortenAddress(contract);
+  return contract;
+};
+
+export const formatEvent = (
+  event: RouterEventType,
+  symbol0: string,
+  symbol1: string
+) => {
+  if (event === "init") return toCamelCase(event);
+  return `${toCamelCase(event)} ${shouldShortenCode(symbol0)} ${
+    event === "swap" ? "for" : "and"
+  } ${shouldShortenCode(symbol1)}`;
+};
