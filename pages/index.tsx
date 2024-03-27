@@ -12,7 +12,7 @@ import { useQueryPools } from "../src/hooks/pools";
 import {
   useQuerySoroswapFees24h,
   useQuerySoroswapTVL,
-  useQuerySoroswapVolume24h
+  useQuerySoroswapVolume24h,
 } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
 import { formatNumberToMoney } from "../src/utils/utils";
@@ -33,14 +33,14 @@ export default function Home() {
         <Typography variant="h6" sx={{ mb: 1 }}>
           Soroswap Overview
         </Typography>
-        <Grid container spacing={4}>
+        {/* <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <TVLChart />
           </Grid>
           <Grid item xs={12} md={6}>
             <VolumeChart />
           </Grid>
-        </Grid>
+        </Grid> */}
         <Paper
           sx={{
             bgcolor: "white",
@@ -51,7 +51,7 @@ export default function Home() {
           }}
         >
           <Grid container spacing={1}>
-            <Grid
+            {/* <Grid
               item
               xs={12}
               md={4}
@@ -64,7 +64,7 @@ export default function Home() {
                 <Typography fontWeight={600}>
                   {formatNumberToMoney(soroswapVolume.data?.volume)}
                 </Typography>
-                {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
+                <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
               </LoadingSkeleton>
             </Grid>
             <Grid
@@ -80,9 +80,9 @@ export default function Home() {
                 <Typography fontWeight={600}>
                   {formatNumberToMoney(soroswapFees.data?.fees)}
                 </Typography>
-                {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
+                <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
               </LoadingSkeleton>
-            </Grid>
+            </Grid> */}
             <Grid
               item
               xs={12}
@@ -118,7 +118,7 @@ export default function Home() {
           <Typography variant="h6" sx={{ mb: 1 }}>
             Transactions
           </Typography>
-          <RouterEventsTable/>
+          <RouterEventsTable />
         </Box>
       </Layout>
     </>
