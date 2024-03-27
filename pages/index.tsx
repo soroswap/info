@@ -36,9 +36,9 @@ export default function Home() {
           <Grid item xs={12} md={6}>
             <TVLChart />
           </Grid>
-          <Grid item xs={12} md={6}>
+{/*           <Grid item xs={12} md={6}>
             <VolumeChart />
-          </Grid>
+          </Grid> */}
         </Grid>
         <Paper
           sx={{
@@ -50,7 +50,7 @@ export default function Home() {
           }}
         >
           <Grid container spacing={1}>
-            <Grid
+            {/* <Grid
               item
               xs={12}
               md={4}
@@ -63,7 +63,7 @@ export default function Home() {
                 <Typography fontWeight={600}>
                   {formatNumberToMoney(soroswapVolume.data?.volume)}
                 </Typography>
-                {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
+                <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
               </LoadingSkeleton>
             </Grid>
             <Grid
@@ -79,9 +79,9 @@ export default function Home() {
                 <Typography fontWeight={600}>
                   {formatNumberToMoney(soroswapFees.data?.fees)}
                 </Typography>
-                {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
+                <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} />
               </LoadingSkeleton>
-            </Grid>
+            </Grid> */}
             <Grid
               item
               xs={12}
