@@ -13,4 +13,4 @@ export interface RouterEventAPI {
   timestamp: number;
 }
 
-export type RouterEventType = "swap" | "add" | "remove";
+export type RouterEventType = "swap" | "add" | "remove" | "init";
