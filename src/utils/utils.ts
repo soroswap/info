@@ -4,7 +4,7 @@ import { RouterEventType } from "../types/router-events";
 const soroswapAppUrl = process.env.NEXT_PUBLIC_SOROSWAP_APP_URL;
 
 export const formatNumberToMoney = (number: number | undefined) => {
-  if (!number) return "$0.00";
+  if (!number) return "-";
   if (typeof number !== "number") return "$0.00";
 
   if (number > 1000000000) {
@@ -17,6 +17,22 @@ export const formatNumberToMoney = (number: number | undefined) => {
     return `$${(number / 1000).toFixed(2)}k`;
   }
   return `$${number.toFixed(7)}`;
+};
+
+export const formatNumberToToken = (number: number | undefined) => {
+  if (!number) return "-";
+  if (typeof number !== "number") return "$0.00";
+
+  if (number > 1000000000) {
+    return `${(number / 1000000000).toFixed(2)}b`;
+  }
+  if (number > 1000000) {
+    return `${(number / 1000000).toFixed(2)}m`;
+  }
+  if (number > 1000) {
+    return `${(number / 1000).toFixed(2)}k`;
+  }
+  return `${number.toFixed(7)}`;
 };
 
 export function shortenAddress(address: string, chars = 4): string {

@@ -41,22 +41,22 @@ const headCells: readonly HeadCell[] = [
   {
     id: "volume24h",
     numeric: true,
-    label: "Volume 24H",
+    label: "Volume 24H*",
   },
   {
     id: "volume7d",
     numeric: true,
-    label: "Volume 7D",
+    label: "Volume 7D*",
   },
   {
     id: "fees24h",
     numeric: true,
-    label: "Fees 24H",
+    label: "Fees 24H*",
   },
   {
     id: "feesYearly",
     numeric: true,
-    label: "Fees Yearly",
+    label: "Fees Yearly*",
   },
 ];
 
@@ -201,17 +201,21 @@ export default function PoolsTable({
                       {formatNumberToMoney(row.tvl)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.volume24h)}
+                      {/* {formatNumberToMoney(row.volume24h)} */}
+                      -
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.volume7d)}
+                      {/* {formatNumberToMoney(row.volume7d)} */}
+                      -
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.fees24h)}
+                      {/* {formatNumberToMoney(row.fees24h)} */}
+                      -
                     </TableCell>
                     <TableCell align="right">
                       <Typography color="brown" fontSize={14}>
-                        {roundNumber(row?.feesYearly ?? 0, 2)}%
+                        {/* {roundNumber(row?.feesYearly ?? 0, 2)}% */}
+                        -
                       </Typography>
                       <Box display="flex" justifyContent="flex-end"></Box>
                     </TableCell>

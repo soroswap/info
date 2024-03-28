@@ -21,6 +21,7 @@ import TransactionsTable from "../../../src/components/transaction-table/transac
 import useSavedPools from "../../../src/hooks/use-saved-pools";
 import {
   formatNumberToMoney,
+  formatNumberToToken,
   getExpectedAmountOfOne,
   getSoroswapAddLiquidityUrl,
   getSoroswapSwapUrl,
@@ -197,7 +198,7 @@ const PoolPage = () => {
                     {token0code}
                   </Typography>
                   <Typography fontSize={14}>
-                    {formatNumberToMoney(pool.data?.reserve0)}
+                    {formatNumberToToken(pool.data?.reserve0)}
                   </Typography>
                 </LoadingSkeleton>
               </Box>
@@ -217,7 +218,7 @@ const PoolPage = () => {
                     {token1code}
                   </Typography>{" "}
                   <Typography fontSize={14}>
-                    {formatNumberToMoney(pool.data?.reserve1)}
+                    {formatNumberToToken(pool.data?.reserve1)}
                   </Typography>
                 </LoadingSkeleton>
               </Box>
