@@ -20,9 +20,7 @@ export default function Home() {
   const pools = useQueryPools();
   const tokens = useQueryTokens();
   const soroswapTVL = useQuerySoroswapTVL();
-  const soroswapFees = useQuerySoroswapFees24h();
-  const soroswapVolume = useQuerySoroswapVolume24h();
-
+  
   return (
     <>
       <Head>
