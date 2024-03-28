@@ -67,12 +67,12 @@ export default function Layout({ children }: { children: ReactNode }) {
                 px="8px"
                 borderRadius="4px"
               >
-                <Typography fontSize={12}>Latest synced block:</Typography>
+                <Typography fontSize={12}>⚠️ *This is a beta version, and data computation is actively in progress.</Typography>
                 <Typography fontSize={12} color="green">
-                  12345678
+                ⚠️
                 </Typography>
                 <Box
-                  bgcolor="green"
+                  bgcolor="red"
                   width="8px"
                   height="8px"
                   borderRadius="100%"

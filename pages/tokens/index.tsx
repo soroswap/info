@@ -19,9 +19,9 @@ const TokensPage = () => {
           emptyMessage="Saved tokens will appear here"
         />
       </Box>
-      <Box sx={{ mt: 4 }}>
+      {/* <Box sx={{ mt: 4 }}>
         <TopMovers />
-      </Box>
+      </Box> */}
       <Box sx={{ mt: 2 }}>
         <Typography variant="h6" sx={{ mb: 1 }}>
           All Tokens
