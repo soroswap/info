@@ -3,6 +3,7 @@ import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuerySoroswapTVLChart } from "../hooks/soroswap";
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
+import { formatTokenAmount } from "../utils/utils";
 
 const TVLChart = () => {
   const tvlChart = useQuerySoroswapTVLChart();
@@ -39,7 +40,11 @@ const TVLChart = () => {
               dataKey="date"
               tickFormatter={(tick) => xAxisChartFormatter(tick)}
             />
-            <Tooltip />
+            <Tooltip
+              formatter={(amount) =>
+                formatTokenAmount(amount as number, 7, "token")
+              }
+            />
             <Area
               type="monotone"
               dataKey="tvl"

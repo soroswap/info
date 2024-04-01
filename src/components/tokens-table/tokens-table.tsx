@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import useTable from "../../hooks/use-table";
 import { Token } from "../../types/tokens";
-import { formatNumberToMoney } from "../../utils/utils";
+import { formatNumberToMoney, formatTokenAmount } from "../../utils/utils";
 import TokenImage from "../token";
 
 interface HeadCell {
@@ -161,7 +161,8 @@ export default function TokensTable({
                         bgcolor: "#f5f5f5",
                       },
                     }}
-                    onClick={() => onClickRow(row.asset.contract)}
+                    component="a"
+                    href={`/tokens/${row.asset.contract}?network=${router.query.network}`}
                   >
                     <TableCell>{index + 1}</TableCell>
                     <TableCell
@@ -182,10 +183,14 @@ export default function TokensTable({
                       <PercentageChanged percentage={row.priceChange24h} />
                     </TableCell> */}
                     <TableCell align="right">
-                      {formatNumberToMoney(row.volume24h)}
+                      {formatTokenAmount(
+                        row.volume24h,
+                        row.asset?.decimals,
+                        "money"
+                      )}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.tvl)}
+                      {formatTokenAmount(row.tvl, row.asset?.decimals, "money")}
                     </TableCell>
                   </TableRow>
                 );

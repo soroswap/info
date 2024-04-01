@@ -5,22 +5,17 @@ import LoadingSkeleton from "../src/components/loading-skeleton";
 import PoolsTable from "../src/components/pools-table/pools-table";
 import TokensTable from "../src/components/tokens-table/tokens-table";
 import TVLChart from "../src/components/tvl-chart";
-import VolumeChart from "../src/components/volume-chart";
 import { useQueryPools } from "../src/hooks/pools";
-import {
-  useQuerySoroswapFees24h,
-  useQuerySoroswapTVL,
-  useQuerySoroswapVolume24h,
-} from "../src/hooks/soroswap";
+import { useQuerySoroswapTVL } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
-import { formatNumberToMoney } from "../src/utils/utils";
+import { formatTokenAmount } from "../src/utils/utils";
 import TransactionsTable from "../src/components/transaction-table/transactions-table";
 
 export default function Home() {
   const pools = useQueryPools();
   const tokens = useQueryTokens();
   const soroswapTVL = useQuerySoroswapTVL();
-  
+
   return (
     <>
       <Head>
@@ -34,7 +29,7 @@ export default function Home() {
           <Grid item xs={12} md={6}>
             <TVLChart />
           </Grid>
-{/*           <Grid item xs={12} md={6}>
+          {/*           <Grid item xs={12} md={6}>
             <VolumeChart />
           </Grid> */}
         </Grid>
@@ -91,7 +86,7 @@ export default function Home() {
               <Typography>TVL:</Typography>
               <LoadingSkeleton isLoading={soroswapTVL.isLoading} height={20}>
                 <Typography fontWeight={600}>
-                  {formatNumberToMoney(soroswapTVL.data?.tvl)}
+                  {formatTokenAmount(soroswapTVL.data?.tvl, 7, "money")}
                 </Typography>
                 {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
               </LoadingSkeleton>

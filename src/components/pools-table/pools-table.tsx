@@ -16,6 +16,7 @@ import useTable from "../../hooks/use-table";
 import { Pool } from "../../types/pools";
 import {
   formatNumberToMoney,
+  formatTokenAmount,
   roundNumber,
   shouldShortenCode,
 } from "../../utils/utils";
@@ -163,7 +164,8 @@ export default function PoolsTable({
               {visibleRows.map((row, index) => {
                 return (
                   <TableRow
-                    onClick={() => onClickRow(row.pool)}
+                    component="a"
+                    href={`/pools/${row.pool}?network=${router.query.network}`}
                     key={index}
                     sx={{
                       ":hover": {
@@ -198,24 +200,20 @@ export default function PoolsTable({
                       {shouldShortenCode(row.token1.code)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.tvl)}
+                      {formatTokenAmount(row.tvl, 7, "money")}
                     </TableCell>
                     <TableCell align="right">
-                      {/* {formatNumberToMoney(row.volume24h)} */}
-                      -
+                      {/* {formatNumberToMoney(row.volume24h)} */}-
                     </TableCell>
                     <TableCell align="right">
-                      {/* {formatNumberToMoney(row.volume7d)} */}
-                      -
+                      {/* {formatNumberToMoney(row.volume7d)} */}-
                     </TableCell>
                     <TableCell align="right">
-                      {/* {formatNumberToMoney(row.fees24h)} */}
-                      -
+                      {/* {formatNumberToMoney(row.fees24h)} */}-
                     </TableCell>
                     <TableCell align="right">
                       <Typography color="brown" fontSize={14}>
-                        {/* {roundNumber(row?.feesYearly ?? 0, 2)}% */}
-                        -
+                        {/* {roundNumber(row?.feesYearly ?? 0, 2)}% */}-
                       </Typography>
                       <Box display="flex" justifyContent="flex-end"></Box>
                     </TableCell>

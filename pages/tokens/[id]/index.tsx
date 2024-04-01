@@ -12,6 +12,7 @@ import useMounted from "../../../src/hooks/use-mounted";
 import useSavedTokens from "../../../src/hooks/use-saved-tokens";
 import {
   formatNumberToMoney,
+  formatTokenAmount,
   getSoroswapAddLiquidityUrl,
   getSoroswapSwapUrl,
   openInNewTab,
@@ -158,7 +159,11 @@ const TokenPage = () => {
               <Typography>TVL</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatNumberToMoney(token.data?.tvl)}
+                  {formatTokenAmount(
+                    token.data?.tvl,
+                    token.data?.asset.decimals,
+                    "money"
+                  )}
                 </Typography>
               </LoadingSkeleton>
 
@@ -171,7 +176,11 @@ const TokenPage = () => {
               <Typography>24h Trading Vol</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatNumberToMoney(token.data?.volume24h)}
+                  {formatTokenAmount(
+                    token.data?.volume24h,
+                    token.data?.asset.decimals,
+                    "money"
+                  )}
                 </Typography>
               </LoadingSkeleton>
 
@@ -184,7 +193,11 @@ const TokenPage = () => {
               <Typography>7d Trading Vol</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatNumberToMoney(token.data?.volume7d)}
+                  {formatTokenAmount(
+                    token.data?.volume7d,
+                    token.data?.asset.decimals,
+                    "money"
+                  )}
                 </Typography>
               </LoadingSkeleton>
 
@@ -197,7 +210,11 @@ const TokenPage = () => {
               <Typography>24h Fees</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatNumberToMoney(token.data?.fees24h)}
+                  {formatTokenAmount(
+                    token.data?.fees24h,
+                    token.data?.asset.decimals,
+                    "money"
+                  )}
                 </Typography>
               </LoadingSkeleton>
             </Box>
