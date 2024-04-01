@@ -18,7 +18,6 @@ import PoolChart from "../../../src/components/pool-chart";
 import Token from "../../../src/components/token";
 import useSavedPools from "../../../src/hooks/use-saved-pools";
 import {
-  formatNumberToMoney,
   formatTokenAmount,
   getExpectedAmountOfOne,
   getSoroswapAddLiquidityUrl,
@@ -27,6 +26,7 @@ import {
 } from "../../../src/utils/utils";
 import { useQueryEventsByPoolAddress } from "../../../src/hooks/events";
 import useEventTopicFilter from "../../../src/hooks/use-event-topic-filter";
+import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
 
 const PoolPage = () => {
   const router = useRouter();

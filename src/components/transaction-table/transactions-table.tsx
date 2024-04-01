@@ -24,8 +24,6 @@ import {
   RouterEventType,
   RouterEventsAPIResponse,
 } from "../../types/router-events";
-import { useQueryAllEvents } from "../../hooks/events";
-import { UseQueryResult } from "@tanstack/react-query";
 import { UseEventTopicFilterReturnProps } from "../../hooks/use-event-topic-filter";
 
 TimeAgo.addDefaultLocale(en);
