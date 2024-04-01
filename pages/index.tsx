@@ -5,7 +5,6 @@ import LoadingSkeleton from "../src/components/loading-skeleton";
 import PoolsTable from "../src/components/pools-table/pools-table";
 import TokensTable from "../src/components/tokens-table/tokens-table";
 import TVLChart from "../src/components/tvl-chart";
-import VolumeChart from "../src/components/volume-chart";
 import { useQueryPools } from "../src/hooks/pools";
 import {
   useQuerySoroswapFees24h,
@@ -15,12 +14,19 @@ import {
 import { useQueryTokens } from "../src/hooks/tokens";
 import { formatNumberToMoney } from "../src/utils/utils";
 import TransactionsTable from "../src/components/transaction-table/transactions-table";
+import { useQueryAllEvents } from "../src/hooks/events";
+import useEventTopicFilter from "../src/hooks/use-event-topic-filter";
 
 export default function Home() {
   const pools = useQueryPools();
   const tokens = useQueryTokens();
   const soroswapTVL = useQuerySoroswapTVL();
-  
+  // const soroswapFees = useQuerySoroswapFees24h();
+  // const soroswapVolume = useQuerySoroswapVolume24h();
+
+  const eventsFilters = useEventTopicFilter();
+  const events = useQueryAllEvents({ topic2: eventsFilters.topic });
+
   return (
     <>
       <Head>
@@ -34,7 +40,7 @@ export default function Home() {
           <Grid item xs={12} md={6}>
             <TVLChart />
           </Grid>
-{/*           <Grid item xs={12} md={6}>
+          {/*           <Grid item xs={12} md={6}>
             <VolumeChart />
           </Grid> */}
         </Grid>
@@ -115,7 +121,11 @@ export default function Home() {
           <Typography variant="h6" sx={{ mb: 1 }}>
             Transactions
           </Typography>
-          <TransactionsTable />
+          <TransactionsTable
+            rows={events.data ?? []}
+            isLoading={events.isLoading}
+            filters={eventsFilters}
+          />
         </Box>
       </Layout>
     </>

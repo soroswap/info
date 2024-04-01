@@ -19,8 +19,14 @@ import {
   shortenAddress,
   shouldShortenCode,
 } from "../../utils/utils";
-import { useQuerySoroswapRouterEvents } from "../../hooks/soroswap";
-import { RouterEventAPI, RouterEventType } from "../../types/router-events";
+import {
+  RouterEventAPI,
+  RouterEventType,
+  RouterEventsAPIResponse,
+} from "../../types/router-events";
+import { useQueryAllEvents } from "../../hooks/events";
+import { UseQueryResult } from "@tanstack/react-query";
+import { UseEventTopicFilterReturnProps } from "../../hooks/use-event-topic-filter";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
@@ -136,19 +142,14 @@ function TransactionsTableHead(props: TransactionsTableProps) {
   );
 }
 
-export default function TransactionsTable() {
-  const [currentFilter, setCurrentFilter] = React.useState<
-    "All" | RouterEventType
-  >("All");
+interface Props {
+  rows: RouterEventsAPIResponse;
+  isLoading: boolean;
+  filters: UseEventTopicFilterReturnProps;
+}
 
-  const topic: RouterEventType | undefined =
-    currentFilter === "All"
-      ? undefined
-      : (currentFilter.toLowerCase() as RouterEventType);
-
-  const routerEvents = useQuerySoroswapRouterEvents(topic, 1000, undefined);
-
-  const rows = routerEvents.data ?? [];
+export default function TransactionsTable({ rows, isLoading, filters }: Props) {
+  const { currentFilter, setCurrentFilter } = filters;
 
   const {
     order,
@@ -166,7 +167,7 @@ export default function TransactionsTable() {
     defaultOrderBy: "timestamp",
   });
 
-  if (routerEvents.isLoading) {
+  if (isLoading) {
     return <Skeleton variant="rounded" height={300} />;
   }
 
@@ -235,6 +236,13 @@ export default function TransactionsTable() {
                   }}
                 >
                   <TableCell colSpan={6} />
+                </TableRow>
+              )}
+              {visibleRows.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    No transactions found
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>

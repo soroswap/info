@@ -27,12 +27,20 @@ import {
   getSoroswapSwapUrl,
   shortenAddress,
 } from "../../../src/utils/utils";
+import { useQueryEventsByPoolAddress } from "../../../src/hooks/events";
+import useEventTopicFilter from "../../../src/hooks/use-event-topic-filter";
 
 const PoolPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
   const { handleSavePool, isPoolSaved } = useSavedPools();
+
+  const eventsFilter = useEventTopicFilter();
+  const events = useQueryEventsByPoolAddress({
+    poolAddress: id as string,
+    topic2: eventsFilter.topic,
+  });
 
   const pool = useQueryPool({ poolAddress: id as string });
   const token0 = pool.data?.token0;
@@ -255,12 +263,16 @@ const PoolPage = () => {
           </Card>
         </Grid>
       </Grid>
-      {/* <Box sx={{ mt: 4 }}>
+      <Box sx={{ mt: 4 }}>
         <Typography variant="h6" sx={{ mb: 1 }}>
           Transactions
         </Typography>
-        <TransactionsTable rows={rows} />
-      </Box> */}
+        <TransactionsTable
+          rows={events.data ?? []}
+          isLoading={events.isLoading}
+          filters={eventsFilter}
+        />
+      </Box>
     </Layout>
   );
 };
