@@ -10,11 +10,16 @@ import { useQuerySoroswapTVL } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
 import { formatTokenAmount } from "../src/utils/utils";
 import TransactionsTable from "../src/components/transaction-table/transactions-table";
+import { useQueryAllEvents } from "../src/hooks/events";
+import useEventTopicFilter from "../src/hooks/use-event-topic-filter";
 
 export default function Home() {
   const pools = useQueryPools();
   const tokens = useQueryTokens();
   const soroswapTVL = useQuerySoroswapTVL();
+
+  const eventsFilters = useEventTopicFilter();
+  const events = useQueryAllEvents({ topic2: eventsFilters.topic });
 
   return (
     <>
@@ -110,7 +115,11 @@ export default function Home() {
           <Typography variant="h6" sx={{ mb: 1 }}>
             Transactions
           </Typography>
-          <TransactionsTable />
+          <TransactionsTable
+            rows={events.data ?? []}
+            isLoading={events.isLoading}
+            filters={eventsFilters}
+          />
         </Box>
       </Layout>
     </>

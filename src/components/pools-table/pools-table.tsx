@@ -229,6 +229,13 @@ export default function PoolsTable({
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
+              {visibleRows.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    No pools found
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

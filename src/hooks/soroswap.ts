@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchSoroswapFees24h,
-  fetchSoroswapRouterEvents,
   fetchSoroswapTVL,
   fetchSoroswapTVLChart,
   fetchSoroswapVolume24h,
   fetchSoroswapVolumeChart,
 } from "../services/soroswap";
-import { RouterEventType } from "../types/router-events";
 import useQueryNetwork from "./use-query-network";
 
 const key = "soroswap";
@@ -58,20 +56,6 @@ export const useQuerySoroswapTVLChart = () => {
   return useQuery({
     queryKey: [key, network, "tvl-chart"],
     queryFn: fetchSoroswapTVLChart,
-    enabled: isValidQuery,
-  });
-};
-
-export const useQuerySoroswapRouterEvents = (
-  topic2?: RouterEventType,
-  first?: number,
-  offset?: number
-) => {
-  const { network, isValidQuery } = useQueryNetwork();
-
-  return useQuery({
-    queryKey: ["routerEvents", network, topic2, first, offset],
-    queryFn: () => fetchSoroswapRouterEvents(topic2, first, offset),
     enabled: isValidQuery,
   });
 };
