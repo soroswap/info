@@ -3,7 +3,7 @@ import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuerySoroswapTVLChart } from "../hooks/soroswap";
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
-import { formatNumberToToken, formatTokenAmount } from "../utils/utils";
+import { formatNumberToToken } from "../utils/utils";
 
 const TVLChart = () => {
   const tvlChart = useQuerySoroswapTVLChart();

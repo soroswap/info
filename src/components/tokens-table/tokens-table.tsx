@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import useTable from "../../hooks/use-table";
 import { Token } from "../../types/tokens";
-import { formatNumberToMoney, formatTokenAmount } from "../../utils/utils";
+import { formatNumberToMoney } from "../../utils/utils";
 import TokenImage from "../token";
 
 interface HeadCell {

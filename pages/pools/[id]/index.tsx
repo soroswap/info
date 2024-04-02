@@ -19,6 +19,7 @@ import Token from "../../../src/components/token";
 import useSavedPools from "../../../src/hooks/use-saved-pools";
 import {
   formatNumberToMoney,
+  formatNumberToToken,
   formatTokenAmount,
   getExpectedAmountOfOne,
   getSoroswapAddLiquidityUrl,
@@ -262,7 +263,7 @@ const PoolPage = () => {
               <Typography>24h Fees</Typography>
               <LoadingSkeleton isLoading={pool.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatTokenAmount(pool.data?.fees24h, 7, "money")}
+                  {formatNumberToToken(pool.data?.fees24h)}
                 </Typography>
               </LoadingSkeleton>
             </Box>
