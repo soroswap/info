@@ -18,7 +18,7 @@ import {
 } from "../hooks/tokens";
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
-import { formatNumberToMoney, formatTokenAmount } from "../utils/utils";
+import { formatNumberToMoney, formatNumberToToken } from "../utils/utils";
 
 type Charts = "volume" | "tvl" | "price";
 
@@ -93,9 +93,7 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
                 tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
               <Tooltip
-                formatter={(amount) =>
-                  formatTokenAmount(amount as number, 7, "token")
-                }
+                formatter={(amount) => formatNumberToMoney(amount as number)}
               />
               <Area
                 type="monotone"
@@ -130,9 +128,7 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
                 tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
               <Tooltip
-                formatter={(amount) =>
-                  formatTokenAmount(amount as number, 7, "token")
-                }
+                formatter={(amount) => formatNumberToToken(amount as number)}
               />
               <Bar dataKey="tvl" fill="#82ca9d" />
             </BarChart>

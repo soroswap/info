@@ -183,14 +183,10 @@ export default function TokensTable({
                       <PercentageChanged percentage={row.priceChange24h} />
                     </TableCell> */}
                     <TableCell align="right">
-                      {formatTokenAmount(
-                        row.volume24h,
-                        row.asset?.decimals,
-                        "money"
-                      )}
+                      {formatNumberToMoney(row.volume24h)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatTokenAmount(row.tvl, row.asset?.decimals, "money")}
+                      {formatNumberToMoney(row.tvl)}
                     </TableCell>
                   </TableRow>
                 );

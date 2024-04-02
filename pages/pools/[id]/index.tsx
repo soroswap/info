@@ -18,6 +18,7 @@ import PoolChart from "../../../src/components/pool-chart";
 import Token from "../../../src/components/token";
 import useSavedPools from "../../../src/hooks/use-saved-pools";
 import {
+  formatNumberToMoney,
   formatTokenAmount,
   getExpectedAmountOfOne,
   getSoroswapAddLiquidityUrl,
@@ -245,7 +246,7 @@ const PoolPage = () => {
               <Typography>TVL</Typography>
               <LoadingSkeleton isLoading={pool.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatTokenAmount(pool.data?.tvl, 7, "money")}
+                  {formatNumberToMoney(pool.data?.tvl)}
                 </Typography>
               </LoadingSkeleton>
             </Box>
@@ -253,7 +254,7 @@ const PoolPage = () => {
               <Typography>Volume 24h</Typography>
               <LoadingSkeleton isLoading={pool.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatTokenAmount(pool.data?.volume24h, 7, "money")}
+                  {formatNumberToMoney(pool.data?.volume24h)}
                 </Typography>
               </LoadingSkeleton>
             </Box>

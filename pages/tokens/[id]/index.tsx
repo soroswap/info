@@ -159,11 +159,7 @@ const TokenPage = () => {
               <Typography>TVL</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatTokenAmount(
-                    token.data?.tvl,
-                    token.data?.asset.decimals,
-                    "money"
-                  )}
+                  {formatNumberToMoney(token.data?.tvl)}
                 </Typography>
               </LoadingSkeleton>
 
@@ -176,11 +172,7 @@ const TokenPage = () => {
               <Typography>24h Trading Vol</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatTokenAmount(
-                    token.data?.volume24h,
-                    token.data?.asset.decimals,
-                    "money"
-                  )}
+                  {formatNumberToMoney(token.data?.volume24h)}
                 </Typography>
               </LoadingSkeleton>
 
@@ -193,11 +185,7 @@ const TokenPage = () => {
               <Typography>7d Trading Vol</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatTokenAmount(
-                    token.data?.volume7d,
-                    token.data?.asset.decimals,
-                    "money"
-                  )}
+                  {formatNumberToMoney(token.data?.volume7d)}
                 </Typography>
               </LoadingSkeleton>
 

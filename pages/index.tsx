@@ -8,7 +8,7 @@ import TVLChart from "../src/components/tvl-chart";
 import { useQueryPools } from "../src/hooks/pools";
 import { useQuerySoroswapTVL } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
-import { formatNumberToMoney, formatTokenAmount } from "../src/utils/utils";
+import { formatNumberToMoney } from "../src/utils/utils";
 import TransactionsTable from "../src/components/transaction-table/transactions-table";
 import { useQueryAllEvents } from "../src/hooks/events";
 import useEventTopicFilter from "../src/hooks/use-event-topic-filter";

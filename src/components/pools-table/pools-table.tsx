@@ -14,12 +14,7 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import useTable from "../../hooks/use-table";
 import { Pool } from "../../types/pools";
-import {
-  formatNumberToMoney,
-  formatTokenAmount,
-  roundNumber,
-  shouldShortenCode,
-} from "../../utils/utils";
+import { formatNumberToMoney, shouldShortenCode } from "../../utils/utils";
 import Token from "../token";
 
 interface HeadCell {

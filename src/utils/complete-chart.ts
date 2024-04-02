@@ -1,5 +1,3 @@
-import { formatTokenAmount } from "./utils";
-
 type DataItem = {
   date: string;
   [key: string]: any;
