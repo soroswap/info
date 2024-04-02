@@ -8,7 +8,7 @@ import TVLChart from "../src/components/tvl-chart";
 import { useQueryPools } from "../src/hooks/pools";
 import { useQuerySoroswapTVL } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
-import { formatTokenAmount } from "../src/utils/utils";
+import { formatNumberToMoney, formatTokenAmount } from "../src/utils/utils";
 import TransactionsTable from "../src/components/transaction-table/transactions-table";
 import { useQueryAllEvents } from "../src/hooks/events";
 import useEventTopicFilter from "../src/hooks/use-event-topic-filter";
@@ -91,7 +91,7 @@ export default function Home() {
               <Typography>TVL:</Typography>
               <LoadingSkeleton isLoading={soroswapTVL.isLoading} height={20}>
                 <Typography fontWeight={600}>
-                  {formatTokenAmount(soroswapTVL.data?.tvl, 7, "money")}
+                  {formatNumberToMoney(soroswapTVL.data?.tvl)}
                 </Typography>
                 {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
               </LoadingSkeleton>

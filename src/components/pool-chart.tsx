@@ -18,7 +18,7 @@ import {
 } from "../hooks/pools";
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
-import { formatTokenAmount } from "../utils/utils";
+import { formatNumberToToken, formatTokenAmount } from "../utils/utils";
 
 type Charts = "volume" | "liquidity" | "fees";
 
@@ -93,9 +93,7 @@ const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
                 tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
               <Tooltip
-                formatter={(amount) =>
-                  formatTokenAmount(amount as number, 7, "token")
-                }
+                formatter={(amount) => formatNumberToToken(amount as number)}
               />
               <Area
                 type="monotone"
@@ -130,9 +128,7 @@ const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
                 tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
               <Tooltip
-                formatter={(amount) =>
-                  formatTokenAmount(amount as number, 7, "token")
-                }
+                formatter={(amount) => formatNumberToToken(amount as number)}
               />
               <Bar dataKey="tvl" fill="#82ca9d" />
             </BarChart>
