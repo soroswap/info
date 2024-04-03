@@ -5,6 +5,11 @@ const soroswapAppUrl = process.env.NEXT_PUBLIC_SOROSWAP_APP_URL;
 
 export const formatNumberToMoney = (number: number | undefined) => {
   if (!number) return "-";
+
+  if (typeof number === "string") {
+    number = parseFloat(number);
+  }
+
   if (typeof number !== "number") return "$0.00";
 
   if (number > 1000000000) {
@@ -21,6 +26,11 @@ export const formatNumberToMoney = (number: number | undefined) => {
 
 export const formatNumberToToken = (number: number | undefined) => {
   if (!number) return "-";
+
+  if (typeof number === "string") {
+    number = parseFloat(number);
+  }
+
   if (typeof number !== "number") return "$0.00";
 
   if (number > 1000000000) {
@@ -139,4 +149,43 @@ export const formatEvent = (
   return `${toCamelCase(event)} ${shouldShortenCode(symbol0)} ${
     event === "swap" ? "for" : "and"
   } ${shouldShortenCode(symbol1)}`;
+};
+
+type Formatter = "money" | "token";
+
+export const formatTokenAmount = (
+  amount: BigNumber | string | number | undefined | null,
+  decimals: number = 7,
+  formatter?: Formatter
+): string => {
+  if (!amount) {
+    return "-";
+  }
+
+  if (!(amount instanceof BigNumber)) {
+    amount = BigNumber(amount);
+  }
+
+  let formatted = amount.toString();
+
+  if (decimals > 0) {
+    formatted = amount.shiftedBy(-decimals).toFixed(decimals).toString();
+
+    while (formatted[formatted.length - 1] === "0") {
+      formatted = formatted.substring(0, formatted.length - 1);
+    }
+
+    if (formatted.endsWith(".")) {
+      formatted = formatted.substring(0, formatted.length - 1);
+    }
+  }
+
+  if (formatter) {
+    if (formatter === "money")
+      formatted = formatNumberToMoney(parseFloat(formatted));
+    if (formatter === "token")
+      formatted = formatNumberToToken(parseFloat(formatted));
+  }
+
+  return formatted;
 };

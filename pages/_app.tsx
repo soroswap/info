@@ -39,6 +39,7 @@ export default function MyApp(props: AppProps) {
 
   useEffect(() => {
     if (isValidQuery || !router.isReady) return;
+
     router.push({ query: { network: "mainnet" } });
   }, [query]);
 

@@ -11,12 +11,11 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
-import { XLM_ADDRESS } from "../constants/constants";
-import { useQueryToken } from "../hooks/tokens";
 import { formatNumberToMoney } from "../utils/utils";
 import LoadingSkeleton from "./loading-skeleton";
 import BasicMenu from "./menu";
 import NetworkSelector from "./network-selector";
+import { useQueryXLMPrice } from "../hooks/xlm-price";
 
 const LINKS = [
   {
@@ -44,7 +43,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     return currentPath.includes(href);
   };
 
-  const xlm = useQueryToken({ tokenAddress: XLM_ADDRESS });
+  const xlm = useQueryXLMPrice();
 
   return (
     <main>
@@ -67,9 +66,12 @@ export default function Layout({ children }: { children: ReactNode }) {
                 px="8px"
                 borderRadius="4px"
               >
-                <Typography fontSize={12}>⚠️ *This is a beta version, and data computation is actively in progress.</Typography>
+                <Typography fontSize={12}>
+                  ⚠️ *This is a beta version, and data computation is actively
+                  in progress.
+                </Typography>
                 <Typography fontSize={12} color="green">
-                ⚠️
+                  ⚠️
                 </Typography>
                 <Box
                   bgcolor="red"
@@ -88,7 +90,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                   style={{ background: "gray" }}
                 >
                   <Typography fontSize={12}>
-                    {formatNumberToMoney(xlm.data?.price)}
+                    {formatNumberToMoney(xlm.data)}
                   </Typography>
                 </LoadingSkeleton>
               </Box>

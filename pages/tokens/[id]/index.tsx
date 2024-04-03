@@ -12,6 +12,7 @@ import useMounted from "../../../src/hooks/use-mounted";
 import useSavedTokens from "../../../src/hooks/use-saved-tokens";
 import {
   formatNumberToMoney,
+  formatNumberToToken,
   getSoroswapAddLiquidityUrl,
   getSoroswapSwapUrl,
   openInNewTab,
@@ -197,7 +198,7 @@ const TokenPage = () => {
               <Typography>24h Fees</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatNumberToMoney(token.data?.fees24h)}
+                  {formatNumberToToken(token.data?.fees24h)}
                 </Typography>
               </LoadingSkeleton>
             </Box>

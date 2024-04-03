@@ -161,7 +161,8 @@ export default function TokensTable({
                         bgcolor: "#f5f5f5",
                       },
                     }}
-                    onClick={() => onClickRow(row.asset.contract)}
+                    component="a"
+                    href={`/tokens/${row.asset.contract}?network=${router.query.network}`}
                   >
                     <TableCell>{index + 1}</TableCell>
                     <TableCell

@@ -14,14 +14,13 @@ import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
 import Layout from "../../../src/components/layout";
 import Link from "next/link";
 import LoadingSkeleton from "../../../src/components/loading-skeleton";
-import PercentageChanged from "../../../src/components/percentage-changed";
 import PoolChart from "../../../src/components/pool-chart";
 import Token from "../../../src/components/token";
-import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
 import useSavedPools from "../../../src/hooks/use-saved-pools";
 import {
   formatNumberToMoney,
   formatNumberToToken,
+  formatTokenAmount,
   getExpectedAmountOfOne,
   getSoroswapAddLiquidityUrl,
   getSoroswapSwapUrl,
@@ -29,6 +28,7 @@ import {
 } from "../../../src/utils/utils";
 import { useQueryEventsByPoolAddress } from "../../../src/hooks/events";
 import useEventTopicFilter from "../../../src/hooks/use-event-topic-filter";
+import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
 
 const PoolPage = () => {
   const router = useRouter();
@@ -121,7 +121,9 @@ const PoolPage = () => {
                 fontSize: 16,
               }}
               label={
-                <Link href="/tokens/123">
+                <Link
+                  href={`/tokens/${token0?.contract}?network=${router.query.network}`}
+                >
                   <Box display="flex" alignItems="center" gap="4px">
                     <Token imageUrl={token0?.icon} width={20} height={20} />1{" "}
                     {token0code} ={" "}
@@ -144,7 +146,9 @@ const PoolPage = () => {
                 fontSize: 16,
               }}
               label={
-                <Link href="/tokens/123">
+                <Link
+                  href={`/tokens/${token1?.contract}?network=${router.query.network}`}
+                >
                   <Box display="flex" alignItems="center" gap="4px">
                     <Token imageUrl={token1?.icon} width={20} height={20} />1{" "}
                     {token1code} ={" "}
@@ -206,7 +210,11 @@ const PoolPage = () => {
                     {token0code}
                   </Typography>
                   <Typography fontSize={14}>
-                    {formatNumberToToken(pool.data?.reserve0)}
+                    {formatTokenAmount(
+                      pool.data?.reserve0,
+                      pool.data?.token0.decimals,
+                      "token"
+                    )}
                   </Typography>
                 </LoadingSkeleton>
               </Box>
@@ -226,7 +234,11 @@ const PoolPage = () => {
                     {token1code}
                   </Typography>{" "}
                   <Typography fontSize={14}>
-                    {formatNumberToToken(pool.data?.reserve1)}
+                    {formatTokenAmount(
+                      pool.data?.reserve1,
+                      pool.data?.token1?.decimals,
+                      "token"
+                    )}
                   </Typography>
                 </LoadingSkeleton>
               </Box>
@@ -251,7 +263,7 @@ const PoolPage = () => {
               <Typography>24h Fees</Typography>
               <LoadingSkeleton isLoading={pool.isLoading} variant="text">
                 <Typography variant="h5">
-                  {formatNumberToMoney(pool.data?.fees24h)}
+                  {formatNumberToToken(pool.data?.fees24h)}
                 </Typography>
               </LoadingSkeleton>
             </Box>

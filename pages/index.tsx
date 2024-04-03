@@ -6,11 +6,7 @@ import PoolsTable from "../src/components/pools-table/pools-table";
 import TokensTable from "../src/components/tokens-table/tokens-table";
 import TVLChart from "../src/components/tvl-chart";
 import { useQueryPools } from "../src/hooks/pools";
-import {
-  useQuerySoroswapFees24h,
-  useQuerySoroswapTVL,
-  useQuerySoroswapVolume24h,
-} from "../src/hooks/soroswap";
+import { useQuerySoroswapTVL } from "../src/hooks/soroswap";
 import { useQueryTokens } from "../src/hooks/tokens";
 import { formatNumberToMoney } from "../src/utils/utils";
 import TransactionsTable from "../src/components/transaction-table/transactions-table";
@@ -21,8 +17,6 @@ export default function Home() {
   const pools = useQueryPools();
   const tokens = useQueryTokens();
   const soroswapTVL = useQuerySoroswapTVL();
-  // const soroswapFees = useQuerySoroswapFees24h();
-  // const soroswapVolume = useQuerySoroswapVolume24h();
 
   const eventsFilters = useEventTopicFilter();
   const events = useQueryAllEvents({ topic2: eventsFilters.topic });
