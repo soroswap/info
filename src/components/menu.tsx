@@ -33,10 +33,18 @@ export default function BasicMenu() {
         }
         transition
       >
-        <MenuItem>About</MenuItem>
-        <MenuItem>Docs</MenuItem>
-        <MenuItem>Github</MenuItem>
-        <MenuItem>Discord</MenuItem>
+        <MenuItem href="https://soroswap.finance/" target="_blank">
+          About
+        </MenuItem>
+        <MenuItem href="https://docs.soroswap.finance/" target="_blank">
+          Docs
+        </MenuItem>
+        <MenuItem href="https://github.com/soroswap" target="_blank">
+          Github
+        </MenuItem>
+        <MenuItem href="https://discord.gg/G8c98rhfqw" target="_blank">
+          Discord
+        </MenuItem>
       </Menu>
     </Box>
   );
