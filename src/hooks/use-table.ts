@@ -47,17 +47,19 @@ interface UseTableProps<T> {
   rows: T[];
   defaultOrderBy: keyof T;
   defaultOrder: Order;
+  itemsPerPage?: number;
 }
 
 const useTable = <T>({
   rows,
   defaultOrderBy,
   defaultOrder,
+  itemsPerPage = 10,
 }: UseTableProps<T>) => {
   const [order, setOrder] = React.useState<Order>(defaultOrder);
   const [orderBy, setOrderBy] = React.useState<keyof T>(defaultOrderBy);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(itemsPerPage);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -75,7 +77,7 @@ const useTable = <T>({
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, itemsPerPage));
     setPage(0);
   };
 

@@ -16,6 +16,7 @@ import LoadingSkeleton from "./loading-skeleton";
 import BasicMenu from "./menu";
 import NetworkSelector from "./network-selector";
 import { useQueryXLMPrice } from "../hooks/xlm-price";
+import Searchbar from "./searchbar";
 
 const LINKS = [
   {
@@ -143,17 +144,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             gap={2}
           >
             <NetworkSelector />
-            <Input
-              placeholder="Search pools or tokens"
-              sx={{
-                bgcolor: "white",
-                borderRadius: 5,
-                px: 2,
-                py: 0.5,
-                width: "100%",
-                maxWidth: isMd ? "100%" : 400,
-              }}
-            />
+            <Searchbar />
             <BasicMenu />
           </Grid>
         </Grid>

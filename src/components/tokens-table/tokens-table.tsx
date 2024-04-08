@@ -100,10 +100,12 @@ export default function TokensTable({
   rows,
   emptyMessage = "No tokens found",
   isLoading = false,
+  itemsPerPage = 10,
 }: {
   rows: Token[];
   emptyMessage?: string;
   isLoading?: boolean;
+  itemsPerPage?: number;
 }) {
   const {
     order,
@@ -119,6 +121,7 @@ export default function TokensTable({
     rows,
     defaultOrder: "desc",
     defaultOrderBy: "tvl",
+    itemsPerPage,
   });
 
   const router = useRouter();
