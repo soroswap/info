@@ -1,5 +1,12 @@
 import { Box, Paper, Typography } from "@mui/material";
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  Tooltip,
+  ResponsiveContainer,
+  YAxis,
+} from "recharts";
 import { useQuerySoroswapTVLChart } from "../hooks/soroswap";
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
@@ -9,7 +16,7 @@ const TVLChart = () => {
   const tvlChart = useQuerySoroswapTVLChart();
 
   return (
-    <Paper sx={{ maxWidth: 600, py: 2, bgcolor: "white" }}>
+    <Paper sx={{ maxWidth: 1184, py: 2, bgcolor: "white" }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -24,10 +31,15 @@ const TVLChart = () => {
         </Box>
       </Box>
       <LoadingSkeleton isLoading={tvlChart.isLoading} width="100%" height={300}>
-        <ResponsiveContainer width="100%" height="100%" minHeight={300}>
+        <ResponsiveContainer
+          width="100%"
+          height="100%"
+          minHeight={300}
+          style={{ paddingLeft: 5 }}
+        >
           <AreaChart
             width={500}
-            height={400}
+            height={300}
             data={tvlChart.data ?? []}
             margin={{
               top: 0,
@@ -39,6 +51,9 @@ const TVLChart = () => {
             <XAxis
               dataKey="date"
               tickFormatter={(tick) => xAxisChartFormatter(tick)}
+            />
+            <YAxis
+              tickFormatter={(amount) => formatNumberToToken(amount as number)}
             />
             <Tooltip
               formatter={(amount) => formatNumberToToken(amount as number)}

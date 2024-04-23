@@ -189,7 +189,7 @@ export default function TokensTable({
                       {formatNumberToMoney(row.volume24h)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.tvl)}
+                      {formatNumberToMoney(row.tvl, 2)}
                     </TableCell>
                   </TableRow>
                 );

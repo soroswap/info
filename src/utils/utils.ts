@@ -3,7 +3,10 @@ import { RouterEventType } from "../types/router-events";
 
 const soroswapAppUrl = process.env.NEXT_PUBLIC_SOROSWAP_APP_URL;
 
-export const formatNumberToMoney = (number: number | undefined) => {
+export const formatNumberToMoney = (
+  number: number | undefined,
+  decimals: number = 7
+) => {
   if (!number) return "-";
 
   if (typeof number === "string") {
@@ -21,10 +24,12 @@ export const formatNumberToMoney = (number: number | undefined) => {
   if (number > 1000) {
     return `$${(number / 1000).toFixed(2)}k`;
   }
-  return `$${number.toFixed(7)}`;
+  return `$${number.toFixed(decimals)}`;
 };
 
 export const formatNumberToToken = (number: number | undefined) => {
+  if (number === 0) return "0";
+
   if (!number) return "-";
 
   if (typeof number === "string") {

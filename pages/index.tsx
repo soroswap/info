@@ -31,7 +31,7 @@ export default function Home() {
           Soroswap Overview
         </Typography>
         <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <TVLChart />
           </Grid>
           {/*           <Grid item xs={12} md={6}>

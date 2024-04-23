@@ -195,7 +195,7 @@ export default function PoolsTable({
                       {shouldShortenCode(row.token1.code)}
                     </TableCell>
                     <TableCell align="right">
-                      {formatNumberToMoney(row.tvl)}
+                      {formatNumberToMoney(row.tvl, 2)}
                     </TableCell>
                     <TableCell align="right">
                       {/* {formatNumberToMoney(row.volume24h)} */}-
