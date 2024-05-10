@@ -8,7 +8,7 @@ const VolumeChart = () => {
   const volumeChart = useQuerySoroswapVolumeChart();
 
   return (
-    <Paper sx={{ maxWidth: 600, py: 2, bgcolor: "white" }}>
+    <Paper sx={{ maxWidth: 600, py: 2 }}>
       <Box
         display="flex"
         justifyContent="space-between"

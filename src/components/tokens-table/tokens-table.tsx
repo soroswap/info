@@ -1,6 +1,5 @@
-import { Card, Skeleton } from "@mui/material";
+import { Card, Skeleton, styled, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -16,6 +15,7 @@ import useTable from "../../hooks/use-table";
 import { Token } from "../../types/tokens";
 import { formatNumberToMoney } from "../../utils/utils";
 import TokenImage from "../token";
+import { StyledCard } from "components/styled/card";
 
 interface HeadCell {
   id: keyof Token;
@@ -51,6 +51,10 @@ const headCells: readonly HeadCell[] = [
   },
 ];
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  border: 0,
+}));
+
 interface TokensTableProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
@@ -69,10 +73,10 @@ function TokensTableHead(props: TokensTableProps) {
 
   return (
     <TableHead>
-      <TableRow>
-        <TableCell>#</TableCell>
+      <TableRow sx={{ bgcolor: "#1b1b1b" }}>
+        <StyledTableCell>#</StyledTableCell>
         {headCells.map((headCell) => (
-          <TableCell
+          <StyledTableCell
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             sortDirection={orderBy === headCell.id ? order : false}
@@ -89,7 +93,7 @@ function TokensTableHead(props: TokensTableProps) {
                 </Box>
               ) : null}
             </TableSortLabel>
-          </TableCell>
+          </StyledTableCell>
         ))}
       </TableRow>
     </TableHead>
@@ -135,17 +139,19 @@ export default function TokensTable({
     });
   };
 
+  const theme = useTheme();
+
   if (isLoading) {
     return <Skeleton variant="rounded" height={300} />;
   }
 
   if (rows.length === 0) {
-    return <Card sx={{ p: 2, bgcolor: "white" }}>{emptyMessage}</Card>;
+    return <Card sx={{ p: 2 }}>{emptyMessage}</Card>;
   }
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", bgcolor: "white" }}>
+      <StyledCard sx={{ width: "100%" }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <TokensTableHead
@@ -159,16 +165,20 @@ export default function TokensTable({
                   <TableRow
                     key={index}
                     sx={{
-                      ":hover": {
-                        cursor: "pointer",
-                        bgcolor: "#f5f5f5",
+                      "&:nth-of-type(2n)": {
+                        bgcolor: "#1b1b1b",
                       },
+                      "&:hover": {
+                        cursor: "pointer",
+                        bgcolor: theme.palette.background.paper,
+                      },
+                      bgcolor: "transparent",
                     }}
                     component="a"
                     href={`/tokens/${row.asset.contract}?network=${router.query.network}`}
                   >
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell
+                    <StyledTableCell>{index + 1}</StyledTableCell>
+                    <StyledTableCell
                       align="left"
                       sx={{
                         display: "flex",
@@ -178,19 +188,19 @@ export default function TokensTable({
                     >
                       <TokenImage imageUrl={row.asset.icon} />
                       {row.asset.name ?? row.asset.code}
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {formatNumberToMoney(row.price)}
-                    </TableCell>
-                    {/*     <TableCell align="right">
+                    </StyledTableCell>
+                    {/*     <StyledTableCell align="right">
                       <PercentageChanged percentage={row.priceChange24h} />
-                    </TableCell> */}
-                    <TableCell align="right">
+                    </StyledTableCell> */}
+                    <StyledTableCell align="right">
                       {formatNumberToMoney(row.volume24h)}
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {formatNumberToMoney(row.tvl, 2)}
-                    </TableCell>
+                    </StyledTableCell>
                   </TableRow>
                 );
               })}
@@ -200,14 +210,14 @@ export default function TokensTable({
                     height: 53 * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={6} />
+                  <StyledTableCell colSpan={6} />
                 </TableRow>
               )}
               {visibleRows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <StyledTableCell colSpan={6} align="center">
                     No tokens found
-                  </TableCell>
+                  </StyledTableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -222,7 +232,7 @@ export default function TokensTable({
           onRowsPerPageChange={handleChangeRowsPerPage}
           rowsPerPageOptions={[]}
         />
-      </Paper>
+      </StyledCard>
     </Box>
   );
 }

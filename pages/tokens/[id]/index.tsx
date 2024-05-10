@@ -2,7 +2,7 @@ import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
 import { Box, Button, Card, Grid, Link, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
-import Layout from "../../../src/components/layout";
+import Layout from "../../../src/components/layout/layout";
 import LoadingSkeleton from "../../../src/components/loading-skeleton";
 import PoolsTable from "../../../src/components/pools-table/pools-table";
 import Token from "../../../src/components/token";
@@ -154,7 +154,7 @@ const TokenPage = () => {
       </Box>
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ bgcolor: "white", p: 2, height: 410 }}>
+          <Card sx={{ p: 2, height: 410 }}>
             <Box mt={2}>
               <Typography>TVL</Typography>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
@@ -205,7 +205,7 @@ const TokenPage = () => {
           </Card>
         </Grid>
         <Grid item xs={12} md={8}>
-          <Card sx={{ height: 410, bgcolor: "white" }}>
+          <Card sx={{ height: 410 }}>
             <TokenChart tokenAddress={id as string} />
           </Card>
         </Grid>

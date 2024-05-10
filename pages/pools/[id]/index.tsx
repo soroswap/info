@@ -11,7 +11,7 @@ import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
 import { useQueryPool } from "../../../src/hooks/pools";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
-import Layout from "../../../src/components/layout";
+import Layout from "../../../src/components/layout/layout";
 import Link from "next/link";
 import LoadingSkeleton from "../../../src/components/loading-skeleton";
 import PoolChart from "../../../src/components/pool-chart";
@@ -191,7 +191,7 @@ const PoolPage = () => {
       </Box>
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ bgcolor: "white", p: 2, height: 410 }}>
+          <Card sx={{ p: 2, height: 410 }}>
             <Paper sx={{ bgcolor: "#00000014", p: 2 }}>
               <Typography>Total tokens locked</Typography>
               <Box display="flex" justifyContent="space-between" mt={1}>
@@ -270,7 +270,7 @@ const PoolPage = () => {
           </Card>
         </Grid>
         <Grid item xs={12} md={8}>
-          <Card sx={{ height: 410, bgcolor: "white" }}>
+          <Card sx={{ height: 410 }}>
             <PoolChart poolAddress={id as string} />
           </Card>
         </Grid>

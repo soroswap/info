@@ -142,12 +142,12 @@ export default function PoolsTable({
   }
 
   if (rows.length === 0) {
-    return <Card sx={{ p: 2, bgcolor: "white" }}>{emptyMessage}</Card>;
+    return <Card sx={{ p: 2 }}>{emptyMessage}</Card>;
   }
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", bgcolor: "white" }}>
+      <Paper sx={{ width: "100%" }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <PoolsTableHead

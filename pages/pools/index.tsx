@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { useQueryPools } from "../../src/hooks/pools";
-import Layout from "../../src/components/layout";
+import Layout from "../../src/components/layout/layout";
 import PoolsTable from "../../src/components/pools-table/pools-table";
 import useSavedPools from "../../src/hooks/use-saved-pools";
 

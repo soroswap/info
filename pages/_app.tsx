@@ -48,7 +48,7 @@ export default function MyApp(props: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <AppCacheProvider {...props}>
-        <ThemeProvider theme={theme("light")}>
+        <ThemeProvider theme={theme("dark")}>
           <CssBaseline />
           <Component {...pageProps} />
           <Analytics />

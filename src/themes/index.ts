@@ -119,14 +119,14 @@ export const theme = (mode: PaletteMode) => {
         light: "#B8C0DC",
       },
       background: {
-        default: isDark ? "#0F1016" : "#FFFFFF",
-        paper: isDark ? "#181A25" : opacify(10, "#8866DD"),
+        default: isDark ? "#161617" : "#FFFFFF",
+        paper: isDark ? "#1F1C25" : opacify(10, "#8866DD"),
       },
       error: {
         main: "#FD766B",
       },
       customBackground: {
-        surface: isDark ? "#0F1016" : "#F8F8F8",
+        surface: isDark ? "#161617" : "#F8F8F8",
         module: isDark ? "#13141E" : "#F8F8F8",
         outputBackground: isDark ? "#181A25" : "#F8F8F8",
         bg1: isDark ? "#181A25" : "#FFFFFF",

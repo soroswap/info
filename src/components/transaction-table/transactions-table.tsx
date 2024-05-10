@@ -171,7 +171,7 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", bgcolor: "white" }}>
+      <Paper sx={{ width: "100%" }}>
         <TableContainer sx={{ minHeight: 610 }}>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <TransactionsTableHead
