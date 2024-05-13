@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   AreaChart,
   Area,
@@ -16,23 +16,7 @@ import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 import { formatNumberToMoney, formatNumberToToken } from "../utils/utils";
 import { StyledCard } from "./styled/card";
-import { Text } from "./styled/text";
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-  const theme = useTheme();
-
-  if (active && payload && payload.length) {
-    return (
-      <StyledCard bgcolor={theme.palette.background.default} p="12px">
-        <Text color="gray">TVL</Text>
-        <Text fontWeight={600}>{formatNumberToMoney(payload[0].value)}</Text>
-        <Text color={theme.palette.customBackground.accentAction}>{label}</Text>
-      </StyledCard>
-    );
-  }
-
-  return null;
-};
+import ChartTooltip from "./chart-tooltip";
 
 const TVLChart = () => {
   const tvlChart = useQuerySoroswapTVLChart();
@@ -89,7 +73,7 @@ const TVLChart = () => {
             />
             <Tooltip
               formatter={(amount) => formatNumberToToken(amount as number)}
-              content={CustomTooltip}
+              content={ChartTooltip}
             />
             <Area
               type="monotone"

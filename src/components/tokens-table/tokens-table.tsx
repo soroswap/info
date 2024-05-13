@@ -16,6 +16,7 @@ import { Token } from "../../types/tokens";
 import { formatNumberToMoney } from "../../utils/utils";
 import TokenImage from "../token";
 import { StyledCard } from "components/styled/card";
+import { StyledTableCell } from "components/styled/table-cell";
 
 interface HeadCell {
   id: keyof Token;
@@ -50,10 +51,6 @@ const headCells: readonly HeadCell[] = [
     label: "TVL",
   },
 ];
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  border: 0,
-}));
 
 interface TokensTableProps {
   onRequestSort: (
@@ -143,10 +140,6 @@ export default function TokensTable({
 
   if (isLoading) {
     return <Skeleton variant="rounded" height={300} />;
-  }
-
-  if (rows.length === 0) {
-    return <Card sx={{ p: 2 }}>{emptyMessage}</Card>;
   }
 
   return (

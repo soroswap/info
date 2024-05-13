@@ -1,5 +1,11 @@
-import { OpenInNew, Star, StarBorderOutlined } from "@mui/icons-material";
-import { Box, Button, Card, Grid, Link, Typography } from "@mui/material";
+import {
+  GetApp,
+  OpenInNew,
+  Share,
+  Star,
+  StarBorderOutlined,
+} from "@mui/icons-material";
+import { Box, Button, Grid, Link, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
 import Layout from "../../../src/components/layout/layout";
@@ -19,6 +25,9 @@ import {
   shortenAddress,
 } from "../../../src/utils/utils";
 import { useQueryPoolsByTokenAddress } from "../../../src/hooks/pools";
+import { StyledCard } from "components/styled/card";
+import { Text } from "components/styled/text";
+import { SecondaryButton, PrimaryButton } from "components/styled/button";
 
 const TokenPage = () => {
   const router = useRouter();
@@ -26,7 +35,7 @@ const TokenPage = () => {
 
   const { id } = router.query;
 
-  const { handleSavePool, isTokenSaved } = useSavedTokens();
+  const { handleSaveToken, isTokenSaved } = useSavedTokens();
 
   const token = useQueryToken({ tokenAddress: id as string });
 
@@ -68,26 +77,46 @@ const TokenPage = () => {
             },
           ]}
         />
-        <Box display="flex" alignItems="center" gap="4px">
-          <StarIcon
-            onClick={() => handleSavePool(id as string)}
+        <Box display="flex" alignItems="center" gap="12px">
+          <Box
+            display="flex"
+            border="1px solid white"
+            borderRadius="8px"
+            p="8px"
             sx={{
               ":hover": {
                 cursor: "pointer",
-                opacity: 0.5,
+                opacity: 0.8,
               },
             }}
-          />
-          <OpenInNew
-            fontSize="small"
+            onClick={() => handleSaveToken(id as string)}
+          >
+            <StarIcon
+              sx={{
+                height: "20px",
+              }}
+            />
+          </Box>
+          <Box
+            display="flex"
+            border="1px solid white"
+            borderRadius="8px"
+            p="8px"
+            sx={{
+              ":hover": {
+                cursor: "pointer",
+                opacity: 0.8,
+              },
+            }}
             onClick={() => openInNewTab(stellarExpertUrl)}
-            sx={{
-              ":hover": {
-                cursor: "pointer",
-                opacity: 0.5,
-              },
-            }}
-          />
+          >
+            <Share
+              fontSize="small"
+              sx={{
+                height: "20px",
+              }}
+            />
+          </Box>
         </Box>
       </Box>
       <Box display="flex" alignItems="center" gap="6px" mt={4}>
@@ -127,38 +156,36 @@ const TokenPage = () => {
             height={36.5}
             width={100}
           >
-            <Button variant="contained">
-              <a
-                href={getSoroswapAddLiquidityUrl(token.data?.asset.contract)}
-                target="_blank"
-              >
-                Add liquidity
-              </a>
-            </Button>
+            <a
+              href={getSoroswapAddLiquidityUrl(token.data?.asset.contract)}
+              target="_blank"
+            >
+              <SecondaryButton variant="contained" endIcon={<GetApp />}>
+                Add Liquidity
+              </SecondaryButton>
+            </a>
           </LoadingSkeleton>
           <LoadingSkeleton
             isLoading={token.isLoading}
             height={36.5}
             width={100}
           >
-            <Button variant="contained">
-              <a
-                href={getSoroswapSwapUrl(token.data?.asset.contract)}
-                target="_blank"
-              >
-                Trade
-              </a>
-            </Button>
+            <a
+              href={getSoroswapSwapUrl(token.data?.asset.contract)}
+              target="_blank"
+            >
+              <PrimaryButton variant="contained">Trade</PrimaryButton>
+            </a>
           </LoadingSkeleton>
         </Box>
       </Box>
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ p: 2, height: 410 }}>
+          <StyledCard sx={{ p: 2, height: 410 }}>
             <Box mt={2}>
-              <Typography>TVL</Typography>
+              <Text>TVL</Text>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
-                <Typography variant="h5">
+                <Typography variant="h6">
                   {formatNumberToMoney(token.data?.tvl)}
                 </Typography>
               </LoadingSkeleton>
@@ -169,9 +196,9 @@ const TokenPage = () => {
               /> */}
             </Box>
             <Box mt={2}>
-              <Typography>24h Trading Vol</Typography>
+              <Text>24h Trading Vol</Text>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
-                <Typography variant="h5">
+                <Typography variant="h6">
                   {formatNumberToMoney(token.data?.volume24h)}
                 </Typography>
               </LoadingSkeleton>
@@ -182,9 +209,9 @@ const TokenPage = () => {
               /> */}
             </Box>
             <Box mt={2}>
-              <Typography>7d Trading Vol</Typography>
+              <Text>7d Trading Vol</Text>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
-                <Typography variant="h5">
+                <Typography variant="h6">
                   {formatNumberToMoney(token.data?.volume7d)}
                 </Typography>
               </LoadingSkeleton>
@@ -195,19 +222,19 @@ const TokenPage = () => {
               /> */}
             </Box>
             <Box mt={2}>
-              <Typography>24h Fees</Typography>
+              <Text>24h Fees</Text>
               <LoadingSkeleton isLoading={token.isLoading} variant="text">
-                <Typography variant="h5">
+                <Typography variant="h6">
                   {formatNumberToToken(token.data?.fees24h)}
                 </Typography>
               </LoadingSkeleton>
             </Box>
-          </Card>
+          </StyledCard>
         </Grid>
         <Grid item xs={12} md={8}>
-          <Card sx={{ height: 410 }}>
+          <StyledCard sx={{ height: 410 }}>
             <TokenChart tokenAddress={id as string} />
-          </Card>
+          </StyledCard>
         </Grid>
       </Grid>
       <Box sx={{ mt: 4 }}>

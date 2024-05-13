@@ -26,12 +26,14 @@ const Banner = () => {
           This is a beta version, and data computation is actively in progress.
         </Text>
       </Row>
-      <Row gap="4px">
-        <Text>XLM Price:</Text>
-        <LoadingSkeleton isLoading={xlm.isLoading} height={15} width={80}>
-          <Text fontWeight={600}>{formatNumberToMoney(xlm.data)}</Text>
-        </LoadingSkeleton>
-      </Row>
+      {!isMobile && (
+        <Row gap="4px">
+          <Text>XLM Price:</Text>
+          <LoadingSkeleton isLoading={xlm.isLoading} height={15} width={80}>
+            <Text fontWeight={600}>{formatNumberToMoney(xlm.data)}</Text>
+          </LoadingSkeleton>
+        </Row>
+      )}
     </Row>
   );
 };

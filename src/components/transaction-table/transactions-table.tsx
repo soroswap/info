@@ -1,9 +1,8 @@
-import { Link, Skeleton, Tab, Tabs } from "@mui/material";
+import { Link, Skeleton, Tab, Tabs, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
@@ -25,6 +24,8 @@ import {
   RouterEventsAPIResponse,
 } from "../../types/router-events";
 import { UseEventTopicFilterReturnProps } from "../../hooks/use-event-topic-filter";
+import { StyledTableCell } from "components/styled/table-cell";
+import { StyledCard } from "components/styled/card";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo("en-US");
@@ -84,8 +85,8 @@ function TransactionsTableHead(props: TransactionsTableProps) {
 
   return (
     <TableHead>
-      <TableRow>
-        <TableCell>
+      <TableRow sx={{ bgcolor: "#1b1b1b" }}>
+        <StyledTableCell>
           <Tabs value={currentFilter} onChange={(e, v) => setCurrentFilter(v)}>
             <Tab
               label="All"
@@ -108,9 +109,9 @@ function TransactionsTableHead(props: TransactionsTableProps) {
               sx={{ fontSize: 14, p: 0.5, minWidth: 30 }}
             />
           </Tabs>
-        </TableCell>
+        </StyledTableCell>
         {headCells.map((headCell) => (
-          <TableCell
+          <StyledTableCell
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             sortDirection={orderBy === headCell.id ? order : false}
@@ -133,7 +134,7 @@ function TransactionsTableHead(props: TransactionsTableProps) {
             ) : (
               <>{headCell.label}</>
             )}
-          </TableCell>
+          </StyledTableCell>
         ))}
       </TableRow>
     </TableHead>
@@ -165,13 +166,15 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
     defaultOrderBy: "timestamp",
   });
 
+  const theme = useTheme();
+
   if (isLoading) {
     return <Skeleton variant="rounded" height={300} />;
   }
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%" }}>
+      <StyledCard sx={{ width: "100%" }}>
         <TableContainer sx={{ minHeight: 610 }}>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <TransactionsTableHead
@@ -187,13 +190,17 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                   <TableRow
                     key={index}
                     sx={{
-                      ":hover": {
-                        cursor: "pointer",
-                        bgcolor: "#f5f5f5",
+                      "&:nth-of-type(2n)": {
+                        bgcolor: "#1b1b1b",
                       },
+                      "&:hover": {
+                        cursor: "pointer",
+                        bgcolor: theme.palette.background.paper,
+                      },
+                      bgcolor: "transparent",
                     }}
                   >
-                    <TableCell align="left">
+                    <StyledTableCell align="left">
                       <Link
                         href={`https://stellar.expert/explorer/public/tx/${row.txHash}`}
                         target="_blank"
@@ -205,14 +212,14 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                           row.tokenB?.code ?? ""
                         )}
                       </Link>
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {row.amountA} {shouldShortenCode(row.tokenA?.code ?? "")}
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {row.amountB} {shouldShortenCode(row.tokenB?.code ?? "")}
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       <Link
                         href={`https://stellar.expert/explorer/public/account/${row.account}`}
                         target="_blank"
@@ -220,10 +227,10 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                       >
                         {shortenAddress(row.account ?? "")}
                       </Link>
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {timeAgo.format(row.timestamp)}
-                    </TableCell>
+                    </StyledTableCell>
                   </TableRow>
                 );
               })}
@@ -233,14 +240,14 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                     height: 53 * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={6} />
+                  <StyledTableCell colSpan={6} />
                 </TableRow>
               )}
               {visibleRows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <StyledTableCell colSpan={6} align="center">
                     No transactions found
-                  </TableCell>
+                  </StyledTableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -255,7 +262,7 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
           onRowsPerPageChange={handleChangeRowsPerPage}
           rowsPerPageOptions={[]}
         />
-      </Paper>
+      </StyledCard>
     </Box>
   );
 }

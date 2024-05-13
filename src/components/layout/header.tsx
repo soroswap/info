@@ -6,34 +6,64 @@ import NetworkSelector from "./network-selector";
 import soroswapLogoPurpleWhite from "assets/svg/SoroswapPurpleWhite.svg";
 import Navbar from "./navbar";
 import PagesMenu from "./pages-menu";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface NavItem {
   href: string;
   label: string;
   target?: string;
+  active?: boolean;
 }
-
-const navItems: NavItem[] = [
-  { href: "/balance", label: "Balance", target: "_self" },
-  { href: "/swap", label: "Swap", target: "_self" },
-  { href: "/liquidity", label: "Liquidity", target: "_self" },
-  { href: "/bridge", label: "Bridge", target: "_self" },
-  { href: "https://info.soroswap.finance", label: "Info", target: "_blank" },
-];
 
 const Header = () => {
   const theme = useTheme();
 
   const isMobile = useMediaQuery(theme.breakpoints.down(1220));
 
+  const router = useRouter();
+
+  const { pathname } = router;
+
+  const navItems: NavItem[] = [
+    {
+      href: "https://app.soroswap.finance/balance",
+      label: "Balance",
+      target: "_blank",
+    },
+    {
+      href: "https://app.soroswap.finance/swap",
+      label: "Swap",
+      target: "_blank",
+    },
+    {
+      href: "https://app.soroswap.finance/liquidity",
+      label: "Liquidity",
+      target: "_blank",
+    },
+    {
+      href: "https://app.soroswap.finance/bridge",
+      label: "Bridge",
+      target: "_blank",
+    },
+    {
+      href: "/",
+      label: "Info",
+      target: "_self",
+      active: true,
+    },
+  ];
+
   return (
     <Row paddingY="24px" justifyContent="space-between">
-      <Image
-        src={soroswapLogoPurpleWhite}
-        width={115}
-        height={40}
-        alt="Soroswap"
-      />
+      <Link href="/">
+        <Image
+          src={soroswapLogoPurpleWhite}
+          width={115}
+          height={40}
+          alt="Soroswap"
+        />
+      </Link>
 
       <Navbar navItems={navItems} />
 

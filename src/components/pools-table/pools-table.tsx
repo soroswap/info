@@ -1,9 +1,8 @@
-import { Card, Skeleton, Typography } from "@mui/material";
+import { Card, Skeleton, Typography, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
@@ -16,6 +15,8 @@ import useTable from "../../hooks/use-table";
 import { Pool } from "../../types/pools";
 import { formatNumberToMoney, shouldShortenCode } from "../../utils/utils";
 import Token from "../token";
+import { StyledTableCell } from "components/styled/table-cell";
+import { StyledCard } from "components/styled/card";
 
 interface HeadCell {
   id: keyof Pool;
@@ -74,10 +75,10 @@ function PoolsTableHead(props: PoolsTableProps) {
 
   return (
     <TableHead>
-      <TableRow>
-        <TableCell>#</TableCell>
+      <TableRow sx={{ bgcolor: "#1b1b1b" }}>
+        <StyledTableCell>#</StyledTableCell>
         {headCells.map((headCell) => (
-          <TableCell
+          <StyledTableCell
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             sortDirection={orderBy === headCell.id ? order : false}
@@ -94,7 +95,7 @@ function PoolsTableHead(props: PoolsTableProps) {
                 </Box>
               ) : null}
             </TableSortLabel>
-          </TableCell>
+          </StyledTableCell>
         ))}
       </TableRow>
     </TableHead>
@@ -128,6 +129,8 @@ export default function PoolsTable({
 
   const router = useRouter();
 
+  const theme = useTheme();
+
   const onClickRow = (pool: string) => {
     router.push({
       pathname: `/pools/${pool}`,
@@ -141,13 +144,9 @@ export default function PoolsTable({
     return <Skeleton variant="rounded" height={300} />;
   }
 
-  if (rows.length === 0) {
-    return <Card sx={{ p: 2 }}>{emptyMessage}</Card>;
-  }
-
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%" }}>
+      <StyledCard sx={{ width: "100%" }}>
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <PoolsTableHead
@@ -163,14 +162,18 @@ export default function PoolsTable({
                     href={`/pools/${row.pool}?network=${router.query.network}`}
                     key={index}
                     sx={{
-                      ":hover": {
-                        cursor: "pointer",
-                        bgcolor: "#f5f5f5",
+                      "&:nth-of-type(2n)": {
+                        bgcolor: "#1b1b1b",
                       },
+                      "&:hover": {
+                        cursor: "pointer",
+                        bgcolor: theme.palette.background.paper,
+                      },
+                      bgcolor: "transparent",
                     }}
                   >
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell
+                    <StyledTableCell>{index + 1}</StyledTableCell>
+                    <StyledTableCell
                       align="left"
                       sx={{
                         display: "flex",
@@ -193,25 +196,25 @@ export default function PoolsTable({
                       </Box>
                       {shouldShortenCode(row.token0.code)} /{" "}
                       {shouldShortenCode(row.token1.code)}
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {formatNumberToMoney(row.tvl, 2)}
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {/* {formatNumberToMoney(row.volume24h)} */}-
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {/* {formatNumberToMoney(row.volume7d)} */}-
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {/* {formatNumberToMoney(row.fees24h)} */}-
-                    </TableCell>
-                    <TableCell align="right">
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       <Typography color="brown" fontSize={14}>
                         {/* {roundNumber(row?.feesYearly ?? 0, 2)}% */}-
                       </Typography>
                       <Box display="flex" justifyContent="flex-end"></Box>
-                    </TableCell>
+                    </StyledTableCell>
                   </TableRow>
                 );
               })}
@@ -221,14 +224,14 @@ export default function PoolsTable({
                     height: 53 * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={6} />
+                  <StyledTableCell colSpan={6} />
                 </TableRow>
               )}
               {visibleRows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">
+                  <StyledTableCell colSpan={6} align="center">
                     No pools found
-                  </TableCell>
+                  </StyledTableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -243,7 +246,7 @@ export default function PoolsTable({
           onRowsPerPageChange={handleChangeRowsPerPage}
           rowsPerPageOptions={[]}
         />
-      </Paper>
+      </StyledCard>
     </Box>
   );
 }

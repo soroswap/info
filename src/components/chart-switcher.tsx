@@ -8,11 +8,12 @@ interface Props {
 }
 
 const ChartSwitcher = ({ tabs, value, handleChange }: Props) => {
+  const theme = useTheme();
   return (
     <Box
       display="flex"
       gap="12px"
-      bgcolor="#00000014"
+      bgcolor="#1b1b1b"
       padding="4px 10px"
       borderRadius="30px"
       fontSize={12}
@@ -24,9 +25,12 @@ const ChartSwitcher = ({ tabs, value, handleChange }: Props) => {
           sx={{
             fontWeight: 500,
             cursor: "pointer",
-            bgcolor: value === tab.value ? "black" : "",
-            color: value === tab.value ? "white" : "",
-            padding: "4px 12px",
+            bgcolor:
+              value === tab.value
+                ? theme.palette.customBackground.accentAction
+                : "",
+            color: "white",
+            padding: "4px 16px",
             borderRadius: "30px",
           }}
         >

@@ -17,7 +17,7 @@ const useSavedTokens = () => {
     setSavedTokensIds(parsedSavedTokensIds);
   }, []);
 
-  const handleSavePool = (id: string) => {
+  const handleSaveToken = (id: string) => {
     if (savedTokensIds.includes(id)) {
       const newSavedTokensIds = savedTokensIds.filter(
         (poolId) => poolId !== id
@@ -35,7 +35,7 @@ const useSavedTokens = () => {
     return savedTokensIds.includes(id);
   };
 
-  return { savedTokens, savedTokensIds, handleSavePool, isTokenSaved };
+  return { savedTokens, savedTokensIds, handleSaveToken, isTokenSaved };
 };
 
 export default useSavedTokens;

@@ -1,11 +1,12 @@
-import { Box } from "@mui/material";
-import { MoreHoriz } from "@mui/icons-material";
+import { Box, Link, useTheme } from "@mui/material";
+import { Article, GitHub, Info, MoreHoriz } from "@mui/icons-material";
 import * as React from "react";
-import Link from "next/link";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { FaDiscord } from "react-icons/fa";
 
 export default function PagesMenu() {
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -48,22 +49,76 @@ export default function PagesMenu() {
         }}
       >
         <MenuItem>
-          <Link href="https://soroswap.finance/" target="_blank">
+          <Link
+            href="https://soroswap.finance/"
+            target="_blank"
+            display="flex"
+            alignItems="center"
+            gap="6px"
+            underline="none"
+            color="white"
+          >
+            <Info
+              sx={{
+                fontSize: "16px",
+                color: theme.palette.customBackground.accentAction,
+              }}
+            />
             About
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link href="https://docs.soroswap.finance/" target="_blank">
+          <Link
+            href="https://docs.soroswap.finance/"
+            target="_blank"
+            display="flex"
+            alignItems="center"
+            gap="6px"
+            underline="none"
+            color="white"
+          >
+            <Article
+              sx={{
+                fontSize: "16px",
+                color: theme.palette.customBackground.accentAction,
+              }}
+            />
             Docs
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link href="https://github.com/soroswap" target="_blank">
+          <Link
+            href="https://github.com/soroswap"
+            target="_blank"
+            display="flex"
+            alignItems="center"
+            gap="6px"
+            underline="none"
+            color="white"
+          >
+            <GitHub
+              sx={{
+                fontSize: "16px",
+                color: theme.palette.customBackground.accentAction,
+              }}
+            />
             Github
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link href="https://discord.gg/G8c98rhfqw" target="_blank">
+          <Link
+            href="https://discord.gg/G8c98rhfqw"
+            target="_blank"
+            display="flex"
+            alignItems="center"
+            gap="6px"
+            underline="none"
+            color="white"
+          >
+            <FaDiscord
+              fontSize="16px"
+              color={theme.palette.customBackground.accentAction}
+            />
             Discord
           </Link>
         </MenuItem>

@@ -73,6 +73,7 @@ interface NavItem {
   href: string;
   label: string;
   target?: string;
+  active?: boolean;
 }
 
 interface Props {
@@ -96,11 +97,7 @@ const Navbar = ({ navItems, height = "40px" }: Props) => {
             <NavItemMobile
               key={item.href}
               href={item.href}
-              active={
-                item.label === "Swap"
-                  ? pathname.includes(item.href) || pathname === "/"
-                  : pathname.includes(item.href)
-              }
+              active={item.active}
             >
               {item.label}
             </NavItemMobile>
@@ -116,11 +113,7 @@ const Navbar = ({ navItems, height = "40px" }: Props) => {
         <NavItem
           key={item.href}
           href={item.href}
-          active={
-            item.label === "Swap"
-              ? pathname.includes(item.href) || pathname === "/"
-              : pathname.includes(item.href)
-          }
+          active={item.active}
           target={item.target}
         >
           {item.label}
