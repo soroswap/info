@@ -3,7 +3,6 @@ import { Menu } from "@mui/icons-material";
 import { Row } from "../styled/row";
 import Image from "next/image";
 import NetworkSelector from "./network-selector";
-import soroswapLogoPurpleWhite from "assets/svg/SoroswapPurpleWhite.svg";
 import Navbar from "./navbar";
 import PagesMenu from "./pages-menu";
 import { useRouter } from "next/router";
@@ -57,12 +56,7 @@ const Header = () => {
   return (
     <Row paddingY="24px" justifyContent="space-between">
       <Link href="/">
-        <Image
-          src={soroswapLogoPurpleWhite}
-          width={115}
-          height={40}
-          alt="Soroswap"
-        />
+        <Image src="/logo-dark.svg" width={115} height={40} alt="Soroswap" />
       </Link>
 
       <Navbar navItems={navItems} />

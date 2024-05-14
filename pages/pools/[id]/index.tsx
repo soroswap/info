@@ -38,6 +38,15 @@ import TransactionsTable from "../../../src/components/transaction-table/transac
 import { StyledCard } from "components/styled/card";
 import { PrimaryButton, SecondaryButton } from "components/styled/button";
 import { Text } from "components/styled/text";
+import Tabs from "components/tabs";
+import { Row } from "components/styled/row";
+import { SearchInput } from "components/styled/search-input";
+import RenderIf from "components/render-if";
+import PoolsTable from "components/pools-table/pools-table";
+import TokensTable from "components/tokens-table/tokens-table";
+import { useQueryTokens } from "hooks/tokens";
+import { useState } from "react";
+import { shouldFilterEvent, shouldFilterToken } from "utils/filters";
 
 const PoolPage = () => {
   const router = useRouter();
@@ -46,14 +55,19 @@ const PoolPage = () => {
   const { handleSavePool, isPoolSaved } = useSavedPools();
 
   const eventsFilter = useEventTopicFilter();
+
   const events = useQueryEventsByPoolAddress({
     poolAddress: id as string,
     topic2: eventsFilter.topic,
   });
 
+  const tokens = useQueryTokens();
+
   const pool = useQueryPool({ poolAddress: id as string });
+
   const token0 = pool.data?.token0;
   const token1 = pool.data?.token1;
+
   if (token0?.code == token0?.contract && token0) {
     token0.code = shortenAddress(token0?.contract);
   }
@@ -64,6 +78,20 @@ const PoolPage = () => {
   const token1code = token1?.code ?? "";
 
   const StarIcon = isPoolSaved(id as string) ? Star : StarBorderOutlined;
+
+  const [searchValue, setSearchValue] = useState("");
+
+  const filteredTokens = tokens.data?.filter((token) => {
+    return (
+      (shouldFilterToken(token.asset, token0?.code) ||
+        shouldFilterToken(token.asset, token1?.code)) &&
+      shouldFilterToken(token.asset, searchValue)
+    );
+  });
+
+  const filteredEvents = events.data?.filter((event) => {
+    return shouldFilterEvent(event, searchValue);
+  });
 
   return (
     <Layout>
@@ -295,15 +323,37 @@ const PoolPage = () => {
           </StyledCard>
         </Grid>
       </Grid>
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h6" sx={{ mb: 1 }}>
-          Transactions
-        </Typography>
-        <TransactionsTable
-          rows={events.data ?? []}
-          isLoading={events.isLoading}
-          filters={eventsFilter}
-        />
+      <Box mt={8}>
+        <Tabs
+          items={["Tokens", "Transactions"]}
+          endContent={(selected) => (
+            <Row gap="8px">
+              <SearchInput
+                placeholder={`Search for ${selected.toLowerCase()}`}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+            </Row>
+          )}
+        >
+          {(selected) => (
+            <Box mt={2}>
+              <RenderIf isTrue={selected === "Tokens"}>
+                <TokensTable
+                  rows={filteredTokens ?? []}
+                  isLoading={tokens.isLoading}
+                />
+              </RenderIf>
+              <RenderIf isTrue={selected === "Transactions"}>
+                <TransactionsTable
+                  rows={filteredEvents ?? []}
+                  isLoading={events.isLoading}
+                  filters={eventsFilter}
+                />
+              </RenderIf>
+            </Box>
+          )}
+        </Tabs>
       </Box>
     </Layout>
   );

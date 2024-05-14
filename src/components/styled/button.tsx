@@ -12,6 +12,7 @@ export const PrimaryButton = styled(Button)`
     opacity: 0.9;
     background-color: ${(props) =>
       props.theme.palette.customBackground.accentAction};
+    border: 1px solid transparent;
   }
 `;
 

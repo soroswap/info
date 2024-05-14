@@ -168,6 +168,8 @@ export default function PoolsTable({
                       "&:hover": {
                         cursor: "pointer",
                         bgcolor: theme.palette.background.paper,
+                        borderTop: `1px solid ${theme.palette.customBackground.accentAction}`,
+                        borderBottom: `1px solid ${theme.palette.customBackground.accentAction}`,
                       },
                       bgcolor: "transparent",
                     }}

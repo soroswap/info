@@ -4,21 +4,7 @@ import { ReactNode } from "react";
 import { useQueryXLMPrice } from "../../hooks/xlm-price";
 import Banner from "./banner";
 import Header from "./header";
-
-const LINKS = [
-  {
-    label: "Overview",
-    href: "/",
-  },
-  {
-    label: "Pools",
-    href: "/pools",
-  },
-  {
-    label: "Tokens",
-    href: "/tokens",
-  },
-];
+import Footer from "./footer";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const theme = useTheme();
@@ -53,9 +39,12 @@ export default function Layout({ children }: { children: ReactNode }) {
           </Container>
         </Box>
       </AppBar>
-      <Box mt="120px" p={4} bgcolor={theme.palette.background.default}>
-        <Container maxWidth="lg">{children}</Container>
+      <Box mt="140px" p={4} bgcolor={theme.palette.background.default}>
+        <Container maxWidth="lg" sx={{ minHeight: "100vh" }}>
+          {children}
+        </Container>
       </Box>
+      <Footer />
     </main>
   );
 }
