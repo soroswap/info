@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { useQueryTokens } from "../../src/hooks/tokens";
-import Layout from "../../src/components/layout";
+import Layout from "../../src/components/layout/layout";
 import TokensTable from "../../src/components/tokens-table/tokens-table";
 import TopMovers from "../../src/components/top-movers";
 import useSavedTokens from "../../src/hooks/use-saved-tokens";

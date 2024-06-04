@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import {
   AreaChart,
   Area,
@@ -7,6 +7,7 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  YAxis,
 } from "recharts";
 import ChartSwitcher from "./chart-switcher";
 import React from "react";
@@ -19,6 +20,7 @@ import {
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 import { formatNumberToMoney, formatNumberToToken } from "../utils/utils";
+import ChartTooltip from "./chart-tooltip";
 
 type Charts = "volume" | "tvl" | "price";
 
@@ -92,14 +94,17 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
                 dataKey="date"
                 tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
+
               <Tooltip
                 formatter={(amount) => formatNumberToMoney(amount as number)}
+                content={ChartTooltip}
               />
               <Area
                 type="monotone"
                 dataKey="volume"
-                stroke="#8884d8"
-                fill="#8884d8"
+                stroke="#8866DD"
+                strokeWidth="3px"
+                fill="#221E2B"
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -112,7 +117,7 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
           width="100%"
         >
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
-            <BarChart
+            <AreaChart
               width={500}
               height={300}
               data={tvlChart.data ?? []}
@@ -129,9 +134,16 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
               />
               <Tooltip
                 formatter={(amount) => formatNumberToToken(amount as number)}
+                content={ChartTooltip}
               />
-              <Bar dataKey="tvl" fill="#82ca9d" />
-            </BarChart>
+              <Area
+                type="monotone"
+                dataKey="tvl"
+                stroke="#8866DD"
+                strokeWidth="3px"
+                fill="#221E2B"
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </LoadingSkeleton>
       </RenderIf>
@@ -159,12 +171,14 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
               />
               <Tooltip
                 formatter={(amount) => formatNumberToMoney(amount as number)}
+                content={ChartTooltip}
               />
               <Area
                 type="monotone"
                 dataKey="price"
-                stroke="#8884d8"
-                fill="#8884d8"
+                stroke="#8866DD"
+                strokeWidth="3px"
+                fill="#221E2B"
               />
             </AreaChart>
           </ResponsiveContainer>

@@ -19,6 +19,7 @@ import {
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 import { formatNumberToToken } from "../utils/utils";
+import ChartTooltip from "./chart-tooltip";
 
 type Charts = "volume" | "liquidity" | "fees";
 
@@ -94,12 +95,14 @@ const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
               />
               <Tooltip
                 formatter={(amount) => formatNumberToToken(amount as number)}
+                content={ChartTooltip}
               />
               <Area
                 type="monotone"
                 dataKey="volume"
-                stroke="#8884d8"
-                fill="#8884d8"
+                stroke="#8866DD"
+                strokeWidth="3px"
+                fill="#221E2B"
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -112,7 +115,7 @@ const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
           height={320}
         >
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
-            <BarChart
+            <AreaChart
               width={500}
               height={300}
               data={tvlChart.data ?? []}
@@ -129,9 +132,15 @@ const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
               />
               <Tooltip
                 formatter={(amount) => formatNumberToToken(amount as number)}
+                content={ChartTooltip}
               />
-              <Bar dataKey="tvl" fill="#82ca9d" />
-            </BarChart>
+              <Area
+                dataKey="tvl"
+                stroke="#8866DD"
+                strokeWidth="3px"
+                fill="#221E2B"
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </LoadingSkeleton>
       </RenderIf>
@@ -159,12 +168,14 @@ const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
               />
               <Tooltip
                 formatter={(amount) => formatNumberToToken(amount as number)}
+                content={ChartTooltip}
               />
               <Area
                 type="monotone"
                 dataKey="fees"
-                stroke="#8884d8"
-                fill="#8884d8"
+                stroke="#8866DD"
+                strokeWidth="3px"
+                fill="#221E2B"
               />
             </AreaChart>
           </ResponsiveContainer>

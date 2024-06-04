@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   AreaChart,
   Area,
@@ -6,28 +6,42 @@ import {
   Tooltip,
   ResponsiveContainer,
   YAxis,
+  CartesianGrid,
 } from "recharts";
-import { useQuerySoroswapTVLChart } from "../hooks/soroswap";
+import {
+  useQuerySoroswapTVL,
+  useQuerySoroswapTVLChart,
+} from "../hooks/soroswap";
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
-import { formatNumberToToken } from "../utils/utils";
+import { formatNumberToMoney, formatNumberToToken } from "../utils/utils";
+import { StyledCard } from "./styled/card";
+import ChartTooltip from "./chart-tooltip";
 
 const TVLChart = () => {
   const tvlChart = useQuerySoroswapTVLChart();
+  const soroswapTVL = useQuerySoroswapTVL();
 
   return (
-    <Paper sx={{ maxWidth: 1184, py: 2, bgcolor: "white" }}>
+    <StyledCard sx={{ maxWidth: 1184, p: "32px" }}>
       <Box
         display="flex"
         justifyContent="space-between"
-        px={2}
         alignItems="center"
-        mb={2}
+        mb={4}
       >
         <Box>
-          <Typography variant="h5" fontWeight={600}>
+          <Typography fontSize="20px" fontWeight={600}>
             TVL
           </Typography>
+        </Box>
+        <Box>
+          <LoadingSkeleton isLoading={soroswapTVL.isLoading} height={20}>
+            <Typography fontWeight={600} fontSize="28px">
+              {formatNumberToMoney(soroswapTVL.data?.tvl)}
+            </Typography>
+            {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
+          </LoadingSkeleton>
         </Box>
       </Box>
       <LoadingSkeleton isLoading={tvlChart.isLoading} width="100%" height={300}>
@@ -48,6 +62,8 @@ const TVLChart = () => {
               bottom: 0,
             }}
           >
+            <CartesianGrid stroke="#1b1b1b" />
+
             <XAxis
               dataKey="date"
               tickFormatter={(tick) => xAxisChartFormatter(tick)}
@@ -57,17 +73,19 @@ const TVLChart = () => {
             />
             <Tooltip
               formatter={(amount) => formatNumberToToken(amount as number)}
+              content={ChartTooltip}
             />
             <Area
               type="monotone"
               dataKey="tvl"
-              stroke="#8884d8"
-              fill="#8884d8"
+              stroke="#8866DD"
+              strokeWidth="3px"
+              fill="#221E2B"
             />
           </AreaChart>
         </ResponsiveContainer>
       </LoadingSkeleton>
-    </Paper>
+    </StyledCard>
   );
 };
 
