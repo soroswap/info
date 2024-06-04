@@ -1,19 +1,5 @@
-import {
-  Box,
-  Button,
-  Card,
-  Chip,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
-import {
-  GetApp,
-  OpenInNew,
-  Share,
-  Star,
-  StarBorderOutlined,
-} from "@mui/icons-material";
+import { Box, Chip, Grid, Typography } from "@mui/material";
+import { GetApp, Share, Star, StarBorderOutlined } from "@mui/icons-material";
 import { useQueryPool } from "../../../src/hooks/pools";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
@@ -32,7 +18,7 @@ import {
   getSoroswapSwapUrl,
   shortenAddress,
 } from "../../../src/utils/utils";
-import { useQueryEventsByPoolAddress } from "../../../src/hooks/events";
+import { useQueryAllEvents } from "../../../src/hooks/events";
 import useEventTopicFilter from "../../../src/hooks/use-event-topic-filter";
 import TransactionsTable from "../../../src/components/transaction-table/transactions-table";
 import { StyledCard } from "components/styled/card";
@@ -42,7 +28,6 @@ import Tabs from "components/tabs";
 import { Row } from "components/styled/row";
 import { SearchInput } from "components/styled/search-input";
 import RenderIf from "components/render-if";
-import PoolsTable from "components/pools-table/pools-table";
 import TokensTable from "components/tokens-table/tokens-table";
 import { useQueryTokens } from "hooks/tokens";
 import { useState } from "react";
@@ -56,17 +41,17 @@ const PoolPage = () => {
 
   const eventsFilter = useEventTopicFilter();
 
-  const events = useQueryEventsByPoolAddress({
-    poolAddress: id as string,
-    topic2: eventsFilter.topic,
+  const events = useQueryAllEvents({
+    address: id as string,
+    type: eventsFilter.topic,
   });
 
   const tokens = useQueryTokens();
 
   const pool = useQueryPool({ poolAddress: id as string });
 
-  const token0 = pool.data?.token0;
-  const token1 = pool.data?.token1;
+  const token0 = pool.data?.tokenA;
+  const token1 = pool.data?.tokenB;
 
   if (token0?.code == token0?.contract && token0) {
     token0.code = shortenAddress(token0?.contract);
@@ -186,8 +171,8 @@ const PoolPage = () => {
                     <Token imageUrl={token0?.icon} width={20} height={20} />1{" "}
                     {token0code} ={" "}
                     {getExpectedAmountOfOne(
-                      pool.data?.reserve0,
-                      pool.data?.reserve1
+                      pool.data?.reserveA,
+                      pool.data?.reserveB
                     )}{" "}
                     {token1code}
                   </Box>
@@ -212,8 +197,8 @@ const PoolPage = () => {
                     <Token imageUrl={token1?.icon} width={20} height={20} />1{" "}
                     {token1code} ={" "}
                     {getExpectedAmountOfOne(
-                      pool.data?.reserve1,
-                      pool.data?.reserve0
+                      pool.data?.reserveA,
+                      pool.data?.reserveB
                     )}{" "}
                     {token0code}
                   </Box>
@@ -262,8 +247,8 @@ const PoolPage = () => {
                 </Text>
                 <Text>
                   {formatTokenAmount(
-                    pool.data?.reserve0,
-                    pool.data?.token0.decimals,
+                    pool.data?.reserveA,
+                    pool.data?.tokenA?.decimals,
                     "token"
                   )}
                 </Text>
@@ -281,8 +266,8 @@ const PoolPage = () => {
                 </Text>
                 <Text>
                   {formatTokenAmount(
-                    pool.data?.reserve1,
-                    pool.data?.token1?.decimals,
+                    pool.data?.reserveB,
+                    pool.data?.tokenB?.decimals,
                     "token"
                   )}
                 </Text>

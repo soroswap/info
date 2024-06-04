@@ -1,21 +1,48 @@
+import { ApiNetwork, Network } from "types/network";
 import { Token } from "../types/tokens";
 import { fillDatesAndSort } from "../utils/complete-chart";
 import axiosInstance from "./axios";
 
-export const fetchTokens = async () => {
-  const { data } = await axiosInstance.get<Token[]>(
-    "/info/tokens?protocols=soroswap"
-  );
+export const fetchTokenList = async ({ network }: ApiNetwork) => {
+  if (network == "MAINNET") {
+    const { data } = await axiosInstance.get(
+      "https://raw.githubusercontent.com/soroswap/token-list/main/tokenList.json"
+    );
+
+    return data.assets;
+  }
+
+  if (network == "TESTNET") {
+    const { data } = await axiosInstance.get(
+      "https://api.soroswap.finance/api/tokens"
+    );
+    return data.find((item: any) => item.network === network.toLowerCase())
+      .assets;
+  }
+
+  return [];
+};
+
+export const fetchTokens = async ({ network }: ApiNetwork) => {
+  const { data } = await axiosInstance.get<Token[]>("/api/tokens", {
+    params: { network },
+  });
   return data;
 };
 
+interface FetchTokenProps extends ApiNetwork {
+  tokenAddress: string;
+}
+
 export const fetchToken = async ({
   tokenAddress,
-}: {
-  tokenAddress: string;
-}) => {
+  network,
+}: FetchTokenProps) => {
   const { data } = await axiosInstance.get<Token>(
-    `/info/token/${tokenAddress}?protocols=soroswap`
+    `/api/tokens?address=${tokenAddress}`,
+    {
+      params: { network },
+    }
   );
   return data;
 };

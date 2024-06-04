@@ -27,7 +27,7 @@ import { UseEventTopicFilterReturnProps } from "../../hooks/use-event-topic-filt
 import { StyledTableCell } from "components/styled/table-cell";
 import { StyledCard } from "components/styled/card";
 
-TimeAgo.addDefaultLocale(en);
+TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo("en-US");
 
 interface HeadCell {
@@ -209,7 +209,7 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                         underline="hover"
                       >
                         {formatEvent(
-                          row.event,
+                          row.eType,
                           row.tokenA?.code ?? "",
                           row.tokenB?.code ?? ""
                         )}
@@ -231,7 +231,7 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                       </Link>
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {timeAgo.format(row.timestamp)}
+                      {timeAgo.format(row.timestamp || 0)}
                     </StyledTableCell>
                   </TableRow>
                 );

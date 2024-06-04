@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { Network } from "types/network";
 
 type QueryNetwork = "mainnet" | "testnet";
 
@@ -11,11 +12,9 @@ const useQueryNetwork = () => {
 
   if (!router.isReady) return { network: undefined, isValidQuery };
 
-  const network = (isValidQuery ? query : "mainnet") as
-    | QueryNetwork
-    | undefined;
+  const network = (isValidQuery ? query : "mainnet") as QueryNetwork;
 
-  return { network, isValidQuery, query };
+  return { network: network?.toUpperCase() as Network, isValidQuery, query };
 };
 
 export default useQueryNetwork;

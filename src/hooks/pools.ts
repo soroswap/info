@@ -16,7 +16,7 @@ export const useQueryPools = () => {
 
   return useQuery({
     queryKey: [key, network],
-    queryFn: fetchPools,
+    queryFn: () => fetchPools({ network: network! }),
     enabled: isValidQuery,
   });
 };
@@ -26,7 +26,7 @@ export const useQueryPool = ({ poolAddress }: { poolAddress: string }) => {
 
   return useQuery({
     queryKey: [key, network, poolAddress],
-    queryFn: () => fetchPool({ poolAddress }),
+    queryFn: () => fetchPool({ poolAddress, network: network! }),
     enabled: !!poolAddress && isValidQuery,
   });
 };

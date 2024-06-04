@@ -56,8 +56,8 @@ export function shortenAddress(address: string, chars = 4): string {
 }
 
 export const getExpectedAmountOfOne = (
-  reserve0: number | undefined,
-  reserve1: number | undefined
+  reserve0: number | string | undefined,
+  reserve1: number | string | undefined
 ) => {
   if (!reserve0 || !reserve1) return;
 
@@ -117,6 +117,7 @@ export const roundNumber = (number: number, decimals: number): number => {
 };
 
 export const toCamelCase = (text: string): string => {
+  if (!text) return "";
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 };
 
@@ -141,6 +142,7 @@ export const adjustAmountByDecimals = (
 };
 
 export const shouldShortenCode = (contract: string) => {
+  if (!contract) return;
   if (contract.length > 10) return shortenAddress(contract);
   return contract;
 };

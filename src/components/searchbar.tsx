@@ -115,7 +115,7 @@ const Searchbar = () => {
 
                 {tokensData?.map((token) => (
                   <ItemRow
-                    key={token.name}
+                    key={token.asset.code}
                     href={`/tokens/${token.asset.contract}?network=${router.query.network}`}
                   >
                     <TokenImage imageUrl={token.asset.icon} />
@@ -156,14 +156,14 @@ const Searchbar = () => {
 
                 {poolsData?.map((pool) => (
                   <ItemRow
-                    key={pool.pool}
-                    href={`/pools/${pool.pool}?network=${router.query.network}`}
+                    key={pool.address}
+                    href={`/pools/${pool.address}?network=${router.query.network}`}
                   >
-                    <TokenImage imageUrl={pool.token0.icon} />
-                    <TokenImage imageUrl={pool.token1.icon} />
+                    <TokenImage imageUrl={pool.tokenA.icon} />
+                    <TokenImage imageUrl={pool.tokenB.icon} />
                     <Typography variant="body2">
-                      {shouldShortenCode(pool.token0.code)} /{" "}
-                      {shouldShortenCode(pool.token1.code)}
+                      {shouldShortenCode(pool.tokenA.code)} /{" "}
+                      {shouldShortenCode(pool.tokenB.code)}
                     </Typography>
                   </ItemRow>
                 ))}

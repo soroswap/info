@@ -25,13 +25,13 @@ export const shouldFilterToken = (token?: TokenType, searchValue?: string) => {
 export const shouldFilterPool = (pool?: Pool, searchValue?: string) => {
   if (!pool || !searchValue || searchValue?.trim() === "") return true;
 
-  const poolStartWithSearchTerm = pool.pool
+  const poolStartWithSearchTerm = pool.address
     .toLowerCase()
     .startsWith(searchValue.toLowerCase());
 
   return (
-    shouldFilterToken(pool.token0, searchValue) ||
-    shouldFilterToken(pool.token1, searchValue) ||
+    shouldFilterToken(pool.tokenA, searchValue) ||
+    shouldFilterToken(pool.tokenB, searchValue) ||
     poolStartWithSearchTerm
   );
 };

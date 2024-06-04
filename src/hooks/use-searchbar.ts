@@ -70,13 +70,13 @@ const useSearchbar = () => {
   const filteredPools = pools.data?.filter((pool) => {
     if (!searchTerm || searchTerm.trim() === "") return true;
 
-    const poolStartWithSearchTerm = pool.pool
+    const poolStartWithSearchTerm = pool.address
       .toLowerCase()
       .startsWith(searchTerm.toLowerCase());
 
     return (
-      shouldFilterToken(pool.token0) ||
-      shouldFilterToken(pool.token1) ||
+      shouldFilterToken(pool.tokenA) ||
+      shouldFilterToken(pool.tokenB) ||
       poolStartWithSearchTerm
     );
   });

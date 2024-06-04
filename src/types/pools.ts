@@ -1,11 +1,11 @@
 import { TokenType } from "./tokens";
 
 export interface Pool {
-  pool: string;
-  token0: TokenType;
-  token1: TokenType;
-  reserve0: number;
-  reserve1: number;
+  address: string;
+  tokenA: TokenType;
+  tokenB: TokenType;
+  reserveA: string;
+  reserveB: string;
   tvl?: number;
   volume24h?: number;
   volume7d?: number;

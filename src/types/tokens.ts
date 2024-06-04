@@ -1,7 +1,6 @@
 export interface Token {
   fees24h: number;
-  name: string;
-  asset: TokenType
+  asset: TokenType;
   tvl: number;
   price: number;
   priceChange24h: number;

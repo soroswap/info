@@ -29,7 +29,7 @@ export default function Home() {
   const router = useRouter();
 
   const eventsFilters = useEventTopicFilter();
-  const events = useQueryAllEvents({ topic2: eventsFilters.topic });
+  const events = useQueryAllEvents({ type: eventsFilters.topic });
 
   const [searchValue, setSearchValue] = useState("");
 

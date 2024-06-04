@@ -26,7 +26,7 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: "name",
+    id: "asset",
     numeric: false,
     label: "Name",
   },
