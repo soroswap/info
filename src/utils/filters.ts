@@ -42,9 +42,9 @@ export const shouldFilterEvent = (
 ) => {
   if (!event || !searchValue || searchValue?.trim() === "") return true;
 
-  const eventTxHashStartWithSearchTerm = event.txHash
-    .toLowerCase()
-    .startsWith(searchValue.toLowerCase());
+  const eventTxHashStartWithSearchTerm =
+    event.txHash &&
+    event.txHash.toLowerCase().startsWith(searchValue.toLowerCase());
 
   const eventAccountStartWithSearchTerm = event.account
     ?.toLowerCase()

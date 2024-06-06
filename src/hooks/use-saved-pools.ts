@@ -7,7 +7,7 @@ const useSavedPools = () => {
   const pools = useQueryPools();
   const [savedPoolsIds, setSavedPoolsIds] = useState<string[]>([]);
   const savedPools = pools.data?.filter((row) =>
-    savedPoolsIds.includes(row.pool)
+    savedPoolsIds.includes(row.address)
   );
 
   useEffect(() => {
