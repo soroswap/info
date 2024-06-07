@@ -45,7 +45,7 @@ const TokenPage = () => {
   const pools = useQueryPools();
 
   const eventsFilters = useEventTopicFilter();
-  const events = useQueryAllEvents({ topic2: eventsFilters.topic });
+  const events = useQueryAllEvents({ type: eventsFilters.topic });
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
 
@@ -152,7 +152,7 @@ const TokenPage = () => {
         </LoadingSkeleton>
         <LoadingSkeleton isLoading={token.isLoading} variant="text">
           <Typography variant="h5">
-            {token.data?.name} ({token.data?.asset.code}){" "}
+            {token.data?.asset.name} ({token.data?.asset.code}){" "}
           </Typography>
         </LoadingSkeleton>
       </Box>

@@ -15,7 +15,7 @@ export const useQueryTokens = () => {
 
   return useQuery({
     queryKey: [key, network],
-    queryFn: fetchTokens,
+    queryFn: () => fetchTokens({ network: network! }),
     enabled: isValidQuery,
   });
 };
@@ -25,7 +25,7 @@ export const useQueryToken = ({ tokenAddress }: { tokenAddress: string }) => {
 
   return useQuery({
     queryKey: [key, network, tokenAddress],
-    queryFn: () => fetchToken({ tokenAddress }),
+    queryFn: () => fetchToken({ tokenAddress, network: network! }),
     enabled: !!tokenAddress && isValidQuery,
   });
 };

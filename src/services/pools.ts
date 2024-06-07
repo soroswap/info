@@ -1,17 +1,24 @@
+import { ApiNetwork } from "types/network";
 import { Pool } from "../types/pools";
 import { fillDatesAndSort } from "../utils/complete-chart";
 import axiosInstance from "./axios";
 
-export const fetchPools = async () => {
-  const { data } = await axiosInstance.get<Pool[]>(
-    "/info/pools?protocols=soroswap"
-  );
+export const fetchPools = async ({ network }: ApiNetwork) => {
+  const { data } = await axiosInstance.get<Pool[]>("/api/pairs", {
+    params: { network },
+  });
+
   return data;
 };
 
-export const fetchPool = async ({ poolAddress }: { poolAddress: string }) => {
+interface FetchPoolProps extends ApiNetwork {
+  poolAddress: string;
+}
+
+export const fetchPool = async ({ poolAddress, network }: FetchPoolProps) => {
   const { data } = await axiosInstance.get<Pool>(
-    `/info/pool/${poolAddress}?protocols=soroswap`
+    `/api/pairs?address=${poolAddress}`,
+    { params: { network } }
   );
   return data;
 };

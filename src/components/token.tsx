@@ -15,7 +15,7 @@ interface TokenProps extends ImgHTMLAttributes<HTMLImageElement> {
 const TokenImage: React.FC<TokenProps> = ({ imageUrl, ...imgProps }) => {
   return (
     <img
-      src={imageUrl??`/favicon.ico`}
+      src={imageUrl || `/favicon.ico`}
       style={{ borderRadius: "100%" }}
       width="26px"
       height="26px"

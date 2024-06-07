@@ -1,6 +1,5 @@
-import { Card, Skeleton, Typography, useTheme } from "@mui/material";
+import { Skeleton, Typography, useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
@@ -26,7 +25,7 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: "pool",
+    id: "address",
     numeric: false,
     label: "Pool",
   },
@@ -155,11 +154,11 @@ export default function PoolsTable({
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {visibleRows?.map((row, index) => {
                 return (
                   <TableRow
                     component="a"
-                    href={`/pools/${row.pool}?network=${router.query.network}`}
+                    href={`/pools/${row.address}?network=${router.query.network}`}
                     key={index}
                     sx={{
                       "&:nth-of-type(2n)": {
@@ -186,18 +185,18 @@ export default function PoolsTable({
                     >
                       <Box display="flex" alignItems="center">
                         <Token
-                          imageUrl={row.token0.icon}
+                          imageUrl={row.tokenA?.icon}
                           width={20}
                           height={20}
                         />
                         <Token
-                          imageUrl={row.token1.icon}
+                          imageUrl={row.tokenB?.icon}
                           width={20}
                           height={20}
                         />
                       </Box>
-                      {shouldShortenCode(row.token0.code)} /{" "}
-                      {shouldShortenCode(row.token1.code)}
+                      {shouldShortenCode(row.tokenA?.code)} /{" "}
+                      {shouldShortenCode(row.tokenB?.code)}
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       {formatNumberToMoney(row.tvl, 2)}

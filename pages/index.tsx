@@ -21,6 +21,9 @@ import {
   shouldFilterToken,
 } from "utils/filters";
 import { useRouter } from "next/router";
+import { StyledCard } from "components/styled/card";
+import LoadingSkeleton from "components/loading-skeleton";
+import { formatNumberToMoney } from "utils/utils";
 
 export default function Home() {
   const pools = useQueryPools();
@@ -29,7 +32,7 @@ export default function Home() {
   const router = useRouter();
 
   const eventsFilters = useEventTopicFilter();
-  const events = useQueryAllEvents({ topic2: eventsFilters.topic });
+  const events = useQueryAllEvents({ type: eventsFilters.topic });
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -45,6 +48,10 @@ export default function Home() {
     shouldFilterEvent(event, searchValue)
   );
 
+  const soroswapTvl = pools?.data?.reduce((acc, pool) => {
+    return acc + (pool.tvl || 0);
+  }, 0);
+
   return (
     <>
       <Head>
@@ -54,7 +61,29 @@ export default function Home() {
         <Typography variant="h6" sx={{ mb: 1 }}></Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={12}>
-            <TVLChart />
+            <StyledCard sx={{ maxWidth: 1184, p: "32px" }}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={4}
+              >
+                <Box>
+                  <Typography fontSize="20px" fontWeight={600}>
+                    TVL
+                  </Typography>
+                </Box>
+                <Box>
+                  <LoadingSkeleton isLoading={pools.isLoading} height={20}>
+                    <Typography fontWeight={600} fontSize="28px">
+                      {formatNumberToMoney(soroswapTvl)}
+                    </Typography>
+                    {/* <PercentageChanged percentage={40.2} sx={{ fontWeight: 600 }} /> */}
+                  </LoadingSkeleton>
+                </Box>
+              </Box>
+              <TVLChart />
+            </StyledCard>
           </Grid>
           {/*           <Grid item xs={12} md={6}>
             <VolumeChart />

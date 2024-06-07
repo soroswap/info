@@ -19,8 +19,9 @@ const Tabs = ({ children, endContent, items }: Props) => {
     <Box>
       <Row justifyContent="space-between" gap="16px" flexWrap="wrap">
         <Row gap="8px">
-          {items.map((item) => (
+          {items.map((item, idx) => (
             <Box
+              key={idx}
               bgcolor={selected === item ? "#1b1b1b" : "transparent"}
               color={selected === item ? "white" : "gray"}
               py={1}

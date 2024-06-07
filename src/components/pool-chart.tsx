@@ -20,11 +20,17 @@ import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 import { formatNumberToToken } from "../utils/utils";
 import ChartTooltip from "./chart-tooltip";
+import { TvlChartData } from "types/pools";
 
 type Charts = "volume" | "liquidity" | "fees";
 
-const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
-  const tvlChart = useQueryPoolTVLChart({ poolAddress });
+const PoolChart = ({
+  poolAddress,
+  tvlChartData,
+}: {
+  poolAddress: string;
+  tvlChartData: TvlChartData[] | undefined;
+}) => {
   const feesChart = useQueryPoolFeesChart({ poolAddress });
   const volumeChart = useQueryPoolVolumeChart({ poolAddress });
 
@@ -42,7 +48,7 @@ const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
         value: "volume",
       });
     }
-    if (tvlChart.data) {
+    if (tvlChartData) {
       availableTabs.push({
         label: "Liquidity",
         value: "liquidity",
@@ -109,16 +115,12 @@ const PoolChart = ({ poolAddress }: { poolAddress: string }) => {
         </LoadingSkeleton>
       </RenderIf>
       <RenderIf isTrue={value === "liquidity"}>
-        <LoadingSkeleton
-          width="100%"
-          isLoading={tvlChart.isLoading}
-          height={320}
-        >
+        <LoadingSkeleton width="100%" isLoading={false} height={320}>
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
             <AreaChart
               width={500}
               height={300}
-              data={tvlChart.data ?? []}
+              data={tvlChartData ?? []}
               margin={{
                 top: 5,
                 right: 30,
