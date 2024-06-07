@@ -122,7 +122,7 @@ export const toCamelCase = (text: string): string => {
 };
 
 export const adjustAmountByDecimals = (
-  amount: number,
+  amount: number | string,
   decimals: number | undefined
 ): string => {
   const defaultDecimals = 7;

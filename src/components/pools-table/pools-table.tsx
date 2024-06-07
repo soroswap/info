@@ -139,7 +139,6 @@ export default function PoolsTable({
     });
   };
 
-  console.log(visibleRows);
   if (isLoading) {
     return <Skeleton variant="rounded" height={300} />;
   }

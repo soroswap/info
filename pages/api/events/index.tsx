@@ -1,13 +1,11 @@
 import { fetchTokenList } from "services/tokens";
-import { GET_ALL_EVENTS } from "zephyr/queries/getAllEvents";
-import { getMercuryInstance } from "zephyr/mercury";
 import { NextApiRequest, NextApiResponse } from "next";
-import { parseMercuryScvalResponse } from "zephyr/helpers";
+import { getMercuryEvents, parseMercuryScvalResponse } from "zephyr/helpers";
 import { RouterEventAPI, RouterEventType } from "types/router-events";
 import { TokenType } from "types/tokens";
 import { Network } from "types/network";
 
-interface MercuryEvent {
+export interface MercuryEvent {
   tokenA: string;
   tokenB: string;
   eType: "swap" | "add" | "remove";
@@ -41,62 +39,49 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const network = queryParams?.network as Network;
   const type = queryParams?.type as RouterEventType;
 
-  if (network === "MAINNET") {
-    return res.json([]);
+  if (network !== "MAINNET" && network !== "TESTNET") {
+    return res.status(400).json({ error: "Invalid network" });
   }
 
-  const mercuryInstance = getMercuryInstance();
+  const events = await getMercuryEvents(network);
 
-  const response = await mercuryInstance.getCustomQuery({
-    request: GET_ALL_EVENTS,
-  });
+  const tokenList = await fetchTokenList({ network });
 
-  if (response.ok) {
-    const parsedData: MercuryEvent[] = parseMercuryScvalResponse(
-      response.data.events.data
+  let data: RouterEventAPI[] = events.map((event) => {
+    const tokenA = tokenList.find(
+      (token: TokenType) => token.contract === event.tokenA
+    );
+    const tokenB = tokenList.find(
+      (token: TokenType) => token.contract === event.tokenB
     );
 
-    const tokenList = await fetchTokenList({ network });
+    return {
+      ...event,
+      txHash: "",
+      timestamp: 0,
+      tokenA: tokenA
+        ? tokenA
+        : { contract: event.tokenA, code: event.tokenA, name: event.tokenA },
+      tokenB: tokenB
+        ? tokenB
+        : { contract: event.tokenB, code: event.tokenB, name: event.tokenB },
+      amountA: adjustAmountByDecimals(event.amountA, tokenA?.decimals),
+      amountB: adjustAmountByDecimals(event.amountB, tokenB?.decimals),
+    };
+  });
 
-    let data: RouterEventAPI[] = parsedData.map((event) => {
-      const tokenA = tokenList.find(
-        (token: TokenType) => token.contract === event.tokenA
-      );
-      const tokenB = tokenList.find(
-        (token: TokenType) => token.contract === event.tokenB
-      );
-
-      return {
-        ...event,
-        txHash: "",
-        timestamp: 0,
-        tokenA: tokenA
-          ? tokenA
-          : { contract: event.tokenA, code: event.tokenA, name: event.tokenA },
-        tokenB: tokenB
-          ? tokenB
-          : { contract: event.tokenB, code: event.tokenB, name: event.tokenB },
-        amountA: adjustAmountByDecimals(event.amountA, tokenA?.decimals),
-        amountB: adjustAmountByDecimals(event.amountB, tokenB?.decimals),
-      };
-    });
-
-    if (type) {
-      data = data.filter((event) => event.eType === type);
-    }
-
-    if (address) {
-      data = data.filter(
-        (event) =>
-          event.tokenA?.contract === address ||
-          event.tokenB?.contract === address
-      );
-    }
-
-    return res.json(data);
+  if (type) {
+    data = data.filter((event) => event.eType === type);
   }
 
-  return res.status(500).json({ error: "Failed to fetch pairs from mercury" });
+  if (address) {
+    data = data.filter(
+      (event) =>
+        event.tokenA?.contract === address || event.tokenB?.contract === address
+    );
+  }
+
+  return res.json(data);
 }
 
 export default handler;

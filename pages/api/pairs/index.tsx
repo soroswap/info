@@ -1,13 +1,21 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { fetchTokenList } from "services/tokens";
 import { Network } from "types/network";
-import { Pool } from "types/pools";
 import { TokenType } from "types/tokens";
-import { parseMercuryScvalResponse } from "zephyr/helpers";
+import { fillChart } from "utils/complete-chart";
+import {
+  buildPoolsInfo,
+  getPoolTVL,
+  getPoolTokenPrices,
+  getRouterFromPools,
+  stellarNetworkDict,
+} from "utils/info";
+import { getMercuryRsvCh, parseMercuryScvalResponse } from "zephyr/helpers";
 import { getMercuryInstance } from "zephyr/mercury";
 import { GET_ALL_PAIRS } from "zephyr/queries/getAllPairs";
+import { ZEPHYR_TABLES } from "zephyr/tables";
 
-interface MercuryPair {
+export interface MercuryPair {
   tokenA: string;
   tokenB: string;
   address: string;
@@ -15,67 +23,75 @@ interface MercuryPair {
   reserveB: string;
 }
 
+export const getMercuryPools = async (network: Network) => {
+  const mercuryInstance = getMercuryInstance(network);
+
+  const response = await mercuryInstance.getCustomQuery({
+    request: GET_ALL_PAIRS(ZEPHYR_TABLES[network].PAIRS),
+  });
+
+  const parsedData: MercuryPair[] = parseMercuryScvalResponse(
+    response.data?.events?.data
+  );
+
+  return parsedData;
+};
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const queryParams = req.query;
 
   const address = queryParams?.address as string;
   const network = queryParams?.network as Network;
 
-  if (network === "MAINNET") {
-    return res.json([]);
+  if (network !== "MAINNET" && network !== "TESTNET") {
+    return res.status(400).json({ error: "Invalid network" });
   }
 
-  const mercuryInstance = getMercuryInstance();
+  const tokenList: TokenType[] = await fetchTokenList({ network });
 
-  const response = await mercuryInstance.getCustomQuery({
-    request: GET_ALL_PAIRS,
-  });
+  const { mercury, result } = await buildPoolsInfo(tokenList, network);
 
-  if (response.ok) {
-    const tokenList = await fetchTokenList({ network });
+  if (address) {
+    const pool = result.find((pair) => pair.address === address);
 
-    const parsedData: MercuryPair[] = parseMercuryScvalResponse(
-      response.data.events.data
+    const rsvch = await getMercuryRsvCh(network);
+    const rsvFiltered = rsvch.filter((r) => r.address === address);
+
+    const usdc = tokenList.find((t) => t.code === "USDC");
+
+    const router = getRouterFromPools(mercury, stellarNetworkDict[network]);
+
+    const { tokenAPrice, tokenBPrice } = await getPoolTokenPrices(
+      pool?.tokenA.contract,
+      pool?.tokenB.contract,
+      usdc?.contract,
+      stellarNetworkDict[network],
+      router
     );
 
-    const poolsWithTokenData: Pool[] = parsedData.map((pool) => {
-      const tokenA: TokenType = tokenList.find(
-        (token: TokenType) => token.contract === pool.tokenA
-      );
+    const tvlChartData = await Promise.all(
+      rsvFiltered.map(async (r) => {
+        return {
+          timestamp: r.timestamp,
+          date: new Date(parseInt(r.timestamp) * 1000).toISOString(),
+          tvl: await getPoolTVL(
+            pool?.tokenA,
+            pool?.tokenB,
+            r.reserveA,
+            r.reserveB,
+            tokenAPrice,
+            tokenBPrice
+          ),
+        };
+      })
+    );
 
-      const tokenB: TokenType = tokenList.find(
-        (token: TokenType) => token.contract === pool.tokenB
-      );
+    const filledTvlChartData = fillChart(tvlChartData, "tvl");
 
-      return {
-        ...pool,
-        tokenA: tokenA
-          ? tokenA
-          : { contract: pool.tokenA, code: pool.tokenA, name: pool.tokenA },
-        tokenB: tokenB
-          ? tokenB
-          : { contract: pool.tokenB, code: pool.tokenB, name: pool.tokenB },
-        fees24h: 0,
-        feesYearly: 0,
-        liquidity: 0,
-        tvl: 0,
-        volume24h: 0,
-        volume7d: 0,
-      };
-    });
-
-    if (address) {
-      const filteredData = poolsWithTokenData.find(
-        (pair) => pair.address === address
-      );
-
-      return res.json(filteredData);
-    }
-
-    return res.json(poolsWithTokenData);
+    return res.json({ ...pool, tvlChartData: filledTvlChartData });
   }
 
-  return res.status(500).json({ error: "Failed to fetch pairs from mercury" });
+  return res.json(result);
 }
 
 export default handler;

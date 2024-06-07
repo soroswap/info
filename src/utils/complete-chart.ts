@@ -44,3 +44,56 @@ export function fillDatesAndSort(
 
   return completeData;
 }
+
+export const getLastValuePerDate = (data: any[]): any[] => {
+  const formatDate = (dateStr: string) => dateStr.split("T")[0];
+
+  const dateMap = new Map<string, any>();
+
+  data.forEach((item) => {
+    const dateKey = formatDate(item.date);
+    dateMap.set(dateKey, item);
+  });
+
+  const result = Array.from(dateMap.values()).sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  return result;
+};
+
+export const fillDatesTillToday = (
+  data: DataItem[],
+  valueKey: string
+): DataItem[] => {
+  const sortedData = data.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  const completeData: DataItem[] = [];
+  let currentDate = new Date(sortedData[0].date);
+
+  while (currentDate < new Date()) {
+    const lastValue =
+      completeData.length > 0
+        ? completeData[completeData.length - 1][valueKey]
+        : 0;
+    completeData.push({
+      date: currentDate.toISOString().split("T")[0],
+      [valueKey]: lastValue,
+    });
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return completeData;
+};
+
+export const fillChart = (data: any, key: string) => {
+  const filteredTvlChartData = getLastValuePerDate(data);
+
+  if (filteredTvlChartData.length === 1) {
+    return fillDatesTillToday(data, key);
+  }
+
+  return fillDatesAndSort(filteredTvlChartData, key);
+};

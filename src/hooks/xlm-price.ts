@@ -9,7 +9,7 @@ export const useQueryXLMPrice = () => {
 
   return useQuery({
     queryKey: [key, network],
-    queryFn: fetchXLMPrice,
+    queryFn: () => fetchXLMPrice({ network: network! }),
     enabled: isValidQuery,
   });
 };

@@ -197,8 +197,8 @@ const PoolPage = () => {
                     <Token imageUrl={token1?.icon} width={20} height={20} />1{" "}
                     {token1code} ={" "}
                     {getExpectedAmountOfOne(
-                      pool.data?.reserveA,
-                      pool.data?.reserveB
+                      pool.data?.reserveB,
+                      pool.data?.reserveA
                     )}{" "}
                     {token0code}
                   </Box>
@@ -304,7 +304,10 @@ const PoolPage = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <StyledCard sx={{ height: 410 }}>
-            <PoolChart poolAddress={id as string} />
+            <PoolChart
+              poolAddress={id as string}
+              tvlChartData={pool.data?.tvlChartData}
+            />
           </StyledCard>
         </Grid>
       </Grid>

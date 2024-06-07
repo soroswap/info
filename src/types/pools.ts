@@ -1,5 +1,11 @@
 import { TokenType } from "./tokens";
 
+export interface TvlChartData {
+  date: string;
+  tvl: number;
+  timestamp: string;
+}
+
 export interface Pool {
   address: string;
   tokenA: TokenType;
@@ -12,4 +18,5 @@ export interface Pool {
   fees24h?: number;
   feesYearly?: number;
   liquidity?: number;
+  tvlChartData?: TvlChartData[];
 }
