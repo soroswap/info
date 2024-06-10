@@ -10,7 +10,7 @@ export interface RouterEventAPI {
   txHash?: string;
   eType: RouterEventType;
   account?: string;
-  timestamp?: number;
+  timestamp?: string;
 }
 
 export type RouterEventType = "swap" | "add" | "remove" | "init";

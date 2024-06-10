@@ -20,19 +20,20 @@ import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 import { formatNumberToToken } from "../utils/utils";
 import ChartTooltip from "./chart-tooltip";
-import { TvlChartData } from "types/pools";
+import { TvlChartData, VolumeChartData } from "types/pools";
 
 type Charts = "volume" | "liquidity" | "fees";
 
 const PoolChart = ({
   poolAddress,
   tvlChartData,
+  volumeChartData,
 }: {
   poolAddress: string;
   tvlChartData: TvlChartData[] | undefined;
+  volumeChartData: VolumeChartData[] | undefined;
 }) => {
   const feesChart = useQueryPoolFeesChart({ poolAddress });
-  const volumeChart = useQueryPoolVolumeChart({ poolAddress });
 
   const [value, setValue] = React.useState<Charts>("volume");
 
@@ -42,7 +43,7 @@ const PoolChart = ({
 
   const getAvailableTabs = () => {
     const availableTabs = [];
-    if (volumeChart.data) {
+    if (volumeChartData) {
       availableTabs.push({
         label: "Volume",
         value: "volume",
@@ -78,16 +79,12 @@ const PoolChart = ({
         />
       </Box>
       <RenderIf isTrue={value === "volume"}>
-        <LoadingSkeleton
-          width="100%"
-          isLoading={volumeChart.isLoading}
-          height={320}
-        >
+        <LoadingSkeleton width="100%" isLoading={false} height={320}>
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
             <AreaChart
               width={500}
               height={400}
-              data={volumeChart.data ?? []}
+              data={volumeChartData ?? []}
               margin={{
                 top: 0,
                 right: 0,

@@ -231,7 +231,7 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                       </Link>
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {timeAgo.format(row.timestamp || 0)}
+                      {timeAgo.format(Number(row.timestamp) * 1000 || 0)}
                     </StyledTableCell>
                   </TableRow>
                 );

@@ -13,12 +13,16 @@ import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 import { formatNumberToToken } from "../utils/utils";
 
 import ChartTooltip from "./chart-tooltip";
+import { TvlChartData } from "types/pools";
 
-const TVLChart = () => {
-  const tvlChart = useQuerySoroswapTVLChart();
+interface Props {
+  data: TvlChartData[];
+  isLoading: boolean;
+}
 
+const TVLChart = (props: Props) => {
   return (
-    <LoadingSkeleton isLoading={tvlChart.isLoading} width="100%" height={300}>
+    <LoadingSkeleton isLoading={props.isLoading} width="100%" height={300}>
       <ResponsiveContainer
         width="100%"
         height="100%"
@@ -28,7 +32,7 @@ const TVLChart = () => {
         <AreaChart
           width={500}
           height={300}
-          data={tvlChart.data ?? []}
+          data={props.data ?? []}
           margin={{
             top: 0,
             right: 0,

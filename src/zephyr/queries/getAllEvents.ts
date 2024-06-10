@@ -7,6 +7,7 @@ export const GET_ALL_EVENTS = (tableName: string) => `query Query {
         amountA
         amountB
         account
+        timestamp
       }
     }
   }`;

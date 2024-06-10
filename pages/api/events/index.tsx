@@ -1,9 +1,9 @@
 import { fetchTokenList } from "services/tokens";
+import { getMercuryEvents, getMercuryPools } from "zephyr/helpers";
+import { Network } from "types/network";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getMercuryEvents, parseMercuryScvalResponse } from "zephyr/helpers";
 import { RouterEventAPI, RouterEventType } from "types/router-events";
 import { TokenType } from "types/tokens";
-import { Network } from "types/network";
 
 export interface MercuryEvent {
   tokenA: string;
@@ -12,6 +12,7 @@ export interface MercuryEvent {
   amountA: string;
   amountB: string;
   account: string;
+  timestamp: string;
 }
 
 export const adjustAmountByDecimals = (
@@ -58,7 +59,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return {
       ...event,
       txHash: "",
-      timestamp: 0,
       tokenA: tokenA
         ? tokenA
         : { contract: event.tokenA, code: event.tokenA, name: event.tokenA },
@@ -75,9 +75,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   if (address) {
+    const pools = await getMercuryPools(network);
+    const pool = pools.find((pool) => pool.address === address);
+
     data = data.filter(
       (event) =>
-        event.tokenA?.contract === address || event.tokenB?.contract === address
+        (event.tokenA?.contract === pool?.tokenA &&
+          event.tokenB?.contract === pool?.tokenB) ||
+        (event.tokenA?.contract === pool?.tokenB &&
+          event.tokenB?.contract === pool?.tokenA)
     );
   }
 

@@ -14,7 +14,7 @@ export const parseScvalValue = (value: any) => {
 };
 
 export const parseMercuryScvalResponse = (data: any) => {
-  return data.map((d: any) => {
+  return data?.map((d: any) => {
     let n: any = {};
 
     for (let key in d) {
@@ -45,7 +45,7 @@ export const getMercuryPools = async (network: Network) => {
   return parsedData;
 };
 
-interface MercuryRsvCh {
+export interface MercuryRsvCh {
   address: string;
   reserveA: string;
   reserveB: string;

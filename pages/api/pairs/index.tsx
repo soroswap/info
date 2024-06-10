@@ -1,18 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { buildPoolsInfo } from "utils/info";
 import { fetchTokenList } from "services/tokens";
-import { Network } from "types/network";
-import { TokenType } from "types/tokens";
-import { fillChart } from "utils/complete-chart";
-import {
-  buildPoolsInfo,
-  getPoolTVL,
-  getPoolTokenPrices,
-  getRouterFromPools,
-  stellarNetworkDict,
-} from "utils/info";
-import { getMercuryRsvCh, parseMercuryScvalResponse } from "zephyr/helpers";
-import { getMercuryInstance } from "zephyr/mercury";
 import { GET_ALL_PAIRS } from "zephyr/queries/getAllPairs";
+import { getMercuryInstance } from "zephyr/mercury";
+import { Network } from "types/network";
+import { NextApiRequest, NextApiResponse } from "next";
+import { parseMercuryScvalResponse } from "zephyr/helpers";
+import { TokenType } from "types/tokens";
 import { ZEPHYR_TABLES } from "zephyr/tables";
 
 export interface MercuryPair {
@@ -49,46 +42,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   const tokenList: TokenType[] = await fetchTokenList({ network });
 
-  const { mercury, result } = await buildPoolsInfo(tokenList, network);
+  const result = await buildPoolsInfo(tokenList, network);
 
   if (address) {
     const pool = result.find((pair) => pair.address === address);
-
-    const rsvch = await getMercuryRsvCh(network);
-    const rsvFiltered = rsvch.filter((r) => r.address === address);
-
-    const usdc = tokenList.find((t) => t.code === "USDC");
-
-    const router = getRouterFromPools(mercury, stellarNetworkDict[network]);
-
-    const { tokenAPrice, tokenBPrice } = await getPoolTokenPrices(
-      pool?.tokenA.contract,
-      pool?.tokenB.contract,
-      usdc?.contract,
-      stellarNetworkDict[network],
-      router
-    );
-
-    const tvlChartData = await Promise.all(
-      rsvFiltered.map(async (r) => {
-        return {
-          timestamp: r.timestamp,
-          date: new Date(parseInt(r.timestamp) * 1000).toISOString(),
-          tvl: await getPoolTVL(
-            pool?.tokenA,
-            pool?.tokenB,
-            r.reserveA,
-            r.reserveB,
-            tokenAPrice,
-            tokenBPrice
-          ),
-        };
-      })
-    );
-
-    const filledTvlChartData = fillChart(tvlChartData, "tvl");
-
-    return res.json({ ...pool, tvlChartData: filledTvlChartData });
+    return res.json(pool);
   }
 
   return res.json(result);
