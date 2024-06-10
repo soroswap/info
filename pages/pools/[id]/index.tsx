@@ -307,6 +307,7 @@ const PoolPage = () => {
             <PoolChart
               poolAddress={id as string}
               tvlChartData={pool.data?.tvlChartData}
+              volumeChartData={pool.data?.volumeChartData}
             />
           </StyledCard>
         </Grid>

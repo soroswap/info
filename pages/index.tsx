@@ -52,6 +52,23 @@ export default function Home() {
     return acc + (pool.tvl || 0);
   }, 0);
 
+  const getSoroswapTvlChartData = () => {
+    const tvlChartData: { [x: string]: { tvl: number; date: string } } = {};
+    pools.data?.forEach((pool) => {
+      pool.tvlChartData?.forEach((data) => {
+        tvlChartData[data.date] = {
+          tvl: (tvlChartData?.[data?.date]?.tvl || 0) + data.tvl,
+          date: data.date,
+        };
+      });
+    });
+
+    return Object.keys(tvlChartData).map((key) => ({
+      date: tvlChartData[key].date,
+      tvl: tvlChartData[key].tvl,
+    }));
+  };
+
   return (
     <>
       <Head>
@@ -82,7 +99,10 @@ export default function Home() {
                   </LoadingSkeleton>
                 </Box>
               </Box>
-              <TVLChart />
+              <TVLChart
+                data={getSoroswapTvlChartData() ?? []}
+                isLoading={pools.isLoading}
+              />
             </StyledCard>
           </Grid>
           {/*           <Grid item xs={12} md={6}>

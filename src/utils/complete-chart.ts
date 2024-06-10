@@ -18,6 +18,10 @@ export function fillDatesAndSort(
   data: DataItem[],
   valueKey: string
 ): DataItem[] {
+  if (data.length === 0) {
+    return [];
+  }
+
   const sortedData = data.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
@@ -66,6 +70,10 @@ export const fillDatesTillToday = (
   data: DataItem[],
   valueKey: string
 ): DataItem[] => {
+  if (data.length === 0) {
+    return [];
+  }
+
   const sortedData = data.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );

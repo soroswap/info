@@ -3,7 +3,13 @@ import { TokenType } from "./tokens";
 export interface TvlChartData {
   date: string;
   tvl: number;
-  timestamp: string;
+  timestamp?: string;
+}
+
+export interface VolumeChartData {
+  date: string;
+  volume: number;
+  timestamp?: string;
 }
 
 export interface Pool {
@@ -12,6 +18,8 @@ export interface Pool {
   tokenB: TokenType;
   reserveA: string;
   reserveB: string;
+  tokenAPrice: number;
+  tokenBPrice: number;
   tvl?: number;
   volume24h?: number;
   volume7d?: number;
@@ -19,4 +27,5 @@ export interface Pool {
   feesYearly?: number;
   liquidity?: number;
   tvlChartData?: TvlChartData[];
+  volumeChartData?: VolumeChartData[];
 }

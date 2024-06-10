@@ -1,4 +1,4 @@
-import { Pool } from "types/pools";
+import { Pool, TvlChartData, VolumeChartData } from "types/pools";
 import { adjustAmountByDecimals } from "./utils";
 import {
   CurrencyAmount,
@@ -10,6 +10,14 @@ import {
 import { Token, TokenType } from "types/tokens";
 import { MercuryPair, getMercuryPools } from "../../pages/api/pairs";
 import { Network } from "types/network";
+import { RouterEventAPI } from "types/router-events";
+import {
+  MercuryRsvCh,
+  getMercuryEvents,
+  getMercuryRsvCh,
+} from "zephyr/helpers";
+import { fillChart } from "./complete-chart";
+import { MercuryEvent } from "../../pages/api/events";
 
 export const stellarNetworkDict = {
   MAINNET: Networks.PUBLIC,
@@ -137,6 +145,9 @@ export const buildPoolsInfo = async (tokens: TokenType[], network: Network) => {
 
   const USDC = tokens.find((token) => token.code === "USDC");
 
+  const rsvch = await getMercuryRsvCh(network);
+  const events = await getMercuryEvents(network);
+
   const result: Pool[] = await Promise.all(
     data.map(async (pool) => {
       const tokenA = tokens.find(
@@ -155,16 +166,16 @@ export const buildPoolsInfo = async (tokens: TokenType[], network: Network) => {
         router
       );
 
-      const tvl = await getPoolTVL(
-        tokenA,
-        tokenB,
+      const tvl = getPoolTVL(
         pool.reserveA,
         pool.reserveB,
         tokenAPrice,
-        tokenBPrice
+        tokenBPrice,
+        tokenA?.decimals,
+        tokenB?.decimals
       );
 
-      return {
+      const poolData = {
         ...pool,
         tokenA: tokenA
           ? tokenA
@@ -172,6 +183,8 @@ export const buildPoolsInfo = async (tokens: TokenType[], network: Network) => {
         tokenB: tokenB
           ? tokenB
           : { contract: pool.tokenB, code: pool.tokenB, name: pool.tokenB },
+        tokenAPrice,
+        tokenBPrice,
         fees24h: 0,
         feesYearly: 0,
         liquidity: 0,
@@ -179,10 +192,41 @@ export const buildPoolsInfo = async (tokens: TokenType[], network: Network) => {
         volume24h: 0,
         volume7d: 0,
       };
+
+      const tvlChartData = getPoolTVLChartData(rsvch, poolData);
+      const volumeChartData = getPoolVolumeChartData(events, poolData);
+
+      const nowTimestamp = new Date().getTime() / 1000;
+
+      const volume7d = volumeChartData.reduce((acc, item) => {
+        if (!item.timestamp) return acc;
+
+        if (nowTimestamp - parseInt(item.timestamp) < 7 * 24 * 3600) {
+          return acc + item.volume;
+        }
+        return acc;
+      }, 0);
+
+      const volume24h = volumeChartData.reduce((acc, item) => {
+        if (!item.timestamp) return acc;
+
+        if (nowTimestamp - parseInt(item.timestamp) < 24 * 3600) {
+          return acc + item.volume;
+        }
+        return acc;
+      }, 0);
+
+      return {
+        ...poolData,
+        tvlChartData,
+        volumeChartData,
+        volume7d,
+        volume24h,
+      };
     })
   );
 
-  return { mercury: data, result };
+  return result;
 };
 
 export const getPoolTokenPrices = async (
@@ -205,25 +249,37 @@ export const getPoolTokenPrices = async (
   };
 };
 
-export const getPoolTVL = async (
-  tokenA: TokenType | undefined,
-  tokenB: TokenType | undefined,
+export const getPoolTVL = (
   reserveA: string,
   reserveB: string,
   tokenAPrice: number,
-  tokenBPrice: number
+  tokenBPrice: number,
+  decimalsA: number = 7,
+  decimalsB: number = 7
 ) => {
-  if (!tokenA || !tokenB) return 0;
-
-  const tokenADecimals = tokenA?.decimals || 7;
-  const tokenBDecimals = tokenB?.decimals || 7;
-
-  const valueA = parseFloat(reserveA) / 10 ** tokenADecimals;
-  const valueB = parseFloat(reserveB) / 10 ** tokenBDecimals;
+  const valueA = parseFloat(reserveA) / 10 ** decimalsA;
+  const valueB = parseFloat(reserveB) / 10 ** decimalsB;
 
   const tvl = valueA * Number(tokenAPrice) + valueB * Number(tokenBPrice);
 
   return tvl;
+};
+
+export const getPoolVolume = (
+  amountA: string,
+  amountB: string,
+  tokenAPrice: number,
+  tokenBPrice: number,
+  decimalsA: number = 7,
+  decimalsB: number = 7
+) => {
+  const amountAResult = parseFloat(amountA) / 10 ** decimalsA;
+  const amountBResult = parseFloat(amountB) / 10 ** decimalsB;
+
+  const valueA = amountAResult * tokenAPrice;
+  const valueB = amountBResult * tokenBPrice;
+
+  return valueA + valueB;
 };
 
 export const getLastValuePerDate = (data: any[]): any[] => {
@@ -241,4 +297,83 @@ export const getLastValuePerDate = (data: any[]): any[] => {
   );
 
   return result;
+};
+
+export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
+  const poolEvents = events.filter((e) => {
+    if (
+      e.tokenA === pool?.tokenA.contract &&
+      e.tokenB === pool?.tokenB.contract
+    ) {
+      return true;
+    }
+
+    if (
+      e.tokenA === pool?.tokenB.contract &&
+      e.tokenB === pool?.tokenA.contract
+    ) {
+      return true;
+    }
+
+    return false;
+  });
+
+  const poolsEventsWithTokensOrdered = poolEvents.map((e) => {
+    if (
+      e.tokenA === pool?.tokenA.contract &&
+      e.tokenB === pool?.tokenB.contract
+    ) {
+      return e;
+    }
+
+    return {
+      ...e,
+      tokenA: e.tokenB,
+      tokenB: e.tokenA,
+      amountA: e.amountB,
+      amountB: e.amountA,
+    };
+  });
+
+  const volumeChartData = poolsEventsWithTokensOrdered.map((e) => {
+    return {
+      timestamp: e.timestamp,
+      date: new Date(parseInt(e.timestamp) * 1000).toISOString(),
+      volume: getPoolVolume(
+        e.amountA,
+        e.amountB,
+        pool.tokenAPrice,
+        pool.tokenBPrice,
+        pool?.tokenA.decimals,
+        pool?.tokenB.decimals
+      ),
+    };
+  });
+
+  const filledVolumeChartData = fillChart(volumeChartData, "volume");
+
+  return filledVolumeChartData as VolumeChartData[];
+};
+
+export const getPoolTVLChartData = (rsvchs: MercuryRsvCh[], pool: Pool) => {
+  const rsvFiltered = rsvchs.filter((r) => r.address === pool.address);
+
+  const tvlChartData = rsvFiltered.map((r) => {
+    return {
+      timestamp: r.timestamp,
+      date: new Date(parseInt(r.timestamp) * 1000).toISOString(),
+      tvl: getPoolTVL(
+        r.reserveA,
+        r.reserveB,
+        pool.tokenAPrice,
+        pool.tokenBPrice,
+        pool?.tokenA.decimals,
+        pool?.tokenB.decimals
+      ),
+    };
+  });
+
+  const filledTvlChartData = fillChart(tvlChartData, "tvl");
+
+  return filledTvlChartData as TvlChartData[];
 };
