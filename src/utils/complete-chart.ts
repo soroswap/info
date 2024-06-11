@@ -16,7 +16,8 @@ type DataItem = {
  */
 export function fillDatesAndSort(
   data: DataItem[],
-  valueKey: string
+  valueKey: string,
+  fillWithLastValue = true
 ): DataItem[] {
   if (data.length === 0) {
     return [];
@@ -32,10 +33,15 @@ export function fillDatesAndSort(
   sortedData.forEach((item, index) => {
     const itemDate = new Date(item.date);
     while (currentDate < itemDate) {
-      const lastValue =
-        completeData.length > 0
-          ? completeData[completeData.length - 1][valueKey]
-          : item[valueKey];
+      let lastValue = 0;
+
+      if (fillWithLastValue) {
+        lastValue =
+          completeData.length > 0
+            ? completeData[completeData.length - 1][valueKey]
+            : item[valueKey];
+      }
+
       completeData.push({
         date: currentDate.toISOString().split("T")[0],
         [valueKey]: lastValue,
@@ -68,7 +74,8 @@ export const getLastValuePerDate = (data: any[]): any[] => {
 
 export const fillDatesTillToday = (
   data: DataItem[],
-  valueKey: string
+  valueKey: string,
+  fillWithLastValue = true
 ): DataItem[] => {
   if (data.length === 0) {
     return [];
@@ -79,13 +86,18 @@ export const fillDatesTillToday = (
   );
 
   const completeData: DataItem[] = [];
+
   let currentDate = new Date(sortedData[0].date);
 
   while (currentDate < new Date()) {
-    const lastValue =
-      completeData.length > 0
-        ? completeData[completeData.length - 1][valueKey]
-        : 0;
+    let lastValue = 0;
+
+    if (fillWithLastValue) {
+      lastValue =
+        completeData.length > 0
+          ? completeData[completeData.length - 1][valueKey]
+          : sortedData[0][valueKey];
+    }
     completeData.push({
       date: currentDate.toISOString().split("T")[0],
       [valueKey]: lastValue,
@@ -96,12 +108,12 @@ export const fillDatesTillToday = (
   return completeData;
 };
 
-export const fillChart = (data: any, key: string) => {
+export const fillChart = (data: any, key: string, fillWithLastValue = true) => {
   const filteredTvlChartData = getLastValuePerDate(data);
 
   if (filteredTvlChartData.length === 1) {
-    return fillDatesTillToday(data, key);
+    return fillDatesTillToday(data, key, fillWithLastValue);
   }
 
-  return fillDatesAndSort(filteredTvlChartData, key);
+  return fillDatesAndSort(filteredTvlChartData, key, fillWithLastValue);
 };

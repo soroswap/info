@@ -208,7 +208,7 @@ export default function PoolsTable({
                       {formatNumberToMoney(row.volume7d)}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      {/* {formatNumberToMoney(row.fees24h)} */}-
+                      {formatNumberToMoney(row.fees24h)}
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       <Typography color="brown" fontSize={14}>

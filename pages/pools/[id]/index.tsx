@@ -308,6 +308,8 @@ const PoolPage = () => {
               poolAddress={id as string}
               tvlChartData={pool.data?.tvlChartData}
               volumeChartData={pool.data?.volumeChartData}
+              feesChartData={pool.data?.feesChartData}
+              isLoading={pool.isLoading}
             />
           </StyledCard>
         </Grid>

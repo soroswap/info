@@ -12,6 +12,12 @@ export interface VolumeChartData {
   timestamp?: string;
 }
 
+export interface FeesChartData {
+  date: string;
+  fees: number;
+  timestamp?: string;
+}
+
 export interface Pool {
   address: string;
   tokenA: TokenType;
@@ -25,7 +31,7 @@ export interface Pool {
   volume7d?: number;
   fees24h?: number;
   feesYearly?: number;
-  liquidity?: number;
   tvlChartData?: TvlChartData[];
   volumeChartData?: VolumeChartData[];
+  feesChartData?: FeesChartData[];
 }

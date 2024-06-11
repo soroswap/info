@@ -20,7 +20,7 @@ import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 import { formatNumberToToken } from "../utils/utils";
 import ChartTooltip from "./chart-tooltip";
-import { TvlChartData, VolumeChartData } from "types/pools";
+import { FeesChartData, TvlChartData, VolumeChartData } from "types/pools";
 
 type Charts = "volume" | "liquidity" | "fees";
 
@@ -28,13 +28,15 @@ const PoolChart = ({
   poolAddress,
   tvlChartData,
   volumeChartData,
+  feesChartData,
+  isLoading,
 }: {
   poolAddress: string;
   tvlChartData: TvlChartData[] | undefined;
   volumeChartData: VolumeChartData[] | undefined;
+  feesChartData: FeesChartData[] | undefined;
+  isLoading: boolean;
 }) => {
-  const feesChart = useQueryPoolFeesChart({ poolAddress });
-
   const [value, setValue] = React.useState<Charts>("volume");
 
   const handleChange = (newValue: Charts) => {
@@ -42,7 +44,10 @@ const PoolChart = ({
   };
 
   const getAvailableTabs = () => {
-    const availableTabs = [];
+    const availableTabs: any[] = [];
+
+    if (isLoading) return availableTabs;
+
     if (volumeChartData) {
       availableTabs.push({
         label: "Volume",
@@ -55,7 +60,7 @@ const PoolChart = ({
         value: "liquidity",
       });
     }
-    if (feesChart.data) {
+    if (feesChartData) {
       availableTabs.push({
         label: "Fees",
         value: "fees",
@@ -79,7 +84,7 @@ const PoolChart = ({
         />
       </Box>
       <RenderIf isTrue={value === "volume"}>
-        <LoadingSkeleton width="100%" isLoading={false} height={320}>
+        <LoadingSkeleton width="100%" isLoading={isLoading} height={320}>
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
             <AreaChart
               width={500}
@@ -112,7 +117,7 @@ const PoolChart = ({
         </LoadingSkeleton>
       </RenderIf>
       <RenderIf isTrue={value === "liquidity"}>
-        <LoadingSkeleton width="100%" isLoading={false} height={320}>
+        <LoadingSkeleton width="100%" isLoading={isLoading} height={320}>
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
             <AreaChart
               width={500}
@@ -144,16 +149,12 @@ const PoolChart = ({
         </LoadingSkeleton>
       </RenderIf>
       <RenderIf isTrue={value === "fees"}>
-        <LoadingSkeleton
-          width="100%"
-          isLoading={feesChart.isLoading}
-          height={320}
-        >
+        <LoadingSkeleton width="100%" isLoading={isLoading} height={320}>
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
             <AreaChart
               width={500}
               height={400}
-              data={feesChart.data ?? []}
+              data={feesChartData ?? []}
               margin={{
                 top: 0,
                 right: 0,
