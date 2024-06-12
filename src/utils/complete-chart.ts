@@ -29,6 +29,7 @@ export function fillDatesAndSort(
 
   const completeData: DataItem[] = [];
   let currentDate = new Date(sortedData[0].date);
+  const today = new Date();
 
   sortedData.forEach((item, index) => {
     const itemDate = new Date(item.date);
@@ -51,6 +52,20 @@ export function fillDatesAndSort(
     completeData.push({ ...item });
     currentDate.setDate(currentDate.getDate() + 1);
   });
+
+  while (currentDate <= today) {
+    let lastValue = 0;
+
+    if (fillWithLastValue && completeData.length > 0) {
+      lastValue = completeData[completeData.length - 1][valueKey];
+    }
+
+    completeData.push({
+      date: currentDate.toISOString().split("T")[0],
+      [valueKey]: lastValue,
+    });
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
 
   return completeData;
 }
@@ -88,9 +103,10 @@ export const fillDatesTillToday = (
   const completeData: DataItem[] = [];
 
   let currentDate = new Date(sortedData[0].date);
+  const firstValue = sortedData[0][valueKey];
 
   while (currentDate < new Date()) {
-    let lastValue = 0;
+    let lastValue = completeData.length > 0 ? 0 : firstValue;
 
     if (fillWithLastValue) {
       lastValue =
@@ -98,6 +114,7 @@ export const fillDatesTillToday = (
           ? completeData[completeData.length - 1][valueKey]
           : sortedData[0][valueKey];
     }
+
     completeData.push({
       date: currentDate.toISOString().split("T")[0],
       [valueKey]: lastValue,

@@ -23,7 +23,6 @@ import {
 } from "zephyr/helpers";
 import { fillChart } from "./complete-chart";
 import { MercuryEvent } from "../../pages/api/events";
-import { xlmToken } from "constants/constants";
 import { fetchTokenList } from "services/tokens";
 
 export const stellarNetworkDict = {
@@ -170,9 +169,11 @@ export const buildTokensInfo = async (network: Network) => {
   if (!USDC) return tokens;
 
   const sdkNetwork = stellarNetworkDict[network];
+
   const pools = await getMercuryPools(network);
-  const router = getRouterFromPools(pools, sdkNetwork);
   const events = await getMercuryEvents(network);
+
+  const router = getRouterFromPools(pools, sdkNetwork);
 
   const result = await Promise.all(
     tokens.map(async (token) => {
@@ -203,11 +204,23 @@ export const buildTokensInfo = async (network: Network) => {
         return acc;
       }, 0);
 
+      const volume7d = volumeChartData.reduce((acc, item) => {
+        if (!item.timestamp) return acc;
+
+        const nowTimestamp = new Date().getTime() / 1000;
+
+        if (nowTimestamp - parseInt(item.timestamp) < 7 * 24 * 3600) {
+          return acc + item.volume;
+        }
+        return acc;
+      }, 0);
+
       return {
         ...tokenData,
         tvl,
         volumeChartData,
         volume24h,
+        volume7d,
       };
     })
   );
@@ -308,6 +321,17 @@ export const buildPoolsInfo = async (network: Network) => {
         return acc;
       }, 0);
 
+      const fees7d = feesChartData.reduce((acc, item) => {
+        if (!item.timestamp) return acc;
+
+        if (nowTimestamp - parseInt(item.timestamp) < 7 * 24 * 3600) {
+          return acc + item.fees;
+        }
+        return acc;
+      }, 0);
+
+      const feesYearly = fees7d * 52;
+
       return {
         ...poolData,
         tvlChartData,
@@ -316,6 +340,7 @@ export const buildPoolsInfo = async (network: Network) => {
         volume7d,
         volume24h,
         fees24h,
+        feesYearly,
       };
     })
   );

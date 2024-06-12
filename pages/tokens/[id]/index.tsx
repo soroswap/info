@@ -255,7 +255,13 @@ const TokenPage = () => {
         </Grid>
         <Grid item xs={12} md={8}>
           <StyledCard sx={{ height: 410 }}>
-            <TokenChart tokenAddress={id as string} />
+            <TokenChart
+              tokenAddress={id as string}
+              isLoading={token.isLoading}
+              volumeChartData={token.data?.volumeChartData}
+              tvlChartData={token.data?.tvlChartData}
+              priceChartData={token.data?.priceChartData}
+            />
           </StyledCard>
         </Grid>
       </Grid>

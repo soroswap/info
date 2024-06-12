@@ -12,7 +12,11 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import useTable from "../../hooks/use-table";
 import { Pool } from "../../types/pools";
-import { formatNumberToMoney, shouldShortenCode } from "../../utils/utils";
+import {
+  formatNumberToMoney,
+  roundNumber,
+  shouldShortenCode,
+} from "../../utils/utils";
 import Token from "../token";
 import { StyledTableCell } from "components/styled/table-cell";
 import { StyledCard } from "components/styled/card";
@@ -37,22 +41,22 @@ const headCells: readonly HeadCell[] = [
   {
     id: "volume24h",
     numeric: true,
-    label: "Volume 24H*",
+    label: "Volume 24H",
   },
   {
     id: "volume7d",
     numeric: true,
-    label: "Volume 7D*",
+    label: "Volume 7D",
   },
   {
     id: "fees24h",
     numeric: true,
-    label: "Fees 24H*",
+    label: "Fees 24H",
   },
   {
     id: "feesYearly",
     numeric: true,
-    label: "Fees Yearly*",
+    label: "Fees Yearly",
   },
 ];
 
@@ -211,10 +215,7 @@ export default function PoolsTable({
                       {formatNumberToMoney(row.fees24h)}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      <Typography color="brown" fontSize={14}>
-                        {/* {roundNumber(row?.feesYearly ?? 0, 2)}% */}-
-                      </Typography>
-                      <Box display="flex" justifyContent="flex-end"></Box>
+                      {formatNumberToMoney(row.feesYearly)}
                     </StyledTableCell>
                   </TableRow>
                 );

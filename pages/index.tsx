@@ -70,8 +70,6 @@ export default function Home() {
     }));
   };
 
-  console.log(getSoroswapTvlChartData());
-
   return (
     <>
       <Head>

@@ -18,6 +18,12 @@ export interface FeesChartData {
   timestamp?: string;
 }
 
+export interface PriceChartData {
+  date: string;
+  price: number;
+  timestamp?: string;
+}
+
 export interface Pool {
   address: string;
   tokenA: TokenType;
