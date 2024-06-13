@@ -4,7 +4,6 @@ import {
   TvlChartData,
   VolumeChartData,
 } from "types/pools";
-import { adjustAmountByDecimals } from "./utils";
 import {
   CurrencyAmount,
   Networks,
@@ -12,8 +11,7 @@ import {
   Token as SdkToken,
   TradeType,
 } from "soroswap-router-sdk";
-import { Token, TokenType } from "types/tokens";
-import { MercuryPair } from "../../pages/api/pairs";
+import { TokenType } from "types/tokens";
 import { Network } from "types/network";
 import {
   MercuryRsvCh,
@@ -21,211 +19,15 @@ import {
   getMercuryPools,
   getMercuryRsvCh,
 } from "zephyr/helpers";
-import { fillChart } from "./complete-chart";
-import { MercuryEvent } from "../../pages/api/events";
 import { fetchTokenList } from "services/tokens";
+import { MercuryPair } from "../../../../pages/api/pairs";
+import { MercuryEvent } from "../../../../pages/api/events";
+import { adjustAmountByDecimals } from "utils/utils";
+import { fillChart } from "utils/complete-chart";
 
 export const stellarNetworkDict = {
   MAINNET: Networks.PUBLIC,
   TESTNET: Networks.TESTNET,
-};
-
-const fromAddressToToken = (address: string, network: Networks) => {
-  return new SdkToken(network, address, 18);
-};
-
-const fromAddressAndAmountToCurrencyAmount = (
-  address: string,
-  amount: string,
-  network: Networks
-) => {
-  const token = fromAddressToToken(address, network);
-  return CurrencyAmount.fromRawAmount(token, amount);
-};
-
-export const getRouterFromPools = (pools: MercuryPair[], network: Networks) => {
-  return new Router({
-    getPairsFn: async () => {
-      return new Promise((resolve) => {
-        resolve(pools);
-      });
-    },
-    pairsCacheInSeconds: 60,
-    network,
-    maxHops: 5,
-  });
-};
-
-export const getTokenPrice = async (
-  tokenAddress: string,
-  usdcAddress: string,
-  network: Networks,
-  router: Router
-) => {
-  if (tokenAddress === usdcAddress) return 1;
-
-  const currencyAmount = fromAddressAndAmountToCurrencyAmount(
-    tokenAddress,
-    "10000000",
-    network
-  );
-
-  const quoteCurrency = fromAddressToToken(usdcAddress, network);
-
-  const route = await router.route(
-    currencyAmount,
-    quoteCurrency,
-    TradeType.EXACT_INPUT
-  );
-
-  if (!route || !route.trade?.amountOutMin) return 0;
-
-  const price = adjustAmountByDecimals(route.trade.amountOutMin, 7);
-
-  return price;
-};
-
-export const getTokenTVL = (token: Token, pools: MercuryPair[]) => {
-  const filteredPools = pools.filter(
-    (pool) =>
-      pool.tokenA === token.asset.contract ||
-      pool.tokenB === token.asset.contract
-  );
-
-  const tokenDecimals = token.asset.decimals || 7;
-
-  const tvl = filteredPools.reduce((acc, pool) => {
-    if (pool.tokenA === token.asset.contract) {
-      return acc + parseFloat(pool.reserveA) / 10 ** tokenDecimals;
-    }
-
-    if (pool.tokenB === token.asset.contract) {
-      return acc + parseFloat(pool.reserveB) / 10 ** tokenDecimals;
-    }
-
-    return acc;
-  }, 0);
-
-  return tvl * token.price;
-};
-
-export const getTokenVolume = (token: Token, event: MercuryEvent) => {
-  if (
-    event.tokenA !== token.asset.contract &&
-    event.tokenB !== token.asset.contract
-  )
-    return 0;
-
-  const tokenDecimals = token.asset.decimals || 7;
-
-  if (event.tokenA === token.asset.contract) {
-    return (parseFloat(event.amountA) / 10 ** tokenDecimals) * token.price;
-  } else {
-    return (parseFloat(event.amountB) / 10 ** tokenDecimals) * token.price;
-  }
-};
-
-export const getTokenVolumeChartData = (
-  events: MercuryEvent[],
-  token: Token
-) => {
-  const tokenEvents = events.filter(
-    (e) =>
-      e.tokenA === token.asset.contract || e.tokenB === token.asset.contract
-  );
-
-  const volumeChartData = tokenEvents.map((e) => {
-    return {
-      timestamp: e.timestamp,
-      date: new Date(parseInt(e.timestamp) * 1000).toISOString().split("T")[0],
-      volume: getTokenVolume(token, e),
-    };
-  });
-
-  const filledVolumeChartData = fillChart(volumeChartData, "volume", false);
-
-  return filledVolumeChartData as VolumeChartData[];
-};
-
-export const buildTokensInfo = async (network: Network) => {
-  const tokenList: TokenType[] = await fetchTokenList({ network });
-
-  const tokens: Token[] = tokenList.map((t) => ({
-    asset: t,
-    fees24h: 0,
-    price: 0,
-    priceChange24h: 0,
-    tvl: 0,
-    tvlSlippage24h: 0,
-    tvlSlippage7d: 0,
-    volume24h: 0,
-    volume24hChange: 0,
-    volume7d: 0,
-    volume7dChange: 0,
-  }));
-
-  const USDC = tokens.find((token) => token.asset.code === "USDC");
-
-  if (!USDC) return tokens;
-
-  const sdkNetwork = stellarNetworkDict[network];
-
-  const pools = await getMercuryPools(network);
-  const events = await getMercuryEvents(network);
-
-  const router = getRouterFromPools(pools, sdkNetwork);
-
-  const result = await Promise.all(
-    tokens.map(async (token) => {
-      const price = await getTokenPrice(
-        token.asset.contract,
-        USDC.asset.contract,
-        sdkNetwork,
-        router
-      );
-
-      const tokenData = {
-        ...token,
-        price: Number(price),
-      };
-
-      const tvl = getTokenTVL(tokenData, pools);
-
-      const volumeChartData = getTokenVolumeChartData(events, tokenData);
-
-      const volume24h = volumeChartData.reduce((acc, item) => {
-        if (!item.timestamp) return acc;
-
-        const nowTimestamp = new Date().getTime() / 1000;
-
-        if (nowTimestamp - parseInt(item.timestamp) < 24 * 3600) {
-          return acc + item.volume;
-        }
-        return acc;
-      }, 0);
-
-      const volume7d = volumeChartData.reduce((acc, item) => {
-        if (!item.timestamp) return acc;
-
-        const nowTimestamp = new Date().getTime() / 1000;
-
-        if (nowTimestamp - parseInt(item.timestamp) < 7 * 24 * 3600) {
-          return acc + item.volume;
-        }
-        return acc;
-      }, 0);
-
-      return {
-        ...tokenData,
-        tvl,
-        volumeChartData,
-        volume24h,
-        volume7d,
-      };
-    })
-  );
-
-  return result;
 };
 
 export const buildPoolsInfo = async (network: Network) => {
@@ -288,7 +90,6 @@ export const buildPoolsInfo = async (network: Network) => {
       };
 
       const tvlChartData = getPoolTVLChartData(rsvch, poolData);
-
       const volumeChartData = getPoolVolumeChartData(events, poolData);
       const feesChartData = getPoolFeesChartData(events, poolData);
 
@@ -348,6 +149,65 @@ export const buildPoolsInfo = async (network: Network) => {
   return result;
 };
 
+export const getDate = (timestamp: string) => {
+  return new Date(parseInt(timestamp) * 1000).toISOString().split("T")[0];
+};
+
+const fromAddressToToken = (address: string, network: Networks) => {
+  return new SdkToken(network, address, 18);
+};
+
+const fromAddressAndAmountToCurrencyAmount = (
+  address: string,
+  amount: string,
+  network: Networks
+) => {
+  const token = fromAddressToToken(address, network);
+  return CurrencyAmount.fromRawAmount(token, amount);
+};
+
+export const getRouterFromPools = (pools: MercuryPair[], network: Networks) => {
+  return new Router({
+    getPairsFn: async () => {
+      return new Promise((resolve) => {
+        resolve(pools);
+      });
+    },
+    pairsCacheInSeconds: 60,
+    network,
+    maxHops: 5,
+  });
+};
+
+export const getTokenPrice = async (
+  tokenAddress: string,
+  usdcAddress: string,
+  network: Networks,
+  router: Router
+) => {
+  if (tokenAddress === usdcAddress) return 1;
+
+  const currencyAmount = fromAddressAndAmountToCurrencyAmount(
+    tokenAddress,
+    "10000000",
+    network
+  );
+
+  const quoteCurrency = fromAddressToToken(usdcAddress, network);
+
+  const route = await router.route(
+    currencyAmount,
+    quoteCurrency,
+    TradeType.EXACT_INPUT
+  );
+
+  if (!route || !route.trade?.amountOutMin) return 0;
+
+  const price = adjustAmountByDecimals(route.trade.amountOutMin, 7);
+
+  return price;
+};
+
 export const getPoolTokenPrices = async (
   tokenA: string | undefined,
   tokenB: string | undefined,
@@ -398,7 +258,7 @@ export const getPoolVolume = (
   const valueA = amountAResult * tokenAPrice;
   const valueB = amountBResult * tokenBPrice;
 
-  return valueA + valueB;
+  return { volumeA: valueA, volumeB: valueB };
 };
 
 export const getPoolFees = (
@@ -450,17 +310,20 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
   });
 
   const volumeChartData = poolsEventsWithTokensOrdered.map((e) => {
+    const volumes = getPoolVolume(
+      e.amountA,
+      e.amountB,
+      pool.tokenAPrice,
+      pool.tokenBPrice,
+      pool?.tokenA.decimals,
+      pool?.tokenB.decimals
+    );
     return {
       timestamp: e.timestamp,
-      date: new Date(parseInt(e.timestamp) * 1000).toISOString().split("T")[0],
-      volume: getPoolVolume(
-        e.amountA,
-        e.amountB,
-        pool.tokenAPrice,
-        pool.tokenBPrice,
-        pool?.tokenA.decimals,
-        pool?.tokenB.decimals
-      ),
+      date: getDate(e.timestamp),
+      volume: volumes.volumeA + volumes.volumeB,
+      valueA: volumes.volumeA,
+      valueB: volumes.volumeB,
     };
   });
 
@@ -493,7 +356,7 @@ export const getPoolFeesChartData = (events: MercuryEvent[], pool: Pool) => {
   const feesChartData = swapEvents.map((e) => {
     return {
       timestamp: e.timestamp,
-      date: new Date(parseInt(e.timestamp) * 1000).toISOString().split("T")[0],
+      date: getDate(e.timestamp),
       fees: getPoolFees(e.amountA, pool.tokenAPrice, pool?.tokenA.decimals),
     };
   });
@@ -509,7 +372,7 @@ export const getPoolTVLChartData = (rsvchs: MercuryRsvCh[], pool: Pool) => {
   const tvlChartData = rsvFiltered.map((r) => {
     return {
       timestamp: r.timestamp,
-      date: new Date(parseInt(r.timestamp) * 1000).toISOString().split("T")[0],
+      date: getDate(r.timestamp),
       tvl: getPoolTVL(
         r.reserveA,
         r.reserveB,
@@ -518,6 +381,14 @@ export const getPoolTVLChartData = (rsvchs: MercuryRsvCh[], pool: Pool) => {
         pool?.tokenA.decimals,
         pool?.tokenB.decimals
       ),
+      valueA:
+        (parseFloat(r.reserveA) / 10 ** (pool?.tokenA?.decimals || 7)) *
+        pool.tokenAPrice,
+      valueB:
+        (parseFloat(r.reserveB) / 10 ** (pool?.tokenB?.decimals || 7)) *
+        pool.tokenBPrice,
+      reserveA: r.reserveA,
+      reserveB: r.reserveB,
     };
   });
 

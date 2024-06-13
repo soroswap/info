@@ -2,10 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { fetchTokenList } from "services/tokens";
 import { Network } from "types/network";
 import { TokenType } from "types/tokens";
-import { getRouterFromPools, getTokenPrice } from "utils/info";
 import { Networks } from "@stellar/stellar-sdk";
 import { getMercuryPools } from "zephyr/helpers";
 import { xlmToken } from "constants/constants";
+import { getRouterFromPools, getTokenPrice } from "utils/info/pools";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const queryParams = req.query;

@@ -1,8 +1,6 @@
-import { buildPoolsInfo } from "utils/info";
-import { fetchTokenList } from "services/tokens";
 import { Network } from "types/network";
 import { NextApiRequest, NextApiResponse } from "next";
-import { TokenType } from "types/tokens";
+import { buildPoolsInfo } from "utils/info/pools";
 
 export interface MercuryPair {
   tokenA: string;

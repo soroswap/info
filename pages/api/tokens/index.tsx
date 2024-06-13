@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Network } from "types/network";
-import { buildTokensInfo } from "utils/info";
+import { buildPoolsInfo } from "utils/info/pools";
+import { buildTokensInfo } from "utils/info/tokens";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const queryParams = req.query;
@@ -15,7 +16,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    const tokensInfo = await buildTokensInfo(network);
+    const result = await buildPoolsInfo(network);
+
+    const tokensInfo = await buildTokensInfo(network, result);
 
     if (address) {
       const filteredData = tokensInfo.find(

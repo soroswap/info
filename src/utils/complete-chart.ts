@@ -35,17 +35,31 @@ export function fillDatesAndSort(
     const itemDate = new Date(item.date);
     while (currentDate < itemDate) {
       let lastValue = 0;
+      let lastValueA = 0;
+      let lastValueB = 0;
 
       if (fillWithLastValue) {
         lastValue =
           completeData.length > 0
             ? completeData[completeData.length - 1][valueKey]
             : item[valueKey];
+
+        lastValueA =
+          completeData.length > 0
+            ? completeData[completeData.length - 1].valueA
+            : item.valueA;
+
+        lastValueB =
+          completeData.length > 0
+            ? completeData[completeData.length - 1].valueB
+            : item.valueB;
       }
 
       completeData.push({
         date: currentDate.toISOString().split("T")[0],
         [valueKey]: lastValue,
+        valueA: lastValueA,
+        valueB: lastValueB,
       });
       currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -55,14 +69,20 @@ export function fillDatesAndSort(
 
   while (currentDate <= today) {
     let lastValue = 0;
+    let lastValueA = 0;
+    let lastValueB = 0;
 
     if (fillWithLastValue && completeData.length > 0) {
       lastValue = completeData[completeData.length - 1][valueKey];
+      lastValueA = completeData[completeData.length - 1].valueA;
+      lastValueB = completeData[completeData.length - 1].valueB;
     }
 
     completeData.push({
       date: currentDate.toISOString().split("T")[0],
       [valueKey]: lastValue,
+      valueA: lastValueA,
+      valueB: lastValueB,
     });
     currentDate.setDate(currentDate.getDate() + 1);
   }
@@ -104,21 +124,38 @@ export const fillDatesTillToday = (
 
   let currentDate = new Date(sortedData[0].date);
   const firstValue = sortedData[0][valueKey];
+  const valueA = sortedData[0]?.valueA;
+  const valueB = sortedData[0]?.valueB;
 
   while (currentDate < new Date()) {
     let lastValue = completeData.length > 0 ? 0 : firstValue;
+    let lasValueA = completeData.length > 0 ? 0 : valueA;
+    let lasValueB = completeData.length > 0 ? 0 : valueB;
 
     if (fillWithLastValue) {
       lastValue =
         completeData.length > 0
           ? completeData[completeData.length - 1][valueKey]
           : sortedData[0][valueKey];
+
+      lasValueA =
+        completeData.length > 0
+          ? completeData[completeData.length - 1].valueA
+          : sortedData[0].valueA;
+
+      lasValueB =
+        completeData.length > 0
+          ? completeData[completeData.length - 1].valueB
+          : sortedData[0].valueB;
     }
 
     completeData.push({
       date: currentDate.toISOString().split("T")[0],
       [valueKey]: lastValue,
+      valueA: lasValueA,
+      valueB: lasValueB,
     });
+
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
