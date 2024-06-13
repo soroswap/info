@@ -12,23 +12,33 @@ import {
 import ChartSwitcher from "./chart-switcher";
 import React from "react";
 import RenderIf from "./render-if";
-import {
-  useQueryTokenPriceChart,
-  useQueryTokenTVLChart,
-  useQueryTokenVolumeChart,
-} from "../hooks/tokens";
+
 import LoadingSkeleton from "./loading-skeleton";
 import { xAxisChartFormatter } from "../utils/x-axis-chart-formatter";
 import { formatNumberToMoney, formatNumberToToken } from "../utils/utils";
 import ChartTooltip from "./chart-tooltip";
+import {
+  FeesChartData,
+  PriceChartData,
+  TvlChartData,
+  VolumeChartData,
+} from "types/pools";
 
 type Charts = "volume" | "tvl" | "price";
 
-const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
-  const tvlChart = useQueryTokenTVLChart({ tokenAddress });
-  const priceChart = useQueryTokenPriceChart({ tokenAddress });
-  const volumeChart = useQueryTokenVolumeChart({ tokenAddress });
-
+const TokenChart = ({
+  tokenAddress,
+  tvlChartData,
+  volumeChartData,
+  priceChartData,
+  isLoading,
+}: {
+  tokenAddress: string;
+  tvlChartData: TvlChartData[] | undefined;
+  volumeChartData: VolumeChartData[] | undefined;
+  priceChartData: PriceChartData[] | undefined;
+  isLoading: boolean;
+}) => {
   const [value, setValue] = React.useState<Charts>("volume");
 
   const handleChange = (newValue: Charts) => {
@@ -37,19 +47,19 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
 
   const getAvailableTabs = () => {
     const availableTabs = [];
-    if (volumeChart.data) {
+    if (volumeChartData) {
       availableTabs.push({
         label: "Volume",
         value: "volume",
       });
     }
-    if (tvlChart.data) {
+    if (tvlChartData) {
       availableTabs.push({
         label: "TVL",
         value: "tvl",
       });
     }
-    if (priceChart.data) {
+    if (priceChartData) {
       availableTabs.push({
         label: "Price",
         value: "price",
@@ -57,6 +67,7 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
     }
     return availableTabs;
   };
+
   return (
     <Box sx={{ py: 2 }}>
       <Box
@@ -73,16 +84,12 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
         />
       </Box>
       <RenderIf isTrue={value === "volume"}>
-        <LoadingSkeleton
-          width="100%"
-          isLoading={volumeChart.isLoading}
-          height={320}
-        >
+        <LoadingSkeleton width="100%" isLoading={isLoading} height={320}>
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
             <AreaChart
               width={500}
               height={400}
-              data={volumeChart.data ?? []}
+              data={volumeChartData ?? []}
               margin={{
                 top: 0,
                 right: 0,
@@ -111,16 +118,12 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
         </LoadingSkeleton>
       </RenderIf>
       <RenderIf isTrue={value === "tvl"}>
-        <LoadingSkeleton
-          isLoading={tvlChart.isLoading}
-          height={320}
-          width="100%"
-        >
+        <LoadingSkeleton isLoading={isLoading} height={320} width="100%">
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
             <AreaChart
               width={500}
               height={300}
-              data={tvlChart.data ?? []}
+              data={tvlChartData ?? []}
               margin={{
                 top: 5,
                 right: 30,
@@ -133,7 +136,7 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
                 tickFormatter={(tick) => xAxisChartFormatter(tick)}
               />
               <Tooltip
-                formatter={(amount) => formatNumberToToken(amount as number)}
+                formatter={(amount) => formatNumberToMoney(amount as number)}
                 content={ChartTooltip}
               />
               <Area
@@ -148,16 +151,12 @@ const TokenChart = ({ tokenAddress }: { tokenAddress: string }) => {
         </LoadingSkeleton>
       </RenderIf>
       <RenderIf isTrue={value === "price"}>
-        <LoadingSkeleton
-          width="100%"
-          isLoading={priceChart.isLoading}
-          height={320}
-        >
+        <LoadingSkeleton width="100%" isLoading={isLoading} height={320}>
           <ResponsiveContainer width="100%" height="100%" minHeight={320}>
             <AreaChart
               width={500}
               height={400}
-              data={priceChart.data ?? []}
+              data={priceChartData ?? []}
               margin={{
                 top: 0,
                 right: 0,

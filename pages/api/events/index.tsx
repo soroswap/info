@@ -37,7 +37,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const queryParams = req.query;
 
   const address = queryParams?.address as string;
-  const network = queryParams?.network as Network;
+
+  let network = queryParams?.network as string;
+  network = network?.toUpperCase() as Network;
+
   const type = queryParams?.type as RouterEventType;
 
   if (network !== "MAINNET" && network !== "TESTNET") {

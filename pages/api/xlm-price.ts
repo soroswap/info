@@ -2,18 +2,19 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { fetchTokenList } from "services/tokens";
 import { Network } from "types/network";
 import { TokenType } from "types/tokens";
-import { getRouterFromPools, getTokenPrice } from "utils/info";
 import { Networks } from "@stellar/stellar-sdk";
-import { getMercuryPools } from "./pairs";
-import { getMercuryRsvCh } from "zephyr/helpers";
+import { getMercuryPools } from "zephyr/helpers";
+import { xlmToken } from "constants/constants";
+import { getRouterFromPools, getTokenPrice } from "utils/info/pools";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const queryParams = req.query;
 
-  let network = queryParams?.network as Network;
+  let network = queryParams?.network as string;
+  network = network?.toUpperCase() as Network;
 
-  if (network && network !== "MAINNET" && network !== "TESTNET") {
-    network = "MAINNET";
+  if (network !== "MAINNET" && network !== "TESTNET") {
+    return res.status(400).json({ error: "Invalid network" });
   }
 
   try {
@@ -31,7 +32,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const router = getRouterFromPools(pools, stellarNetwork);
 
-    const XLM = tokenList.find((token) => token.code === "XLM");
+    const XLM = tokenList.find(
+      (token) => token.contract === xlmToken[network]?.contract
+    );
     const USDC = tokenList.find((token) => token.code === "USDC");
 
     if (!XLM || !USDC) {

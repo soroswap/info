@@ -1,14 +1,12 @@
-import { AppBar, Box, Container, useMediaQuery, useTheme } from "@mui/material";
+import { AppBar, Box, Container, useTheme } from "@mui/material";
 import { useRouter } from "next/router";
 import { ReactNode } from "react";
-import { useQueryXLMPrice } from "../../hooks/xlm-price";
 import Banner from "./banner";
 import Header from "./header";
 import Footer from "./footer";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const theme = useTheme();
-  const isMd = useMediaQuery("(max-width: 900px)");
   const router = useRouter();
   const currentPath = router.pathname;
 
@@ -16,8 +14,6 @@ export default function Layout({ children }: { children: ReactNode }) {
     if (href === "/") return currentPath === href;
     return currentPath.includes(href);
   };
-
-  const xlm = useQueryXLMPrice();
 
   return (
     <main>

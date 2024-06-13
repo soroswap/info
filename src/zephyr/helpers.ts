@@ -38,6 +38,10 @@ export const getMercuryPools = async (network: Network) => {
     request: GET_ALL_PAIRS(ZEPHYR_TABLES[network].PAIRS),
   });
 
+  if (!response.ok) {
+    return [];
+  }
+
   const parsedData: MercuryPair[] = parseMercuryScvalResponse(
     response.data?.events?.data
   );
@@ -59,6 +63,10 @@ export const getMercuryRsvCh = async (network: Network) => {
     request: GET_ALL_RSV_CH(ZEPHYR_TABLES[network].RSV_CH),
   });
 
+  if (!response.ok) {
+    return [];
+  }
+
   const parsedData: MercuryRsvCh[] = parseMercuryScvalResponse(
     response.data?.events?.data
   );
@@ -72,6 +80,10 @@ export const getMercuryEvents = async (network: Network) => {
   const response = await mercuryInstance.getCustomQuery({
     request: GET_ALL_EVENTS(ZEPHYR_TABLES[network].EVENTS),
   });
+
+  if (!response.ok) {
+    return [];
+  }
 
   const parsedData: MercuryEvent[] = parseMercuryScvalResponse(
     response.data?.events?.data

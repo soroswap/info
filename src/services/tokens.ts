@@ -2,12 +2,15 @@ import { ApiNetwork, Network } from "types/network";
 import { Token } from "../types/tokens";
 import { fillDatesAndSort } from "../utils/complete-chart";
 import axiosInstance from "./axios";
+import { xlmToken } from "constants/constants";
 
 export const fetchTokenList = async ({ network }: ApiNetwork) => {
   if (network == "MAINNET") {
     const { data } = await axiosInstance.get(
       "https://raw.githubusercontent.com/soroswap/token-list/main/tokenList.json"
     );
+
+    data.assets.unshift(xlmToken.MAINNET);
 
     return data.assets;
   }

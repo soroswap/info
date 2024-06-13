@@ -54,6 +54,7 @@ export default function Home() {
 
   const getSoroswapTvlChartData = () => {
     const tvlChartData: { [x: string]: { tvl: number; date: string } } = {};
+
     pools.data?.forEach((pool) => {
       pool.tvlChartData?.forEach((data) => {
         tvlChartData[data.date] = {
