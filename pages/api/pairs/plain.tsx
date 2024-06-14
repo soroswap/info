@@ -25,18 +25,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ error: "Invalid network" });
   }
 
-  const tokenList: TokenType[] = await fetchTokenList({ network });
-
   const data = await getMercuryPools(network);
 
-  const result = await buildPoolsInfo(data, tokenList, network);
-
   if (address) {
-    const pool = result.find((pair) => pair.address === address);
+    const pool = data.find((pair) => pair.address === address);
     return res.json(pool);
   }
 
-  return res.json(result);
+  return res.json(data);
 }
 
 export default handler;
