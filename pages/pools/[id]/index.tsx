@@ -68,8 +68,8 @@ const PoolPage = () => {
 
   const filteredTokens = tokens.data?.filter((token) => {
     return (
-      (shouldFilterToken(token.asset, token0?.code) ||
-        shouldFilterToken(token.asset, token1?.code)) &&
+      (shouldFilterToken(token.asset, token0?.contract) ||
+        shouldFilterToken(token.asset, token1?.contract)) &&
       shouldFilterToken(token.asset, searchValue)
     );
   });

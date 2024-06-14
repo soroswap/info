@@ -30,20 +30,36 @@ export const stellarNetworkDict = {
   TESTNET: Networks.TESTNET,
 };
 
-export const buildPoolsInfo = async (network: Network) => {
-  const tokens: TokenType[] = await fetchTokenList({ network });
-
-  const data = await getMercuryPools(network);
-
+export const buildPoolsInfo = async (
+  data: MercuryPair[],
+  tokenList: TokenType[],
+  network: Network
+) => {
   const sdkNetwork = stellarNetworkDict[network];
 
   const router = getRouterFromPools(data, sdkNetwork);
 
-  const USDC = tokens.find((token) => token.code === "USDC");
+  const USDC = tokenList.find((token) => token.code === "USDC");
 
   const rsvch = await getMercuryRsvCh(network);
 
   const events = await getMercuryEvents(network);
+
+  const tokens = await Promise.all(
+    tokenList.map(async (token) => {
+      const tokenPrice = await getTokenPrice(
+        token.contract,
+        USDC?.contract!,
+        sdkNetwork,
+        router
+      );
+
+      return {
+        ...token,
+        price: Number(tokenPrice || 0),
+      };
+    })
+  );
 
   const result: Pool[] = await Promise.all(
     data.map(async (pool) => {
@@ -55,13 +71,8 @@ export const buildPoolsInfo = async (network: Network) => {
         (token: TokenType) => token.contract === pool.tokenB
       );
 
-      const { tokenAPrice, tokenBPrice } = await getPoolTokenPrices(
-        pool.tokenA,
-        pool.tokenB,
-        USDC?.contract,
-        sdkNetwork,
-        router
-      );
+      const tokenAPrice = tokenA?.price || 0;
+      const tokenBPrice = tokenB?.price || 0;
 
       const tvl = getPoolTVL(
         pool.reserveA,
@@ -96,36 +107,36 @@ export const buildPoolsInfo = async (network: Network) => {
       const nowTimestamp = new Date().getTime() / 1000;
 
       const volume7d = volumeChartData.reduce((acc, item) => {
-        if (!item.timestamp) return acc;
+        const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-        if (nowTimestamp - parseInt(item.timestamp) < 7 * 24 * 3600) {
+        if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
           return acc + item.volume;
         }
         return acc;
       }, 0);
 
       const volume24h = volumeChartData.reduce((acc, item) => {
-        if (!item.timestamp) return acc;
+        const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-        if (nowTimestamp - parseInt(item.timestamp) < 24 * 3600) {
+        if (nowTimestamp - itemTimestamp <= 24 * 3600) {
           return acc + item.volume;
         }
         return acc;
       }, 0);
 
       const fees24h = feesChartData.reduce((acc, item) => {
-        if (!item.timestamp) return acc;
+        const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-        if (nowTimestamp - parseInt(item.timestamp) < 24 * 3600) {
+        if (nowTimestamp - itemTimestamp < 24 * 3600) {
           return acc + item.fees;
         }
         return acc;
       }, 0);
 
       const fees7d = feesChartData.reduce((acc, item) => {
-        if (!item.timestamp) return acc;
+        const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-        if (nowTimestamp - parseInt(item.timestamp) < 7 * 24 * 3600) {
+        if (nowTimestamp - itemTimestamp < 7 * 24 * 3600) {
           return acc + item.fees;
         }
         return acc;

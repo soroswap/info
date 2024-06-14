@@ -12,9 +12,11 @@ import { getDate } from "../pools";
 import { getExpectedAmountOfOne } from "utils/utils";
 import { fillChart } from "utils/complete-chart";
 
-export const buildTokensInfo = async (network: Network, pools: Pool[]) => {
-  const tokenList: TokenType[] = await fetchTokenList({ network });
-
+export const buildTokensInfo = async (
+  tokenList: TokenType[],
+  pools: Pool[],
+  network: Network
+) => {
   const rsvchs = await getMercuryRsvCh(network);
 
   const tokens: Token[] = tokenList.map((t) => ({
@@ -38,8 +40,8 @@ export const buildTokensInfo = async (network: Network, pools: Pool[]) => {
   const result = tokens.map((token) => {
     const tokenPools = pools.filter(
       (pool) =>
-        pool.tokenA.code === token.asset.code ||
-        pool.tokenB.code === token.asset.code
+        pool.tokenA.contract === token.asset.contract ||
+        pool.tokenB.contract === token.asset.contract
     );
 
     let tokenPrice = 0;
@@ -77,6 +79,26 @@ export const buildTokensInfo = async (network: Network, pools: Pool[]) => {
 
     const priceChartData = getTokenPriceChart(token, usdcPool, rsvchs);
 
+    const nowTimestamp = new Date().getTime() / 1000;
+
+    const volume24h = volumeChartData.reduce((acc, item) => {
+      const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+      if (nowTimestamp - itemTimestamp <= 24 * 3600) {
+        return acc + item.volume;
+      }
+      return acc;
+    }, 0);
+
+    const volume7d = volumeChartData.reduce((acc, item) => {
+      const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+      if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
+        return acc + item.volume;
+      }
+      return acc;
+    }, 0);
+
     return {
       ...token,
       price: tokenPrice,
@@ -84,6 +106,8 @@ export const buildTokensInfo = async (network: Network, pools: Pool[]) => {
       volumeChartData,
       tvlChartData,
       priceChartData,
+      volume24h,
+      volume7d,
     };
   });
 
@@ -122,7 +146,7 @@ export const getTokenVolumeChartData = (token: Token, tokenPools: Pool[]) => {
       new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
-  return volumeChartData;
+  return volumeChartData as VolumeChartData[];
 };
 
 export const getTokenTVLChartData = (token: Token, tokenPools: Pool[]) => {
