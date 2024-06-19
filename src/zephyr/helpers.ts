@@ -49,6 +49,26 @@ export const getMercuryPools = async (network: Network) => {
   return parsedData;
 };
 
+export const getMercuryPhoenixPools = async (network: Network) => {
+  const mercuryInstance = getMercuryInstance(network);
+
+  const response = await mercuryInstance.getCustomQuery({
+    request: GET_ALL_PAIRS(ZEPHYR_TABLES[network].PHOENIX_PAIRS),
+  });
+
+  console.log(response);
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const parsedData: MercuryPair[] = parseMercuryScvalResponse(
+    response.data?.events?.data
+  );
+
+  return parsedData;
+};
+
 export interface MercuryRsvCh {
   address: string;
   reserveA: string;
