@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "soroswap-ui";
 import Head from "next/head";
 import Layout from "../src/components/layout/layout";
 import PoolsTable from "../src/components/pools-table/pools-table";

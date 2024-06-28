@@ -1,5 +1,5 @@
 import { GetApp, Share, Star, StarBorderOutlined } from "@mui/icons-material";
-import { Box, Grid, Link, Typography } from "@mui/material";
+import { Box, Grid, Link, Typography } from "soroswap-ui";
 import { useRouter } from "next/router";
 import AppBreadcrumbs from "../../../src/components/app-breadcrumbs";
 import Layout from "../../../src/components/layout/layout";

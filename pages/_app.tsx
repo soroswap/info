@@ -1,9 +1,6 @@
 import { Analytics } from "@vercel/analytics/react";
 import { AppProps } from "next/app";
 import { AppCacheProvider } from "@mui/material-nextjs/v14-pagesRouter";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { theme } from "../src/themes";
 import "../src/styles/globals.css";
 
 import "slick-carousel/slick/slick.css";
@@ -17,6 +14,8 @@ import useMounted from "../src/hooks/use-mounted";
 import useQueryNetwork from "../src/hooks/use-query-network";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { SoroswapThemeProvider } from "soroswap-ui";
+import { theme } from "themes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,11 +47,10 @@ export default function MyApp(props: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <AppCacheProvider {...props}>
-        <ThemeProvider theme={theme("dark")}>
-          <CssBaseline />
+        <SoroswapThemeProvider customTheme={theme("dark")}>
           <Component {...pageProps} />
           <Analytics />
-        </ThemeProvider>
+        </SoroswapThemeProvider>
       </AppCacheProvider>
     </QueryClientProvider>
   );

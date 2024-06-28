@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography } from "soroswap-ui";
 import { useQueryPools } from "../../src/hooks/pools";
 import Layout from "../../src/components/layout/layout";
 import PoolsTable from "../../src/components/pools-table/pools-table";

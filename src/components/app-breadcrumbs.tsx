@@ -1,4 +1,4 @@
-import { Breadcrumbs, Typography } from "@mui/material";
+import { Breadcrumbs, Typography } from "soroswap-ui";
 import Link from "next/link";
 
 type Breadcrumb = {

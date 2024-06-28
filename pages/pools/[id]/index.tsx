@@ -1,4 +1,4 @@
-import { Box, Chip, Grid, Typography } from "@mui/material";
+import { Box, Chip, Grid, Typography } from "soroswap-ui";
 import { GetApp, Share, Star, StarBorderOutlined } from "@mui/icons-material";
 import { useQueryPool } from "../../../src/hooks/pools";
 import { useRouter } from "next/router";

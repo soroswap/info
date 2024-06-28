@@ -1,4 +1,4 @@
-import { Box, Card, Typography, useMediaQuery } from "@mui/material";
+import { Box, Card, Typography, useMediaQuery } from "soroswap-ui";
 import Slider, { Settings } from "react-slick";
 import Token from "./token";
 import PercentageChanged from "./percentage-changed";

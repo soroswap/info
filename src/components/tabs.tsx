@@ -1,6 +1,7 @@
 import React from "react";
 import { Row } from "./styled/row";
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box, useMediaQuery } from "soroswap-ui";
+import { useTheme } from "soroswap-ui";
 
 interface Props {
   children: (selected: string) => React.ReactNode;
