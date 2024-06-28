@@ -20,6 +20,7 @@ const Header = () => {
   const theme = useTheme();
 
   const isMobile = useMediaQuery(theme.breakpoints.down(1220));
+  const isSmall = useMediaQuery(theme.breakpoints.down(526));
 
   const router = useRouter();
 
@@ -35,7 +36,7 @@ const Header = () => {
       isActiveItem={(item) => item.label === "Info"}
       isMobile={isMobile}
       mobileProps={{
-        drawerMarginTop: 94,
+        drawerMarginTop: isSmall ? 138 : 132,
       }}
     />
   );

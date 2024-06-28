@@ -10,7 +10,7 @@ import { useTheme } from "soroswap-ui";
 const Banner = () => {
   const theme = useTheme();
 
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const xlm = useQueryXLMPrice();
 
