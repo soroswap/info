@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography } from "soroswap-ui";
 import { useQueryTokens } from "../../src/hooks/tokens";
 import Layout from "../../src/components/layout/layout";
 import TokensTable from "../../src/components/tokens-table/tokens-table";

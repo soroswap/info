@@ -1,12 +1,15 @@
-import { Skeleton, Typography, useTheme } from "@mui/material";
-import Box from "@mui/material/Box";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
+import {
+  Skeleton,
+  Box,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+} from "soroswap-ui";
+
 import { visuallyHidden } from "@mui/utils";
 import { useRouter } from "next/router";
 import * as React from "react";
@@ -20,6 +23,7 @@ import {
 import Token from "../token";
 import { StyledTableCell } from "components/styled/table-cell";
 import { StyledCard } from "components/styled/card";
+import { useTheme } from "soroswap-ui";
 
 interface HeadCell {
   id: keyof Pool;

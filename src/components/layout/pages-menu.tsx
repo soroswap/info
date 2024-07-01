@@ -1,9 +1,8 @@
-import { Box, Link, useTheme } from "@mui/material";
+import { Box, Link } from "soroswap-ui";
 import { Article, GitHub, Info, MoreHoriz } from "@mui/icons-material";
 import * as React from "react";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { FaDiscord } from "react-icons/fa";
+import { useTheme, Menu, MenuItem } from "soroswap-ui";
 
 export default function PagesMenu() {
   const theme = useTheme();

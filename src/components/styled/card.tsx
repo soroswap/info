@@ -1,4 +1,4 @@
-import { styled, Box } from "@mui/material";
+import { styled, Box } from "soroswap-ui";
 
 export const StyledCard = styled(Box)({
   border: "2px solid #1B1B1B",

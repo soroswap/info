@@ -1,4 +1,4 @@
-import { SxProps, Theme, Typography } from "@mui/material";
+import { SxProps, Theme, Typography } from "soroswap-ui";
 
 interface Props {
   percentage: number;

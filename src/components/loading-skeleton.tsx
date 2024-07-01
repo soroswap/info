@@ -1,4 +1,4 @@
-import { Skeleton, SkeletonTypeMap } from "@mui/material";
+import { Skeleton, SkeletonTypeMap } from "soroswap-ui";
 import React from "react";
 
 interface Props {
