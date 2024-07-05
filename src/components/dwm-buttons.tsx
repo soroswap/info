@@ -1,4 +1,4 @@
-import { Box, Button, useTheme } from "@mui/material";
+import { Box, Button } from "soroswap-ui";
 
 const DWMButtons = () => {
   return (

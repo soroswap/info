@@ -1,19 +1,12 @@
-import { AppBar, Box, Container, useTheme } from "@mui/material";
-import { useRouter } from "next/router";
+import { AppBar, Box, Container } from "soroswap-ui";
 import { ReactNode } from "react";
 import Banner from "./banner";
 import Header from "./header";
 import Footer from "./footer";
+import { useTheme } from "soroswap-ui";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const theme = useTheme();
-  const router = useRouter();
-  const currentPath = router.pathname;
-
-  const isActive = (href: string) => {
-    if (href === "/") return currentPath === href;
-    return currentPath.includes(href);
-  };
 
   return (
     <main>

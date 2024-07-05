@@ -1,13 +1,10 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import { ExpandMore, MoreHoriz } from "@mui/icons-material";
-import Link from "next/link";
-import { Box, useTheme } from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
+import { Box } from "soroswap-ui";
 import { Row } from "components/styled/row";
 import { useRouter } from "next/router";
 import useQueryNetwork from "hooks/use-query-network";
+import { useTheme, MenuItem, Menu } from "soroswap-ui";
 
 const capitalize = (s: string) => {
   if (typeof s !== "string") return "";

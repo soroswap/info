@@ -1,4 +1,5 @@
-import { Box, Button, Tab, Tabs, useTheme } from "@mui/material";
+import { Box, Button, Tab, Tabs } from "soroswap-ui";
+import { useTheme } from "soroswap-ui";
 import React from "react";
 
 interface Props {

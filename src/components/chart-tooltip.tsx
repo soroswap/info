@@ -1,7 +1,7 @@
 import { formatNumberToToken } from "utils/utils";
 import { StyledCard } from "./styled/card";
 import { Text } from "./styled/text";
-import { useTheme } from "@mui/material";
+import { useTheme } from "soroswap-ui";
 
 const ChartTooltip = ({ active, payload, label }: any) => {
   const theme = useTheme();

@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, Paper, Typography } from "soroswap-ui";
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useQuerySoroswapVolumeChart } from "../hooks/soroswap";
 import LoadingSkeleton from "./loading-skeleton";

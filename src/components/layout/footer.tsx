@@ -1,4 +1,4 @@
-import { Box, Container, Link } from "@mui/material";
+import { Box, Container, Link } from "soroswap-ui";
 import Image from "next/image";
 import { Row } from "components/styled/row";
 import { GitHub, Telegram } from "@mui/icons-material";
