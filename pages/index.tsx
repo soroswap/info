@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "soroswap-ui";
 import Head from "next/head";
 import Layout from "../src/components/layout/layout";
 import PoolsTable from "../src/components/pools-table/pools-table";
@@ -64,10 +64,16 @@ export default function Home() {
       });
     });
 
-    return Object.keys(tvlChartData).map((key) => ({
+    const result = Object.keys(tvlChartData).map((key) => ({
       date: tvlChartData[key].date,
       tvl: tvlChartData[key].tvl,
     }));
+
+    const orderbyDate = result.sort((a, b) => {
+      return new Date(a.date).getTime() - new Date(b.date).getTime();
+    });
+
+    return orderbyDate;
   };
 
   return (

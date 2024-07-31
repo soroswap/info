@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { Search } from "@mui/icons-material";
-import { Input, InputProps, useTheme } from "@mui/material";
+import { Input, InputProps } from "soroswap-ui";
+import { useTheme } from "soroswap-ui";
 
 export const StyledInput = styled(Input)({
   border: "1px solid #3E3E3F",

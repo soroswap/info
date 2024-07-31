@@ -1,4 +1,5 @@
-import { Button, styled } from "@mui/material";
+import { Button } from "soroswap-ui";
+import { styled } from "soroswap-ui";
 
 export const PrimaryButton = styled(Button)`
   background-color: ${(props) =>

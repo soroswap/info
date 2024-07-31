@@ -1,4 +1,4 @@
-import { Box, Input, Typography, useMediaQuery } from "@mui/material";
+import { Box, Input, Typography, useMediaQuery } from "soroswap-ui";
 import { ReactNode } from "react";
 import { shouldShortenCode } from "../utils/utils";
 import { useRouter } from "next/router";

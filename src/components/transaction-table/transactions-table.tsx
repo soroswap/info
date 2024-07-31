@@ -1,13 +1,18 @@
-import { Link, Skeleton, Tab, Tabs, useTheme } from "@mui/material";
-import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import TableSortLabel from "@mui/material/TableSortLabel";
+import {
+  Link,
+  Skeleton,
+  Tab,
+  Tabs,
+  Box,
+  Table,
+  TableBody,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+  TableContainer,
+} from "soroswap-ui";
+
 import { visuallyHidden } from "@mui/utils";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
@@ -26,6 +31,7 @@ import {
 import { UseEventTopicFilterReturnProps } from "../../hooks/use-event-topic-filter";
 import { StyledTableCell } from "components/styled/table-cell";
 import { StyledCard } from "components/styled/card";
+import { useTheme } from "soroswap-ui";
 
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo("en-US");

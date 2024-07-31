@@ -2,14 +2,15 @@ import { formatNumberToMoney } from "../../utils/utils";
 import { Info } from "@mui/icons-material";
 import { Row } from "../styled/row";
 import { Text } from "../styled/text";
-import { useMediaQuery, useTheme } from "@mui/material";
+import { useMediaQuery } from "soroswap-ui";
 import { useQueryXLMPrice } from "../../hooks/xlm-price";
 import LoadingSkeleton from "../loading-skeleton";
+import { useTheme } from "soroswap-ui";
 
 const Banner = () => {
   const theme = useTheme();
 
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const xlm = useQueryXLMPrice();
 
