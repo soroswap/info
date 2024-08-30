@@ -1,12 +1,12 @@
 import * as StellarSdk from "@stellar/stellar-sdk";
 import { Network } from "types/network";
-import { getMercuryInstance } from "./mercury";
-import { ZEPHYR_TABLES } from "./tables";
-import { GET_ALL_PAIRS } from "./queries/getAllPairs";
-import { MercuryPair } from "../../pages/api/pairs";
-import { GET_ALL_RSV_CH } from "./queries/getAllRsvCh";
-import { GET_ALL_EVENTS } from "./queries/getAllEvents";
 import { MercuryEvent } from "../../pages/api/events";
+import { MercuryPair } from "../../pages/api/pairs";
+import { getMercuryInstance } from "./mercury";
+import { GET_ALL_EVENTS } from "./queries/getAllEvents";
+import { GET_ALL_PAIRS } from "./queries/getAllPairs";
+import { GET_ALL_RSV_CH } from "./queries/getAllRsvCh";
+import { ZEPHYR_TABLES } from "./tables";
 
 export const parseScvalValue = (value: any) => {
   const scval = StellarSdk.xdr.ScVal.fromXDR(value, "base64");
@@ -54,6 +54,26 @@ export const getMercuryPhoenixPools = async (network: Network) => {
 
   const response = await mercuryInstance.getCustomQuery({
     request: GET_ALL_PAIRS(ZEPHYR_TABLES[network].PHOENIX_PAIRS),
+  });
+
+  console.log(response);
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const parsedData: MercuryPair[] = parseMercuryScvalResponse(
+    response.data?.events?.data
+  );
+
+  return parsedData;
+};
+
+export const getMercuryAquaPools = async (network: Network) => {
+  const mercuryInstance = getMercuryInstance(network);
+
+  const response = await mercuryInstance.getCustomQuery({
+    request: GET_ALL_PAIRS(ZEPHYR_TABLES[network].AQUA_PAIRS),
   });
 
   console.log(response);
