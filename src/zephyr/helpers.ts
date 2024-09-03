@@ -6,7 +6,7 @@ import { getMercuryInstance } from "./mercury";
 import { GET_ALL_EVENTS } from "./queries/getAllEvents";
 import { GET_ALL_PAIRS } from "./queries/getAllPairs";
 import { GET_ALL_RSV_CH } from "./queries/getAllRsvCh";
-import { ZEPHYR_TABLES } from "./tables";
+import { fetchZephyrTables } from "./tables";
 
 export const parseScvalValue = (value: any) => {
   const scval = StellarSdk.xdr.ScVal.fromXDR(value, "base64");
@@ -33,9 +33,9 @@ export const parseMercuryScvalResponse = (data: any) => {
 
 export const getMercuryPools = async (network: Network) => {
   const mercuryInstance = getMercuryInstance(network);
-
+  const { soroswap_pairs } = await fetchZephyrTables({ network });
   const response = await mercuryInstance.getCustomQuery({
-    request: GET_ALL_PAIRS(ZEPHYR_TABLES[network].PAIRS),
+    request: GET_ALL_PAIRS(soroswap_pairs),
   });
 
   if (!response.ok) {
@@ -51,9 +51,9 @@ export const getMercuryPools = async (network: Network) => {
 
 export const getMercuryPhoenixPools = async (network: Network) => {
   const mercuryInstance = getMercuryInstance(network);
-
+  const { phoenix_pairs } = await fetchZephyrTables({ network });
   const response = await mercuryInstance.getCustomQuery({
-    request: GET_ALL_PAIRS(ZEPHYR_TABLES[network].PHOENIX_PAIRS),
+    request: GET_ALL_PAIRS(phoenix_pairs),
   });
 
   console.log(response);
@@ -71,9 +71,9 @@ export const getMercuryPhoenixPools = async (network: Network) => {
 
 export const getMercuryAquaPools = async (network: Network) => {
   const mercuryInstance = getMercuryInstance(network);
-
+  const { aqua_pairs } = await fetchZephyrTables({ network });
   const response = await mercuryInstance.getCustomQuery({
-    request: GET_ALL_PAIRS(ZEPHYR_TABLES[network].AQUA_PAIRS),
+    request: GET_ALL_PAIRS(aqua_pairs),
   });
 
   console.log(response);
@@ -98,9 +98,9 @@ export interface MercuryRsvCh {
 
 export const getMercuryRsvCh = async (network: Network) => {
   const mercuryInstance = getMercuryInstance(network);
-
+  const { rsv_ch } = await fetchZephyrTables({ network });
   const response = await mercuryInstance.getCustomQuery({
-    request: GET_ALL_RSV_CH(ZEPHYR_TABLES[network].RSV_CH),
+    request: GET_ALL_RSV_CH(rsv_ch),
   });
 
   if (!response.ok) {
@@ -116,9 +116,9 @@ export const getMercuryRsvCh = async (network: Network) => {
 
 export const getMercuryEvents = async (network: Network) => {
   const mercuryInstance = getMercuryInstance(network);
-
+  const { soroswap_events } = await fetchZephyrTables({ network });
   const response = await mercuryInstance.getCustomQuery({
-    request: GET_ALL_EVENTS(ZEPHYR_TABLES[network].EVENTS),
+    request: GET_ALL_EVENTS(soroswap_events),
   });
 
   if (!response.ok) {
