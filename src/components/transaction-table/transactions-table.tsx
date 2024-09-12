@@ -32,6 +32,7 @@ import { UseEventTopicFilterReturnProps } from "../../hooks/use-event-topic-filt
 import { StyledTableCell } from "components/styled/table-cell";
 import { StyledCard } from "components/styled/card";
 import { useTheme } from "soroswap-ui";
+import useQueryNetwork from "hooks/use-query-network";
 
 TimeAgo.addLocale(en);
 const timeAgo = new TimeAgo("en-US");
@@ -177,6 +178,15 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
   if (isLoading) {
     return <Skeleton variant="rounded" height={300} />;
   }
+  const { network } = useQueryNetwork();
+  const [networkMode, setNetworkMode] = React.useState<string>("public");
+  React.useEffect(() => {
+    if (network === "MAINNET") {
+      setNetworkMode("public")
+    } else if (network === "TESTNET") {
+      setNetworkMode("testnet")
+    }
+  }, [network])
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -210,7 +220,7 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                   >
                     <StyledTableCell align="left">
                       <Link
-                        href={`https://stellar.expert/explorer/public/tx/${row.txHash}`}
+                        href={`https://stellar.expert/explorer/${networkMode}/tx/${row.txHash}`}
                         target="_blank"
                         underline="hover"
                       >
@@ -229,7 +239,7 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       <Link
-                        href={`https://stellar.expert/explorer/public/account/${row.account}`}
+                        href={`https://stellar.expert/explorer/${networkMode}/account/${row.account}`}
                         target="_blank"
                         underline="hover"
                       >
