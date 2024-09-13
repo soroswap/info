@@ -98,9 +98,9 @@ export interface MercuryRsvCh {
 
 export const getMercuryRsvCh = async (network: Network) => {
   const mercuryInstance = getMercuryInstance(network);
-  const { rsv_ch } = await fetchZephyrTables({ network });
+  const { soroswap_rsv_ch } = await fetchZephyrTables({ network });
   const response = await mercuryInstance.getCustomQuery({
-    request: GET_ALL_RSV_CH(rsv_ch),
+    request: GET_ALL_RSV_CH(soroswap_rsv_ch),
   });
 
   if (!response.ok) {
