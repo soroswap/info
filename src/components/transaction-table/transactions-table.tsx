@@ -16,7 +16,6 @@ import {
 import { visuallyHidden } from "@mui/utils";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
-import * as React from "react";
 import useTable from "../../hooks/use-table";
 import {
   formatEvent,
@@ -174,19 +173,11 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
   });
 
   const theme = useTheme();
+  const { networkName } = useQueryNetwork();
 
   if (isLoading) {
     return <Skeleton variant="rounded" height={300} />;
   }
-  const { network } = useQueryNetwork();
-  const [networkMode, setNetworkMode] = React.useState<string>("public");
-  React.useEffect(() => {
-    if (network === "MAINNET") {
-      setNetworkMode("public")
-    } else if (network === "TESTNET") {
-      setNetworkMode("testnet")
-    }
-  }, [network])
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -219,17 +210,19 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                     }}
                   >
                     <StyledTableCell align="left">
-                      <Link
-                        href={`https://stellar.expert/explorer/${networkMode}/tx/${row.txHash}`}
-                        target="_blank"
-                        underline="hover"
-                      >
-                        {formatEvent(
-                          row.eType,
-                          row.tokenA?.code ?? "",
-                          row.tokenB?.code ?? ""
-                        )}
-                      </Link>
+                      <>
+                        <Link
+                          href={`https://stellar.expert/explorer/${networkName}/tx/${row.txHash}`}
+                          target="_blank"
+                          underline="hover"
+                        >
+                          {formatEvent(
+                            row.eType,
+                            row.tokenA?.code ?? "",
+                            row.tokenB?.code ?? ""
+                          )}
+                        </Link>
+                      </>
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       {row.amountA} {shouldShortenCode(row.tokenA?.code ?? "")}
@@ -238,13 +231,15 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
                       {row.amountB} {shouldShortenCode(row.tokenB?.code ?? "")}
                     </StyledTableCell>
                     <StyledTableCell align="right">
-                      <Link
-                        href={`https://stellar.expert/explorer/${networkMode}/account/${row.account}`}
-                        target="_blank"
-                        underline="hover"
-                      >
-                        {shortenAddress(row.account ?? "")}
-                      </Link>
+                      <>
+                        <Link
+                          href={`https://stellar.expert/explorer/${networkName}/account/${row.account}`}
+                          target="_blank"
+                          underline="hover"
+                        >
+                          {shortenAddress(row.account ?? "")}
+                        </Link>
+                      </>
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       {timeAgo.format(Number(row.timestamp) * 1000 || 0)}
