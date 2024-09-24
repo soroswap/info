@@ -193,7 +193,7 @@ export default function TransactionsTable({ rows, isLoading, filters }: Props) {
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                return (
+                return (row.txHash &&
                   <TableRow
                     key={index}
                     sx={{
