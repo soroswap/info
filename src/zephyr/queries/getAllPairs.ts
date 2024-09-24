@@ -6,6 +6,7 @@ export const GET_ALL_PAIRS = (tableName: string) => `query Query {
         address
         reserveA
         reserveB
+        fee
       }
     }
   }`;
