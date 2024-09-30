@@ -19,9 +19,12 @@ export const parseMercuryScvalResponse = (data: any) => {
 
     for (let key in d) {
       const value = parseScvalValue(d[key]);
-
       if (typeof value === "bigint" || typeof value === "number") {
         n[key] = value.toString();
+      } else if( key == 'txHash'){
+        const txHash = StellarSdk.xdr.Hash.fromXDR(value, 'hex').toString('hex')
+        if(txHash.length != 64)throw new Error('Invalid txHash length');
+        n[key] = txHash;
       } else {
         n[key] = value;
       }

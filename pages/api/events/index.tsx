@@ -13,6 +13,7 @@ export interface MercuryEvent {
   amountB: string;
   account: string;
   timestamp: string;
+  txHash: string;
 }
 
 export const adjustAmountByDecimals = (
@@ -61,7 +62,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     return {
       ...event,
-      txHash: "",
+      txHash: event.txHash,
       tokenA: tokenA
         ? tokenA
         : { contract: event.tokenA, code: event.tokenA, name: event.tokenA },

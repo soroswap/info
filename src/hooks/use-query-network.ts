@@ -14,7 +14,9 @@ const useQueryNetwork = () => {
 
   const network = (isValidQuery ? query : "mainnet") as QueryNetwork;
 
-  return { network: network?.toUpperCase() as Network, isValidQuery, query };
+  const networkName = network === "mainnet" ? "public" : "testnet";
+
+  return { network: network?.toUpperCase() as Network, networkName, isValidQuery, query };
 };
 
 export default useQueryNetwork;
