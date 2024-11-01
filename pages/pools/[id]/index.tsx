@@ -329,12 +329,6 @@ const PoolPage = () => {
         >
           {(selected) => (
             <Box mt={2}>
-              <RenderIf isTrue={selected === "Tokens"}>
-                <TokensTable
-                  rows={filteredTokens ?? []}
-                  isLoading={tokens.isLoading}
-                />
-              </RenderIf>
               <RenderIf isTrue={selected === "Transactions"}>
                 <TransactionsTable
                   rows={filteredEvents ?? []}
