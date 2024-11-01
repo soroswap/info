@@ -316,7 +316,7 @@ const PoolPage = () => {
       </Grid>
       <Box mt={8}>
         <Tabs
-          items={["Tokens", "Transactions"]}
+          items={["Transactions"]}
           endContent={(selected) => (
             <Row gap="8px">
               <SearchInput
