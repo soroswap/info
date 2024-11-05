@@ -28,18 +28,16 @@ import Tabs from "components/tabs";
 import { Row } from "components/styled/row";
 import { SearchInput } from "components/styled/search-input";
 import RenderIf from "components/render-if";
-import TokensTable from "components/tokens-table/tokens-table";
 import LiquidityProvidersTable from "components/liquidity-provider-table/liquidity-provider-table";
-import { useQueryTokens } from "hooks/tokens";
+import { useLiquidityProviders } from "../../../src/hooks/use-liquidity-providers";
+import { shouldFilterEvent } from "utils/filters";
 import { useState } from "react";
-import { shouldFilterEvent, shouldFilterToken } from "utils/filters";
 
 const PoolPage = () => {
   const router = useRouter();
   const { id } = router.query;
 
   const { handleSavePool, isPoolSaved } = useSavedPools();
-
   const eventsFilter = useEventTopicFilter();
 
   const events = useQueryAllEvents({
@@ -47,9 +45,8 @@ const PoolPage = () => {
     type: eventsFilter.topic,
   });
 
-  const tokens = useQueryTokens();
-
   const pool = useQueryPool({ poolAddress: id as string });
+  const liquidityProviders = useLiquidityProviders({ poolAddress: id as string });
 
   const token0 = pool.data?.tokenA;
   const token1 = pool.data?.tokenB;
@@ -67,12 +64,9 @@ const PoolPage = () => {
 
   const [searchValue, setSearchValue] = useState("");
 
-  const filteredTokens = tokens.data?.filter((token) => {
-    return (
-      (shouldFilterToken(token.asset, token0?.contract) ||
-        shouldFilterToken(token.asset, token1?.contract)) &&
-      shouldFilterToken(token.asset, searchValue)
-    );
+  const filteredProviders = liquidityProviders.data?.filter((provider) => {
+    if (!searchValue) return true;
+    return provider.address.toLowerCase().includes(searchValue.toLowerCase());
   });
 
   const filteredEvents = events.data?.filter((event) => {
@@ -317,7 +311,7 @@ const PoolPage = () => {
       </Grid>
       <Box mt={8}>
         <Tabs
-          items={["Tokens", "Transactions", "Liquidity Providers"]}
+          items={["Transactions", "Liquidity Providers"]}
           endContent={(selected) => (
             <Row gap="8px">
               <SearchInput
@@ -330,12 +324,6 @@ const PoolPage = () => {
         >
           {(selected) => (
             <Box mt={2}>
-              <RenderIf isTrue={selected === "Tokens"}>
-                <TokensTable
-                  rows={filteredTokens ?? []}
-                  isLoading={tokens.isLoading}
-                />
-              </RenderIf>
               <RenderIf isTrue={selected === "Transactions"}>
                 <TransactionsTable
                   rows={filteredEvents ?? []}
@@ -344,13 +332,11 @@ const PoolPage = () => {
                 />
               </RenderIf>
               <RenderIf isTrue={selected === "Liquidity Providers"}>
-                {/* <LiquidityProvidersTable
+                <LiquidityProvidersTable
                   rows={filteredProviders ?? []}
                   isLoading={liquidityProviders.isLoading}
-                /> */}
-                <LiquidityProvidersTable
-                  rows={filteredTokens ?? []}
-                  isLoading={tokens.isLoading}
+                  itemsPerPage={10}
+                  emptyMessage="No liquidity providers found"
                 />
               </RenderIf>
             </Box>
