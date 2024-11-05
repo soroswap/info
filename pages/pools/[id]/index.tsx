@@ -17,6 +17,7 @@ import {
   getSoroswapAddLiquidityUrl,
   getSoroswapSwapUrl,
   shortenAddress,
+  formatAPY,
 } from "../../../src/utils/utils";
 import { useQueryAllEvents } from "../../../src/hooks/events";
 import useEventTopicFilter from "../../../src/hooks/use-event-topic-filter";
@@ -300,6 +301,30 @@ const PoolPage = () => {
                 </Typography>
               </LoadingSkeleton>
             </Box>
+            <Box mt={2}>
+              <Text>Volume 7D</Text>
+              <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatNumberToMoney(pool.data?.volume7d)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
+            <Box mt={2}>
+              <Text>Fees 7D</Text>
+              <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatNumberToMoney(pool.data?.fees7d)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
+            <Box mt={2}>
+              <Text>APY</Text>
+              <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatAPY(pool.data?.apy)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
           </StyledCard>
         </Grid>
         <Grid item xs={12} md={8}>
@@ -309,6 +334,7 @@ const PoolPage = () => {
               tvlChartData={pool.data?.tvlChartData}
               volumeChartData={pool.data?.volumeChartData}
               feesChartData={pool.data?.feesChartData}
+              volume7dChartData={pool.data?.volume7dChartData}
               isLoading={pool.isLoading}
             />
           </StyledCard>
