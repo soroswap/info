@@ -48,4 +48,9 @@ export interface Pool {
   tvlChartData?: TvlChartData[];
   volumeChartData?: VolumeChartData[];
   feesChartData?: FeesChartData[];
+  volume7dChartData?: VolumeChartData[];
+  fees7d?: number;
+  apy?: number;
+  totalVolume?: number;
+  totalFees?: number;
 }

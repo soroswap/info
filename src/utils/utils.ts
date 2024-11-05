@@ -196,3 +196,15 @@ export const formatTokenAmount = (
 
   return formatted;
 };
+
+export const calculateAPY = (fees7d: number, tvl: number): number => {
+  if (!fees7d || !tvl || tvl === 0) return 0;
+  // Annualize the 7-day fees and calculate as percentage of TVL
+  const annualizedFees = (fees7d * 52);
+  return (annualizedFees / tvl) * 100;
+};
+
+export const formatAPY = (apy: number | undefined): string => {
+  if (!apy) return '-';
+  return `${apy.toFixed(2)}%`;
+};

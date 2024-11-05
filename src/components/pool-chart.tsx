@@ -22,19 +22,21 @@ import { formatNumberToToken } from "../utils/utils";
 import ChartTooltip from "./chart-tooltip";
 import { FeesChartData, TvlChartData, VolumeChartData } from "types/pools";
 
-type Charts = "volume" | "liquidity" | "fees";
+type Charts = "volume" | "liquidity" | "fees" | "volume7d";
 
 const PoolChart = ({
   poolAddress,
   tvlChartData,
   volumeChartData,
   feesChartData,
+  volume7dChartData,
   isLoading,
 }: {
   poolAddress: string;
   tvlChartData: TvlChartData[] | undefined;
   volumeChartData: VolumeChartData[] | undefined;
   feesChartData: FeesChartData[] | undefined;
+  volume7dChartData: VolumeChartData[] | undefined;
   isLoading: boolean;
 }) => {
   const [value, setValue] = React.useState<Charts>("volume");
@@ -50,8 +52,14 @@ const PoolChart = ({
 
     if (volumeChartData) {
       availableTabs.push({
-        label: "Volume",
+        label: "Volume 24h",
         value: "volume",
+      });
+    }
+    if (volume7dChartData) {
+      availableTabs.push({
+        label: "Volume 7d",
+        value: "volume7d",
       });
     }
     if (tvlChartData) {
@@ -173,6 +181,39 @@ const PoolChart = ({
               <Area
                 type="monotone"
                 dataKey="fees"
+                stroke="#8866DD"
+                strokeWidth="3px"
+                fill="#221E2B"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </LoadingSkeleton>
+      </RenderIf>
+      <RenderIf isTrue={value === "volume7d"}>
+        <LoadingSkeleton width="100%" isLoading={isLoading} height={320}>
+          <ResponsiveContainer width="100%" height="100%" minHeight={320}>
+            <AreaChart
+              width={500}
+              height={400}
+              data={volume7dChartData ?? []}
+              margin={{
+                top: 0,
+                right: 0,
+                left: 0,
+                bottom: 0,
+              }}
+            >
+              <XAxis
+                dataKey="date"
+                tickFormatter={(tick) => xAxisChartFormatter(tick)}
+              />
+              <Tooltip
+                formatter={(amount) => formatNumberToToken(amount as number)}
+                content={ChartTooltip}
+              />
+              <Area
+                type="monotone"
+                dataKey="volume"
                 stroke="#8866DD"
                 strokeWidth="3px"
                 fill="#221E2B"
