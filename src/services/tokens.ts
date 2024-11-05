@@ -19,8 +19,22 @@ export const fetchTokenList = async ({ network }: ApiNetwork) => {
     const { data } = await axiosInstance.get(
       "https://api.soroswap.finance/api/tokens"
     );
-    return data.find((item: any) => item.network === network.toLowerCase())
-      .assets;
+
+    const testnetData = data.find(
+      (item: any) => item.network === network.toLowerCase()
+    );
+
+    if (testnetData) {
+      const xlmIndex = testnetData.assets.findIndex(
+        (asset: any) => asset.code === "XLM"
+      );
+
+      if (xlmIndex !== -1) {
+        testnetData.assets[xlmIndex] = xlmToken.TESTNET;
+      }
+
+      return testnetData.assets;
+    }
   }
 
   return [];
