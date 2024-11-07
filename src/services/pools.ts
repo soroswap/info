@@ -3,6 +3,7 @@ import { Pool } from "../types/pools";
 import { fillDatesAndSort } from "../utils/complete-chart";
 import axiosInstance from "./axios";
 import { EventType, fetchAllEvents } from './events';
+import { RouterEventAPI } from "types/router-events";
 
 
 export const fetchPools = async ({ network }: ApiNetwork) => {
@@ -16,6 +17,14 @@ export const fetchPools = async ({ network }: ApiNetwork) => {
 interface FetchPoolProps extends ApiNetwork {
   poolAddress: string;
 }
+export const fetchPoolsByTokenAddress = async ({
+  tokenAddress,
+}: {
+  tokenAddress: string;
+}) => {
+  const { data } = await axiosInstance.get(`/info/pools/${tokenAddress}`);
+  return data;
+};
 
 export const fetchPool = async ({ poolAddress, network }: FetchPoolProps) => {
   const { data } = await axiosInstance.get<Pool>(
@@ -69,7 +78,7 @@ export const fetchPoolVolumeChart = async ({
     });
 
     
-    const volumeByDate = events.reduce((acc: { [key: string]: number }, event) => {
+    const volumeByDate = events.reduce((acc: { [key: string]: number }, event: RouterEventAPI) => {
       
       const timestamp = event.timestamp ? new Date(event.timestamp) : new Date();
       const date = timestamp.toISOString().split('T')[0];
