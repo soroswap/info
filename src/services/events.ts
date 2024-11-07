@@ -10,6 +10,12 @@ interface FetchAllEventsProps extends ApiNetwork {
   address?: string;
 }
 
+export enum EventType {
+  SWAP = 'swap',
+  ADD_LIQUIDITY = 'add_liquidity',
+  REMOVE_LIQUIDITY = 'remove_liquidity'
+}
+
 export const fetchAllEvents = async ({
   type,
   address,
@@ -18,7 +24,12 @@ export const fetchAllEvents = async ({
   const { data } = await axiosInstance.get<RouterEventsAPIResponse>(
     `/api/events`,
     {
-      params: { type, address, network },
+      params: { 
+        type, 
+        address, 
+        network,
+        eventType: EventType.SWAP
+      },
     }
   );
 
