@@ -316,7 +316,7 @@ const PoolPage = () => {
       </Grid>
       <Box mt={8}>
         <Tabs
-          items={["Tokens", "Transactions"]}
+          items={["Transactions"]}
           endContent={(selected) => (
             <Row gap="8px">
               <SearchInput
@@ -329,12 +329,6 @@ const PoolPage = () => {
         >
           {(selected) => (
             <Box mt={2}>
-              <RenderIf isTrue={selected === "Tokens"}>
-                <TokensTable
-                  rows={filteredTokens ?? []}
-                  isLoading={tokens.isLoading}
-                />
-              </RenderIf>
               <RenderIf isTrue={selected === "Transactions"}>
                 <TransactionsTable
                   rows={filteredEvents ?? []}
