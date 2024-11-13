@@ -58,9 +58,19 @@ const headCells: readonly HeadCell[] = [
     label: "Fees 24H",
   },
   {
+    id: "fees7d",
+    numeric: true,
+    label: "Fees 7D",
+  },
+  {
     id: "feesYearly",
     numeric: true,
     label: "Fees Yearly",
+  },
+  {
+    id: "apy",
+    numeric: true,
+    label: "APY",
   },
 ];
 
@@ -219,7 +229,13 @@ export default function PoolsTable({
                       {formatNumberToMoney(row.fees24h)}
                     </StyledTableCell>
                     <StyledTableCell align="right">
+                      {formatNumberToMoney(row.fees7d)}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
                       {formatNumberToMoney(row.feesYearly)}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {formatNumberToMoney(row.apy)}
                     </StyledTableCell>
                   </TableRow>
                 );
