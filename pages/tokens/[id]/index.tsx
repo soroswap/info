@@ -160,16 +160,20 @@ const TokenPage = () => {
           </LoadingSkeleton>
         </Box>
         <Box display="flex" alignItems="center" gap="6px" mt={2}>
-          <Typography fontSize="15px">Issuer Domain: </Typography>
-          <Typography  sx={{ "&:hover": { textDecoration: "underline" } }} variant="h6" color="grey" fontSize="15px" mt="4px" component="a" target="_blank" href={`https://${token.data?.asset.domain}`}>
-            {token.data?.asset.domain || "-"}
-          </Typography>
+            <Typography fontSize="15px">Issuer Domain: </Typography>
+            <LoadingSkeleton isLoading={token.isLoading} variant="text">
+              <Typography  sx={{ "&:hover": { textDecoration: "underline" } }} variant="h6" color="grey" fontSize="15px" mt="4px" component="a" target="_blank" href={`https://${token.data?.asset.domain}`}>
+                {token.data?.asset.domain || "-"}
+              </Typography>
+              </LoadingSkeleton>
         </Box>
         <Box display="flex" alignItems="center" gap="6px" mt="0px">
-          <Typography fontSize="15px">Issued by:</Typography>
-          <Typography sx={{ "&:hover": { textDecoration: "underline" } }} variant="h6" color="grey" fontSize="15px" mt="0px"  component="a" target="_blank" href={stellarIssuerUrl}>
-            {shortenAddress(token.data?.asset.issuer || "")}
-          </Typography>
+            <Typography fontSize="15px">Issued by:</Typography>
+            <LoadingSkeleton isLoading={token.isLoading} variant="text">
+              <Typography sx={{ "&:hover": { textDecoration: "underline" } }} variant="h6" color="grey" fontSize="15px" mt="0px"  component="a" target="_blank" href={stellarIssuerUrl}>
+                {token.data?.asset.issuer ? shortenAddress(token.data?.asset.issuer || "") : "Unknown"}
+              </Typography>
+            </LoadingSkeleton>
         </Box>
       </Box>
       <Box
