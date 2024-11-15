@@ -32,6 +32,7 @@ import { useQueryAllEvents } from "hooks/events";
 import { shouldFilterEvent, shouldFilterPool } from "utils/filters";
 import { useState } from "react";
 import { stellarExpertUrl } from "constants/constants";
+import useQueryNetwork from "hooks/use-query-network";
 
 const TokenPage = () => {
   const router = useRouter();
@@ -50,8 +51,10 @@ const TokenPage = () => {
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
 
-  const stellarIssuerUrl = `${stellarExpertUrl}/public/${token.data?.asset.issuer}`;
-  const stellarAssetUrl = `${stellarExpertUrl}/public/asset/${token.data?.asset.code}-${token.data?.asset.issuer}`;
+  const { network } = useQueryNetwork();
+
+  const stellarIssuerUrl = `${stellarExpertUrl}/${network == "TESTNET"? "testnet": "public"}/account/${token.data?.asset.issuer}`;
+  const stellarAssetUrl = token.data?.asset?.code && token.data?.asset?.issuer ? `${stellarExpertUrl}/${network == "TESTNET"? "testnet": "public"}/asset/${token.data.asset.code}-${token.data.asset.issuer}` : "";
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -162,16 +165,16 @@ const TokenPage = () => {
         <Box display="flex" alignItems="center" gap="6px" mt={2}>
             <Typography fontSize="15px">Issuer Domain: </Typography>
             <LoadingSkeleton isLoading={token.isLoading} variant="text">
-              <Typography  sx={{ "&:hover": { textDecoration: "underline" } }} variant="h6" color="grey" fontSize="15px" mt="4px" component="a" target="_blank" href={`https://${token.data?.asset.domain}`}>
-                {token.data?.asset.domain || "-"}
+              <Typography  sx={{ "&:hover": { textDecoration: `${token.data?.asset.domain ? "underline" : "none"}` } }} variant="h6" color="grey" fontSize="15px" mt="0px" component={token.data?.asset.domain ? "a" : "h6"} target={token.data?.asset.domain ? "_blank" : undefined} href={token.data?.asset.domain ? `https://${token.data?.asset.domain}` : undefined}>
+                {token.data?.asset.domain || "Unknown"}
               </Typography>
               </LoadingSkeleton>
         </Box>
         <Box display="flex" alignItems="center" gap="6px" mt="0px">
             <Typography fontSize="15px">Issued by:</Typography>
             <LoadingSkeleton isLoading={token.isLoading} variant="text">
-              <Typography sx={{ "&:hover": { textDecoration: "underline" } }} variant="h6" color="grey" fontSize="15px" mt="0px"  component="a" target="_blank" href={stellarIssuerUrl}>
-                {token.data?.asset.issuer ? shortenAddress(token.data?.asset.issuer || "") : "Unknown"}
+              <Typography sx={{ "&:hover": { textDecoration: `${token.data?.asset.issuer ? "underline" : "none"}` } }} variant="h6" color="grey" fontSize="15px" mt="0px"  component={token.data?.asset.issuer ? "a" : "h6"} target={token.data?.asset.issuer ? "_blank" : undefined}  href={token.data?.asset.issuer ? stellarIssuerUrl : undefined}>
+                {token.data?.asset.issuer ? shortenAddress(token.data?.asset.issuer || "") : token.data?.asset.code === "XLM" ? "Native" : "Unknown"}
               </Typography>
             </LoadingSkeleton>
         </Box>
