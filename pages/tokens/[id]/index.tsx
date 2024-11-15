@@ -31,6 +31,7 @@ import useEventTopicFilter from "hooks/use-event-topic-filter";
 import { useQueryAllEvents } from "hooks/events";
 import { shouldFilterEvent, shouldFilterPool } from "utils/filters";
 import { useState } from "react";
+import { stellarExpertUrl } from "constants/constants";
 
 const TokenPage = () => {
   const router = useRouter();
@@ -49,7 +50,8 @@ const TokenPage = () => {
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
 
-  const stellarExpertUrl = `https://stellar.expert/explorer/public/asset/${id}`;
+  const stellarIssuerUrl = `${stellarExpertUrl}/public/${token.data?.asset.issuer}`;
+  const stellarAssetUrl = `${stellarExpertUrl}/public/asset/${token.data?.asset.code}-${token.data?.asset.issuer}`;
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -89,7 +91,7 @@ const TokenPage = () => {
                   <Link
                     sx={{ cursor: "pointer" }}
                     underline="hover"
-                    href={stellarExpertUrl}
+                    href={stellarAssetUrl}
                     target="_blank"
                   >
                     ({shortenAddress(id as string)})
@@ -130,7 +132,7 @@ const TokenPage = () => {
                 opacity: 0.8,
               },
             }}
-            onClick={() => openInNewTab(stellarExpertUrl)}
+            onClick={() => openInNewTab(stellarAssetUrl)}
           >
             <Share
               fontSize="small"
@@ -141,20 +143,34 @@ const TokenPage = () => {
           </Box>
         </Box>
       </Box>
-      <Box display="flex" alignItems="center" gap="6px" mt={4}>
-        <LoadingSkeleton
-          isLoading={token.isLoading}
-          height={40}
-          width={40}
-          variant="circular"
-        >
-          <Token imageUrl={token.data?.asset.icon} />
-        </LoadingSkeleton>
-        <LoadingSkeleton isLoading={token.isLoading} variant="text">
-          <Typography variant="h5">
-            {token.data?.asset.name} ({token.data?.asset.code}){" "}
+      <Box display="flex" flexDirection="column" >
+        <Box display="flex" alignItems="center" gap="6px" mt={4}>
+          <LoadingSkeleton
+            isLoading={token.isLoading}
+            height={40}
+            width={40}
+            variant="circular"
+          >
+            <Token imageUrl={token.data?.asset.icon} />
+          </LoadingSkeleton>
+          <LoadingSkeleton isLoading={token.isLoading} variant="text">
+              <Typography variant="h5">
+                {token.data?.asset.name} ({token.data?.asset.code}){" "}
+              </Typography>
+          </LoadingSkeleton>
+        </Box>
+        <Box display="flex" alignItems="center" gap="6px" mt={2}>
+          <Typography fontSize="15px">Issuer Domain: </Typography>
+          <Typography  sx={{ "&:hover": { textDecoration: "underline" } }} variant="h6" color="grey" fontSize="15px" mt="4px" component="a" target="_blank" href={`https://${token.data?.asset.domain}`}>
+            {token.data?.asset.domain || "-"}
           </Typography>
-        </LoadingSkeleton>
+        </Box>
+        <Box display="flex" alignItems="center" gap="6px" mt="0px">
+          <Typography fontSize="15px">Issued by:</Typography>
+          <Typography sx={{ "&:hover": { textDecoration: "underline" } }} variant="h6" color="grey" fontSize="15px" mt="0px"  component="a" target="_blank" href={stellarIssuerUrl}>
+            {shortenAddress(token.data?.asset.issuer || "")}
+          </Typography>
+        </Box>
       </Box>
       <Box
         display="flex"

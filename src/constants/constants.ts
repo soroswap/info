@@ -18,3 +18,5 @@ export const xlmToken: { [x: string]: TokenType } = {
     domain: "stellar.org",
   },
 };
+
+export const stellarExpertUrl = `https://stellar.expert/explorer`;
