@@ -54,7 +54,7 @@ const TokenPage = () => {
   const { network } = useQueryNetwork();
 
   const stellarIssuerUrl = `${stellarExpertUrl}/${network == "TESTNET"? "testnet": "public"}/account/${token.data?.asset.issuer}`;
-  const stellarAssetUrl = token.data?.asset?.code && token.data?.asset?.issuer ? `${stellarExpertUrl}/${network == "TESTNET"? "testnet": "public"}/asset/${token.data.asset.code}-${token.data.asset.issuer}` : "";
+  const stellarAssetUrl = token.data?.asset.code && token.data?.asset?.issuer ? `${stellarExpertUrl}/${network == "TESTNET"? "testnet": "public"}/asset/${token.data.asset.code}-${token.data.asset.issuer}` : undefined;
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -135,7 +135,12 @@ const TokenPage = () => {
                 opacity: 0.8,
               },
             }}
-            onClick={() => openInNewTab(stellarAssetUrl)}
+            onClick={() => {
+              const { code, issuer } = token.data?.asset || {};
+              if (code && issuer) {
+                openInNewTab(stellarAssetUrl || "");
+              }
+            }}
           >
             <Share
               fontSize="small"
