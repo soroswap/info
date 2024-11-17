@@ -185,10 +185,22 @@ export const getRouterFromPools = (pools: MercuryPair[], network: Networks) => {
       {
         protocol: Protocol.SOROSWAP, // use the soroswap protocol
         fn: async () => {
-          return pools as PairFromApi[]; // Ensure the pools array matches PairFromApi[] or cast it
+          // Map MercuryPair[] to PairFromApi[] to ensure type safety
+          const pairs: PairFromApi[]  = pools.map((pool) => ({
+            tokenA: pool.tokenA,
+            tokenB: pool.tokenB,
+            reserveA: pool.reserveA,
+            reserveB: pool.reserveB,
+            protocol: Protocol.SOROSWAP,  // optional default
+            fee: undefined,  // optional default
+          }));
+          return pairs;
         },
       },
     ],
+    pairsCacheInSeconds: 60,
+    network,
+    maxHops: 5,
   });
 };
 
