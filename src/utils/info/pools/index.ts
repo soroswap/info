@@ -7,7 +7,6 @@ import {
 import {
   CurrencyAmount,
   Networks,
-  Protocol,
   Router,
   Token as SdkToken,
   TradeType,
@@ -25,7 +24,6 @@ import { MercuryPair } from "../../../../pages/api/pairs";
 import { MercuryEvent } from "../../../../pages/api/events";
 import { adjustAmountByDecimals } from "utils/utils";
 import { fillChart } from "utils/complete-chart";
-import { PairFromApi } from "soroswap-router-sdk/dist/providers/pair-provider";
 
 export const stellarNetworkDict = {
   MAINNET: Networks.PUBLIC,
@@ -181,23 +179,11 @@ const fromAddressAndAmountToCurrencyAmount = (
 
 export const getRouterFromPools = (pools: MercuryPair[], network: Networks) => {
   return new Router({
-    getPairsFns: [
-      {
-        protocol: Protocol.SOROSWAP, // use the soroswap protocol
-        fn: async () => {
-          // Map MercuryPair[] to PairFromApi[] to ensure type safety
-          const pairs: PairFromApi[]  = pools.map((pool) => ({
-            tokenA: pool.tokenA,
-            tokenB: pool.tokenB,
-            reserveA: pool.reserveA,
-            reserveB: pool.reserveB,
-            protocol: Protocol.SOROSWAP,  // optional default
-            fee: undefined,  // optional default
-          }));
-          return pairs;
-        },
-      },
-    ],
+    getPairsFn: async () => {
+      return new Promise((resolve) => {
+        resolve(pools);
+      });
+    },
     pairsCacheInSeconds: 60,
     network,
     maxHops: 5,
