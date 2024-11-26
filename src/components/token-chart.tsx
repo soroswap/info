@@ -39,7 +39,7 @@ const TokenChart = ({
   priceChartData: PriceChartData[] | undefined;
   isLoading: boolean;
 }) => {
-  const [value, setValue] = React.useState<Charts>("volume");
+  const [value, setValue] = React.useState<Charts>("tvl");
 
   const handleChange = (newValue: Charts) => {
     setValue(newValue);
@@ -47,16 +47,16 @@ const TokenChart = ({
 
   const getAvailableTabs = () => {
     const availableTabs = [];
-    if (volumeChartData) {
-      availableTabs.push({
-        label: "Volume",
-        value: "volume",
-      });
-    }
     if (tvlChartData) {
       availableTabs.push({
         label: "TVL",
         value: "tvl",
+      });
+    }
+    if (volumeChartData) {
+      availableTabs.push({
+        label: "Volume",
+        value: "volume",
       });
     }
     if (priceChartData) {

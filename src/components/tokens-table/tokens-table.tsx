@@ -9,6 +9,7 @@ import {
   TableRow,
   TableSortLabel,
   TableContainer,
+  Typography,
 } from "soroswap-ui";
 
 import { visuallyHidden } from "@mui/utils";
@@ -16,11 +17,12 @@ import { useRouter } from "next/router";
 import * as React from "react";
 import useTable from "../../hooks/use-table";
 import { Token } from "../../types/tokens";
-import { formatNumberToMoney } from "../../utils/utils";
+import { formatNumberToMoney, shortenAddress } from "../../utils/utils";
 import TokenImage from "../token";
 import { StyledCard } from "components/styled/card";
 import { StyledTableCell } from "components/styled/table-cell";
 import { useTheme } from "soroswap-ui";
+import { stellarExpertUrl } from "constants/constants";
 
 interface HeadCell {
   id: keyof Token;
@@ -32,7 +34,12 @@ const headCells: readonly HeadCell[] = [
   {
     id: "asset",
     numeric: false,
-    label: "Name",
+    label: "Token",
+  },
+  {
+    id: "issuer",
+    numeric: false,
+    label: "Issuer",
   },
   {
     id: "price",
@@ -64,6 +71,7 @@ interface TokensTableProps {
   order: "asc" | "desc";
   orderBy: string;
 }
+
 
 function TokensTableHead(props: TokensTableProps) {
   const { order, orderBy, onRequestSort } = props;
@@ -157,10 +165,10 @@ export default function TokensTable({
               onRequestSort={handleRequestSort}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {visibleRows?.map((row, index) => {
                 return (
                   <TableRow
-                    key={index}
+                    key={row.asset.contract}
                     sx={{
                       "&:nth-of-type(2n)": {
                         bgcolor: "#1b1b1b",
@@ -186,7 +194,21 @@ export default function TokensTable({
                       }}
                     >
                       <TokenImage imageUrl={row.asset.icon} />
-                      {row.asset.name ?? row.asset.code}
+                      <Typography ml="0px" fontWeight={300}>
+                        { row.asset?.code || "-" }
+                      </Typography>
+                      <Typography mt="2.5px" ml="-2px" fontSize="12px" color="grey" fontWeight={300}>
+                        { row.asset?.domain }
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align="left">
+                    { row.asset?.issuer ? 
+                        <Typography sx={{ "&:hover": { textDecoration: "underline" } }} ml="0px" fontWeight={300} component="a" target="_blank" href={`${stellarExpertUrl}/${router.query.network === "mainnet"?"public": "testnet"}/account/${row?.asset.issuer}`}>
+                          {shortenAddress(row?.asset.issuer || "")}
+                        </Typography> 
+                        : <Typography ml="0px" fontWeight={300}>
+                          { "-" }
+                        </Typography> }
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       {formatNumberToMoney(row.price)}

@@ -15,6 +15,7 @@ export interface Token {
   volumeChartData?: VolumeChartData[];
   tvlChartData?: TvlChartData[];
   priceChartData?: PriceChartData[];
+  issuer: string;
 }
 
 export interface TokenType {
