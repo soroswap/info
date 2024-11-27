@@ -314,6 +314,35 @@ const PoolPage = () => {
           </StyledCard>
         </Grid>
       </Grid>
+
+      <Box mt={3}>
+        <StyledCard sx={{ p: 2 }} flexBasis={"30%"}>
+          <Box mt={2}>
+            <Text>Volume 7d</Text>
+            <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+              <Typography variant="h6">
+                {formatNumberToMoney(pool.data?.volume7d)}
+              </Typography>
+            </LoadingSkeleton>
+          </Box>
+          <Box mt={2}>
+            <Text>Fees 7d</Text>
+            <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+              <Typography variant="h6">
+                {formatNumberToMoney(pool.data?.fees7d)}
+              </Typography>
+            </LoadingSkeleton>
+          </Box>
+          <Box mt={2}>
+            <Text>APY</Text>
+            <LoadingSkeleton isLoading={pool.isLoading} variant="text">
+              <Typography variant="h6">
+                {formatNumberToToken(pool.data?.apy)}
+              </Typography>
+            </LoadingSkeleton>
+          </Box>
+        </StyledCard>
+      </Box>
       <Box mt={8}>
         <Tabs
           items={["Transactions"]}

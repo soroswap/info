@@ -17,6 +17,21 @@ export interface Token {
   priceChartData?: PriceChartData[];
 }
 
+export interface TokenFeesChartData {
+  date: string;
+  fees: number;
+  timestamp: number;
+}
+
+export interface TokenStats {
+  volume24h: number;
+  volume7d: number;
+  volumeAllTime: number;
+  fees24h: number;
+  fees7d: number;
+  feesAllTime: number;
+}
+
 export interface TokenType {
   code: string;
   issuer?: string;

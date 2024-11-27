@@ -6,7 +6,7 @@ import {
   TvlChartData,
   VolumeChartData,
 } from "types/pools";
-import { Token, TokenType } from "types/tokens";
+import { Token, TokenType, TokenFeesChartData, TokenStats } from "types/tokens";
 import { MercuryRsvCh, getMercuryRsvCh } from "zephyr/helpers";
 import { getDate } from "../pools";
 import { getExpectedAmountOfOne } from "utils/utils";
@@ -214,4 +214,138 @@ export const getTokenPriceChart = (
   const filledPriceChartData = fillChart(priceChartData, "price");
 
   return filledPriceChartData as PriceChartData[];
+};
+
+export const buildTokenStats = async (
+  tokenList: TokenType[],
+  pools: Pool[]
+) => {
+  const tokens: Token[] = tokenList.map((t) => ({
+    asset: t,
+    fees24h: 0,
+    price: 0,
+    priceChange24h: 0,
+    tvl: 0,
+    tvlSlippage24h: 0,
+    tvlSlippage7d: 0,
+    volume24h: 0,
+    volume24hChange: 0,
+    volume7d: 0,
+    volume7dChange: 0,
+  }));
+
+  const USDC = tokens.find((token) => token.asset.code === "USDC");
+
+  if (!USDC) return null;
+
+  const totalStats = {
+    volume24h: 0,
+    volume7d: 0,
+    volumeAllTime: 0,
+    fees24h: 0,
+    fees7d: 0,
+    feesAllTime: 0,
+  };
+
+  tokens.forEach((token) => {
+    const tokenPools = pools.filter(
+      (pool) =>
+        pool.tokenA.contract === token.asset.contract ||
+        pool.tokenB.contract === token.asset.contract
+    );
+
+    const volumeChartData = getTokenVolumeChartData(token, tokenPools);
+
+    const nowTimestamp = new Date().getTime() / 1000;
+
+    const volume24h = volumeChartData.reduce((acc, item) => {
+      const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+      if (nowTimestamp - itemTimestamp <= 24 * 3600) {
+        return acc + item.volume;
+      }
+      return acc;
+    }, 0);
+
+    const volume7d = volumeChartData.reduce((acc, item) => {
+      const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+      if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
+        return acc + item.volume;
+      }
+      return acc;
+    }, 0);
+
+    const volumeAllTime = volumeChartData.reduce((acc, item) => {
+      return acc + item.volume;
+    }, 0);
+
+    const feesChartData = getTokenFeesChartData(tokenPools);
+
+    const fees24h = feesChartData.reduce((acc, item) => {
+      const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+      if (nowTimestamp - itemTimestamp <= 24 * 3600) {
+        return acc + item.fees;
+      }
+      return acc;
+    }, 0);
+
+    const fees7d = feesChartData.reduce((acc, item) => {
+      const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+      if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
+        return acc + item.fees;
+      }
+      return acc;
+    }, 0);
+
+    const feesAllTime = feesChartData.reduce((acc, item) => {
+      return acc + item.fees;
+    }, 0);
+
+    // Accumulate totals
+    totalStats.volume24h += volume24h;
+    totalStats.volume7d += volume7d;
+    totalStats.volumeAllTime += volumeAllTime;
+    totalStats.fees24h += fees24h;
+    totalStats.fees7d += fees7d;
+    totalStats.feesAllTime += feesAllTime;
+  });
+
+  return totalStats as TokenStats;
+};
+
+export const getTokenFeesChartData = (
+  tokenPools: Pool[]
+): TokenFeesChartData[] => {
+  let feesChartData: { [x: string]: any } = {};
+
+  tokenPools.forEach((pool) => {
+    pool.feesChartData?.forEach((data) => {
+      const fees = data.fees || 0;
+
+      if (!feesChartData[data.date]) {
+        feesChartData[data.date] = {
+          date: data.date,
+          fees: fees,
+          timestamp: data.timestamp,
+        };
+      } else {
+        feesChartData[data.date] = {
+          ...feesChartData[data.date],
+          fees: feesChartData[data.date].fees + fees,
+        };
+      }
+    });
+  });
+
+  feesChartData = Object.values(feesChartData);
+
+  feesChartData.sort(
+    (a: TokenFeesChartData, b: TokenFeesChartData) =>
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  return feesChartData as TokenFeesChartData[];
 };
