@@ -11,9 +11,7 @@ Analytics site for Soroswap
 2. Edit the environmental variables in the `.env` file as needed.
 
 >[!NOTE] 
-> To get MERCURY_EMAIL & MERCURY_PASSWORD, you need to create a new account on [Mercury](https://main.mercurydata.app/).
-
-Once created an account fill the email and password in the `.env` file for mainnet and testnet.
+> To get MERCURY_API_KEY you need to create a new account on [Mercury](https://main.mercurydata.app/) and retrieve your bearer token from the dashboard. After obtaining the bearer token, generate the API key by following the authentication process in the Mercury [documentation](https://docs.mercurydata.app/get-started-with-mercury/authentication). The POST request can be made with Postman or any API client of your choice.
 
 3. Run the Docker setup script:
   ```sh
