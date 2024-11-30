@@ -285,40 +285,43 @@ export const getPoolFees = (
 };
 
 export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
-  const poolEvents = events.filter((e) => {
-    if (
-      e.tokenA === pool?.tokenA.contract &&
-      e.tokenB === pool?.tokenB.contract
-    ) {
-      return true;
-    }
+  console.log("All events received:", events);
 
+  // Filtramos solo eventos de tipo swap
+  const swapEvents = events.filter(e => {
+    console.log("Event type:", e.eType);
+    return e.eType === "swap";
+  });
+  console.log("Filtered swap events:", swapEvents);
+
+  // Filtramos eventos del pool específico
+  const poolEvents = swapEvents.filter((e) => {
+    const isPoolEvent = (
+      (e.tokenA === pool?.tokenA.contract && e.tokenB === pool?.tokenB.contract) ||
+      (e.tokenA === pool?.tokenB.contract && e.tokenB === pool?.tokenA.contract)
+    );
+    console.log(`Event for pool ${pool.address}:`, isPoolEvent);
+    return isPoolEvent;
+  });
+
+  const poolsEventsWithTokensOrdered = poolEvents.map((e) => {
+    // Si los tokens están en orden inverso, los intercambiamos
     if (
       e.tokenA === pool?.tokenB.contract &&
       e.tokenB === pool?.tokenA.contract
     ) {
-      return true;
+      return {
+        ...e,
+        tokenA: e.tokenB,
+        tokenB: e.tokenA,
+        amountA: e.amountB,
+        amountB: e.amountA,
+      };
     }
-
-    return false;
+    return e;
   });
 
-  const poolsEventsWithTokensOrdered = poolEvents.map((e) => {
-    if (
-      e.tokenA === pool?.tokenA.contract &&
-      e.tokenB === pool?.tokenB.contract
-    ) {
-      return e;
-    }
-
-    return {
-      ...e,
-      tokenA: e.tokenB,
-      tokenB: e.tokenA,
-      amountA: e.amountB,
-      amountB: e.amountA,
-    };
-  });
+  console.log("Events with ordered tokens:", poolsEventsWithTokensOrdered);
 
   const volumeChartData = poolsEventsWithTokensOrdered.map((e) => {
     const volumes = getPoolVolume(
@@ -329,6 +332,11 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
       pool?.tokenA.decimals,
       pool?.tokenB.decimals
     );
+    console.log("Calculated volumes for event:", {
+      date: getDate(e.timestamp),
+      volumes
+    });
+    
     return {
       timestamp: e.timestamp,
       date: getDate(e.timestamp),
@@ -339,6 +347,7 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
   });
 
   const filledVolumeChartData = fillChart(volumeChartData, "volume", false);
+  console.log("Final volume chart data:", filledVolumeChartData);
 
   return filledVolumeChartData as VolumeChartData[];
 };

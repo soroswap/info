@@ -14,17 +14,26 @@ export const parseScvalValue = (value: any) => {
 };
 
 export const parseMercuryScvalResponse = (data: any) => {
+  console.log("Raw data to parse:", data);
+  
   return data?.map((d: any) => {
     let n: any = {};
 
     for (let key in d) {
       const value = parseScvalValue(d[key]);
+      console.log(`Parsing field ${key}:`, value);
+      
       if (typeof value === "bigint" || typeof value === "number") {
         n[key] = value.toString();
-      } else if( key == 'txHash'){
+      } else if(key == 'txHash'){
         const txHash = StellarSdk.xdr.Hash.fromXDR(value, 'hex').toString('hex')
-        if(txHash.length != 64)throw new Error('Invalid txHash length');
+        if(txHash.length != 64) throw new Error('Invalid txHash length');
         n[key] = txHash;
+      } else if(key == 'eType') {
+        // Asegurarnos que eType sea un string válido y esté normalizado
+        const eventType = String(value).toLowerCase();
+        console.log("Parsed event type:", eventType);
+        n[key] = eventType;
       } else {
         n[key] = value;
       }
@@ -120,17 +129,26 @@ export const getMercuryRsvCh = async (network: Network) => {
 export const getMercuryEvents = async (network: Network) => {
   const mercuryInstance = getMercuryInstance(network);
   const { soroswap_events } = await fetchZephyrTables({ network });
+  
+  console.log("Fetching events from table:", soroswap_events);
+  
   const response = await mercuryInstance.getCustomQuery({
     request: GET_ALL_EVENTS(soroswap_events),
   });
 
+  console.log("Raw Mercury Events Response:", response);
+
   if (!response.ok) {
+    console.error("Error fetching Mercury events:", response);
     return [];
   }
 
   const parsedData: MercuryEvent[] = parseMercuryScvalResponse(
     response.data?.events?.data
   );
+
+  console.log("Parsed Mercury Events:", parsedData);
+  console.log("Event types present:", [...new Set(parsedData.map(e => e.eType))]);
 
   return parsedData;
 };
