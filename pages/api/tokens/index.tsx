@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { fetchTokenList } from "services/tokens";
 import { Network } from "types/network";
 import { TokenType } from "types/tokens";
-import { buildPoolsInfo } from "utils/info/pools";
+import { buildPoolsInfo, buildPoolsInfoV2 } from "utils/info/pools";
 import { buildTokensInfo } from "utils/info/tokens";
 import { getMercuryPools } from "zephyr/helpers";
 
@@ -23,7 +23,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     const data = await getMercuryPools(network);
 
-    const result = await buildPoolsInfo(data, tokenList, network);
+    const result = await buildPoolsInfoV2(data, tokenList, network);
 
     const tokensInfo = await buildTokensInfo(tokenList, result, network);
 
