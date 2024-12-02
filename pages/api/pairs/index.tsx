@@ -31,7 +31,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const result = await buildPoolsInfoV2(data, tokenList, network);
   
   if (address) {
-    const pool = result.find((pair) => pair.address === address);
+    const pool = result.find((pair) => pair?.address === address);
     return res.json(pool);
   }
 

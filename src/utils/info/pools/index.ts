@@ -60,117 +60,112 @@ export const buildPoolsInfoV2 = async (
   const rsvch = await getMercuryRsvCh(network);
   const events = await getMercuryEvents(network);
 
-  const result: Array<Pool | null> = await Promise.all(
+  const result: Array<Pool> = await Promise.all(
     filteredData.map(async (pool) => {
-      try {
-        const getTokenPriceOrStatic = async (tokenContract: string) => {
-          if (!tokenContract) return 0;
-  
-          if (!forceGetTokenPrice && staticTokenPrices[tokenContract] !== undefined) {
-            return staticTokenPrices[tokenContract];
-          }
-  
-          const price = Number(
-            await getTokenPrice(tokenContract, USDC.contract, sdkNetwork, router, USDx.contract)
-          );
-  
-          // if (tokenContract === XLM.contract) {
-          //   console.log(`🚀 ~ Fetching price for XLM: ${price}`);
-          // }
-  
-          return price;
-        };
-  
-        // Tokens are guaranteed to exist in the filteredData
-        const tokenA = tokenList.find((token: TokenType) => token.contract === pool.tokenA)!;
-        const tokenB = tokenList.find((token: TokenType) => token.contract === pool.tokenB)!;
-  
-        const tokenAPrice = await getTokenPriceOrStatic(tokenA.contract);
-        const tokenBPrice = await getTokenPriceOrStatic(tokenB.contract);
-  
-        const tvl = getPoolTVL(
-          pool.reserveA,
-          pool.reserveB,
-          tokenAPrice,
-          tokenBPrice,
-          tokenA.decimals,
-          tokenB.decimals
+      const getTokenPriceOrStatic = async (tokenContract: string) => {
+        if (!tokenContract) return 0;
+
+        if (!forceGetTokenPrice && staticTokenPrices[tokenContract] !== undefined) {
+          return staticTokenPrices[tokenContract];
+        }
+
+        const price = Number(
+          await getTokenPrice(tokenContract, USDC.contract, sdkNetwork, router, USDx.contract)
         );
-  
-        const poolData = {
-          ...pool,
-          tokenA,
-          tokenB,
-          tokenAPrice,
-          tokenBPrice,
-          fees24h: 0,
-          feesYearly: 0,
-          tvl,
-          volume24h: 0,
-          volume7d: 0,
-        };
-        
-        const tvlChartData = getPoolTVLChartData(rsvch, poolData);
-        const volumeChartData = getPoolVolumeChartData(events, poolData);
-        const feesChartData = getPoolFeesChartData(events, poolData);
-  
-        const nowTimestamp = new Date().getTime() / 1000;
-  
-        const volume7d = volumeChartData.reduce((acc, item) => {
-          const itemTimestamp = new Date(item.date).getTime() / 1000;
-  
-          if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
-            return acc + item.volume;
-          }
-          return acc;
-        }, 0);
-  
-        const volume24h = volumeChartData.reduce((acc, item) => {
-          const itemTimestamp = new Date(item.date).getTime() / 1000;
-  
-          if (nowTimestamp - itemTimestamp <= 24 * 3600) {
-            return acc + item.volume;
-          }
-          return acc;
-        }, 0);
-  
-        const fees24h = feesChartData.reduce((acc, item) => {
-          const itemTimestamp = new Date(item.date).getTime() / 1000;
-  
-          if (nowTimestamp - itemTimestamp < 24 * 3600) {
-            return acc + item.fees;
-          }
-          return acc;
-        }, 0);
-  
-        const fees7d = feesChartData.reduce((acc, item) => {
-          const itemTimestamp = new Date(item.date).getTime() / 1000;
-  
-          if (nowTimestamp - itemTimestamp < 7 * 24 * 3600) {
-            return acc + item.fees;
-          }
-          return acc;
-        }, 0);
-  
-        const feesYearly = fees7d * 52;
-  
-        return {
-          ...poolData,
-          tvlChartData,
-          volumeChartData,
-          feesChartData,
-          volume7d,
-          volume24h,
-          fees24h,
-          feesYearly,
-        };
-      } catch (error) {
-        console.error("Error fetching token prices:", error);
-        return null; // Return null to avoid breaking the Promise.all flow
-      }
+
+        // if (tokenContract === XLM.contract) {
+        //   console.log(`🚀 ~ Fetching price for XLM: ${price}`);
+        // }
+
+        return price;
+      };
+
+      // Tokens are guaranteed to exist in the filteredData
+      const tokenA = tokenList.find((token: TokenType) => token.contract === pool.tokenA)!;
+      const tokenB = tokenList.find((token: TokenType) => token.contract === pool.tokenB)!;
+
+      const tokenAPrice = await getTokenPriceOrStatic(tokenA.contract);
+      const tokenBPrice = await getTokenPriceOrStatic(tokenB.contract);
+
+      const tvl = getPoolTVL(
+        pool.reserveA,
+        pool.reserveB,
+        tokenAPrice,
+        tokenBPrice,
+        tokenA.decimals,
+        tokenB.decimals
+      );
+
+      const poolData = {
+        ...pool,
+        tokenA,
+        tokenB,
+        tokenAPrice,
+        tokenBPrice,
+        fees24h: 0,
+        feesYearly: 0,
+        tvl,
+        volume24h: 0,
+        volume7d: 0,
+      };
+      
+      const tvlChartData = getPoolTVLChartData(rsvch, poolData);
+      const volumeChartData = getPoolVolumeChartData(events, poolData);
+      const feesChartData = getPoolFeesChartData(events, poolData);
+
+      const nowTimestamp = new Date().getTime() / 1000;
+
+      const volume7d = volumeChartData.reduce((acc, item) => {
+        const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+        if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
+          return acc + item.volume;
+        }
+        return acc;
+      }, 0);
+
+      const volume24h = volumeChartData.reduce((acc, item) => {
+        const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+        if (nowTimestamp - itemTimestamp <= 24 * 3600) {
+          return acc + item.volume;
+        }
+        return acc;
+      }, 0);
+
+      const fees24h = feesChartData.reduce((acc, item) => {
+        const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+        if (nowTimestamp - itemTimestamp < 24 * 3600) {
+          return acc + item.fees;
+        }
+        return acc;
+      }, 0);
+
+      const fees7d = feesChartData.reduce((acc, item) => {
+        const itemTimestamp = new Date(item.date).getTime() / 1000;
+
+        if (nowTimestamp - itemTimestamp < 7 * 24 * 3600) {
+          return acc + item.fees;
+        }
+        return acc;
+      }, 0);
+
+      const feesYearly = fees7d * 52;
+
+      return {
+        ...poolData,
+        tvlChartData,
+        volumeChartData,
+        feesChartData,
+        volume7d,
+        volume24h,
+        fees24h,
+        feesYearly,
+      };
     })
   );
-  return result.filter(Boolean); // Remove any null results
+  return result
 };
 
 export const buildPoolsInfo = async (
