@@ -11,9 +11,9 @@ Analytics site for Soroswap
 2. Edit the environmental variables in the `.env` file as needed.
 
 >[!NOTE] 
-> To get MERCURY_JWT_MAINNET & MERCURY_JWT_TESTNET, you need to create a new account on [Mercury](https://main.mercurydata.app/) and get the JWT's in the dashboard.
+> To get both MERCURY_API_KEY_MAINNET & MERCURY_API_KEY_TESTNET, you need to create a new account on [Mercury](https://main.mercurydata.app/), get the JWT's in the dashboard, then [generate your apiKey](https://docs.mercurydata.app/get-started-with-mercury/authentication).
 
-Once done fill the JWT in the `.env` file for mainnet and testnet.
+Once done fill the api key in the `.env` file for mainnet and testnet.
 
 3. Run the Docker setup script:
   ```sh
