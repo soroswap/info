@@ -44,6 +44,7 @@ export const buildPoolsInfo = async (
   const rsvch = await getMercuryRsvCh(network);
 
   const events = await getMercuryEvents(network);
+  //console.log("Events received from getMercuryEvents:", events);
 
   const tokens = await Promise.all(
     tokenList.map(async (token) => {
@@ -285,31 +286,20 @@ export const getPoolFees = (
 };
 
 export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
-  console.log("All events received:", events);
-
-  // Filtramos solo eventos de tipo swap
-  const swapEvents = events.filter(e => {
-    console.log("Event type:", e.eType);
-    return e.eType === "swap";
-  });
-  console.log("Filtered swap events:", swapEvents);
-
-  // Filtramos eventos del pool específico
-  const poolEvents = swapEvents.filter((e) => {
-    const isPoolEvent = (
-      (e.tokenA === pool?.tokenA.contract && e.tokenB === pool?.tokenB.contract) ||
-      (e.tokenA === pool?.tokenB.contract && e.tokenB === pool?.tokenA.contract)
+  // Filtrar eventos de tipo "swap" relacionados con el pool
+  const poolEvents = events.filter((e) => {
+    return (
+      e.eType === "swap" && // Verificar que sea un evento de tipo "swap"
+      (
+        (e.tokenA === pool?.tokenA.contract && e.tokenB === pool?.tokenB.contract) ||
+        (e.tokenA === pool?.tokenB.contract && e.tokenB === pool?.tokenA.contract)
+      )
     );
-    console.log(`Event for pool ${pool.address}:`, isPoolEvent);
-    return isPoolEvent;
   });
 
-  const poolsEventsWithTokensOrdered = poolEvents.map((e) => {
-    // Si los tokens están en orden inverso, los intercambiamos
-    if (
-      e.tokenA === pool?.tokenB.contract &&
-      e.tokenB === pool?.tokenA.contract
-    ) {
+  // Ordenar los tokens si están en orden inverso
+  const orderedPoolEvents = poolEvents.map((e) => {
+    if (e.tokenA === pool?.tokenB.contract && e.tokenB === pool?.tokenA.contract) {
       return {
         ...e,
         tokenA: e.tokenB,
@@ -321,9 +311,8 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
     return e;
   });
 
-  console.log("Events with ordered tokens:", poolsEventsWithTokensOrdered);
-
-  const volumeChartData = poolsEventsWithTokensOrdered.map((e) => {
+  // Calcular el volumen para cada evento
+  const volumeChartData = orderedPoolEvents.map((e) => {
     const volumes = getPoolVolume(
       e.amountA,
       e.amountB,
@@ -332,25 +321,23 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
       pool?.tokenA.decimals,
       pool?.tokenB.decimals
     );
-    console.log("Calculated volumes for event:", {
-      date: getDate(e.timestamp),
-      volumes
-    });
-    
+
     return {
       timestamp: e.timestamp,
       date: getDate(e.timestamp),
-      volume: volumes.volumeA + volumes.volumeB,
+      volume: volumes.volumeA + volumes.volumeB, // Volumen total del evento
       valueA: volumes.volumeA,
       valueB: volumes.volumeB,
     };
   });
 
+  // Llenar los datos faltantes para el gráfico (p.ej., días sin eventos)
   const filledVolumeChartData = fillChart(volumeChartData, "volume", false);
-  console.log("Final volume chart data:", filledVolumeChartData);
 
+  // Retornar los datos completos como `VolumeChartData`
   return filledVolumeChartData as VolumeChartData[];
 };
+
 
 export const getPoolFeesChartData = (events: MercuryEvent[], pool: Pool) => {
   const poolEvents = events.filter((e) => {
