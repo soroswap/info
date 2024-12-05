@@ -1,6 +1,6 @@
 import { Network } from "types/network";
 import { NextApiRequest, NextApiResponse } from "next";
-import { buildPoolsInfo, buildPoolsInfoV2 } from "utils/info/pools";
+import { buildPoolsInfo } from "utils/info/pools";
 import { TokenType } from "types/tokens";
 import { fetchTokenList } from "services/tokens";
 import { getMercuryPools } from "zephyr/helpers";
@@ -28,7 +28,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const tokenList: TokenType[] = await fetchTokenList({ network });
 
   const data = await getMercuryPools(network);
-  const result = await buildPoolsInfoV2(data, tokenList, network);
+  const result = await buildPoolsInfo(data, tokenList, network);
   
   if (address) {
     const pool = result.find((pair) => pair?.address === address);

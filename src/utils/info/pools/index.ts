@@ -24,12 +24,13 @@ import { MercuryPair } from "../../../../pages/api/pairs";
 import { MercuryEvent } from "../../../../pages/api/events";
 import { adjustAmountByDecimals } from "utils/utils";
 import { fillChart } from "utils/complete-chart";
+
 export const stellarNetworkDict = {
   MAINNET: Networks.PUBLIC,
   TESTNET: Networks.TESTNET,
 };
 
-export const buildPoolsInfoV2 = async (
+export const buildPoolsInfo = async (
   data: MercuryPair[],
   tokenList: TokenType[],
   network: Network
@@ -43,21 +44,17 @@ export const buildPoolsInfoV2 = async (
   const sdkNetwork = stellarNetworkDict[network];
   const router = getRouterFromPools(filteredData, sdkNetwork);
 
-  // const XLM = tokenList.find((token: TokenType) => token.contract === "XLM");
-  // if (!XLM) throw new Error("XLM token not found in the token list.");
   const USDC = tokenList.find((token) => token.code === "USDC");
   if (!USDC) throw new Error("USDC token not found in the token list.");
-  const USDx = tokenList.find((token: TokenType) => token.code === "USDx");
-  if (!USDx) throw new Error("USDx token not found in the token list.");
 
   const forceGetTokenPrice = true; // FALSE TO SET STATIC PRICES HARDCODE (XLM/USDC/USDx)
   const staticTokenPrices: Record<string, number> = {
     // [XLM.contract]: 0.529266,
+    // [USDx.contract]: 1,
     [USDC.contract]: 1,
-    [USDx.contract]: 1,
   };
 
-  const rsvch = await getMercuryRsvCh(network);
+  // const rsvch = await getMercuryRsvCh(network);
   const events = await getMercuryEvents(network);
 
   const result: Array<Pool> = await Promise.all(
@@ -70,12 +67,8 @@ export const buildPoolsInfoV2 = async (
         }
 
         const price = Number(
-          await getTokenPrice(tokenContract, USDC.contract, sdkNetwork, router, USDx.contract)
+          await getTokenPrice(tokenContract, USDC.contract, sdkNetwork, router)
         );
-
-        // if (tokenContract === XLM.contract) {
-        //   console.log(`🚀 ~ Fetching price for XLM: ${price}`);
-        // }
 
         return price;
       };
@@ -108,8 +101,7 @@ export const buildPoolsInfoV2 = async (
         volume24h: 0,
         volume7d: 0,
       };
-      
-      const tvlChartData = getPoolTVLChartData(rsvch, poolData);
+      // const tvlChartData = getPoolTVLChartData(rsvch, poolData);
       const volumeChartData = getPoolVolumeChartData(events, poolData);
       const feesChartData = getPoolFeesChartData(events, poolData);
 
@@ -155,7 +147,7 @@ export const buildPoolsInfoV2 = async (
 
       return {
         ...poolData,
-        tvlChartData,
+        // tvlChartData ,
         volumeChartData,
         feesChartData,
         volume7d,
@@ -166,133 +158,6 @@ export const buildPoolsInfoV2 = async (
     })
   );
   return result
-};
-
-export const buildPoolsInfo = async (
-  data: MercuryPair[],
-  tokenList: TokenType[],
-  network: Network
-) => {
-  const sdkNetwork = stellarNetworkDict[network];
-  const router = getRouterFromPools(data, sdkNetwork);
-
-  const USDC = tokenList.find((token) => token.code === "USDC");
-
-  const rsvch = await getMercuryRsvCh(network);
-
-  const events = await getMercuryEvents(network);
-
-  const tokens = await Promise.all(
-    tokenList.map(async (token) => {
-      const tokenPrice = await getTokenPrice(
-        token.contract,
-        USDC?.contract!,
-        sdkNetwork,
-        router
-      );
-      
-      return {
-        ...token,
-        price: Number(tokenPrice || 0),
-      };
-    })
-  );
-
-  const result: Pool[] = await Promise.all(
-    data.map(async (pool) => {
-      const tokenA = tokens.find(
-        (token: TokenType) => token.contract === pool.tokenA
-      );
-      const tokenB = tokens.find(
-        (token: TokenType) => token.contract === pool.tokenB
-      );
-      const tokenAPrice = tokenA?.price || 0;
-      const tokenBPrice = tokenB?.price || 0;
-
-      const tvl = getPoolTVL(
-        pool.reserveA,
-        pool.reserveB,
-        tokenAPrice,
-        tokenBPrice,
-        tokenA?.decimals,
-        tokenB?.decimals
-      );
-
-      const poolData = {
-        ...pool,
-        tokenA: tokenA
-          ? tokenA
-          : { contract: pool.tokenA, code: pool.tokenA, name: pool.tokenA },
-        tokenB: tokenB
-          ? tokenB
-          : { contract: pool.tokenB, code: pool.tokenB, name: pool.tokenB },
-        tokenAPrice,
-        tokenBPrice,
-        fees24h: 0,
-        feesYearly: 0,
-        tvl,
-        volume24h: 0,
-        volume7d: 0,
-      };
-
-      const tvlChartData = getPoolTVLChartData(rsvch, poolData);
-      const volumeChartData = getPoolVolumeChartData(events, poolData);
-      const feesChartData = getPoolFeesChartData(events, poolData);
-
-      const nowTimestamp = new Date().getTime() / 1000;
-
-      const volume7d = volumeChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
-
-        if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
-          return acc + item.volume;
-        }
-        return acc;
-      }, 0);
-
-      const volume24h = volumeChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
-
-        if (nowTimestamp - itemTimestamp <= 24 * 3600) {
-          return acc + item.volume;
-        }
-        return acc;
-      }, 0);
-
-      const fees24h = feesChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
-
-        if (nowTimestamp - itemTimestamp < 24 * 3600) {
-          return acc + item.fees;
-        }
-        return acc;
-      }, 0);
-
-      const fees7d = feesChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
-
-        if (nowTimestamp - itemTimestamp < 7 * 24 * 3600) {
-          return acc + item.fees;
-        }
-        return acc;
-      }, 0);
-
-      const feesYearly = fees7d * 52;
-
-      return {
-        ...poolData,
-        tvlChartData,
-        volumeChartData,
-        feesChartData,
-        volume7d,
-        volume24h,
-        fees24h,
-        feesYearly,
-      };
-    })
-  );
-
-  return result;
 };
 
 export const getDate = (timestamp: string) => {
@@ -329,11 +194,9 @@ export const getTokenPrice = async (
   tokenAddress: string,
   usdcAddress: string,
   network: Networks,
-  router: Router,
-  usdxAdress?: string
+  router: Router
 ) => {
   if (tokenAddress === usdcAddress) return 1;
-  if (tokenAddress === usdxAdress) return 1;
 
   const currencyAmount = fromAddressAndAmountToCurrencyAmount(
     tokenAddress,
@@ -346,19 +209,6 @@ export const getTokenPrice = async (
     quoteCurrency,
     TradeType.EXACT_INPUT
   );
-  
-  // console.log("🚀 ~ PATH ROUTE FOR GETTING TOKEN PRICE:", {
-  //   tokenAddress,
-  //   route_path: route?.trade.path
-  // })
-
-  // if (!route) {
-  //   console.error("No route found", {
-  //     tokenAddress,
-  //     usdcAddress,
-  //     network,
-  //   });
-  // }
 
   if (!route || !route.trade?.amountOutMin) return 0;
   const price = adjustAmountByDecimals(route.trade.amountOutMin, 7);
