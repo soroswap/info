@@ -537,6 +537,11 @@
   resolved "https://registry.yarnpkg.com/@stellar/js-xdr/-/js-xdr-3.1.1.tgz#be0ff90c8a861d6e1101bca130fa20e74d5599bb"
   integrity sha512-3gnPjAz78htgqsNEDkEsKHKosV2BF2iZkoHCNxpmZwUxiPsw+2VaXMed8RRMe0rGk3d5GZe7RrSba8zV80J3Ag==
 
+"@stellar/js-xdr@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@stellar/js-xdr/-/js-xdr-3.1.2.tgz#db7611135cf21e989602fd72f513c3bed621bc74"
+  integrity sha512-VVolPL5goVEIsvuGqDc5uiKxV03lzfWdvYg1KikvwheDmTBO68CKDji3bAZ/kppZrx5iTA8z3Ld5yuytcvhvOQ==
+
 "@stellar/stellar-base@^11.0.1":
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/@stellar/stellar-base/-/stellar-base-11.1.0.tgz#4b561776cb102a87828379cd1ac5d3ce96db4fb3"
@@ -565,7 +570,21 @@
   optionalDependencies:
     sodium-native "^4.1.1"
 
-"@stellar/stellar-sdk@^11.1.0", "@stellar/stellar-sdk@^11.3.0":
+"@stellar/stellar-base@^12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@stellar/stellar-base/-/stellar-base-12.1.1.tgz#16a07e74995725c544510be7086723c28300ed11"
+  integrity sha512-gOBSOFDepihslcInlqnxKZdIW9dMUO1tpOm3AtJR33K2OvpXG6SaVHCzAmCFArcCqI9zXTEiSoh70T48TmiHJA==
+  dependencies:
+    "@stellar/js-xdr" "^3.1.2"
+    base32.js "^0.1.0"
+    bignumber.js "^9.1.2"
+    buffer "^6.0.3"
+    sha.js "^2.3.6"
+    tweetnacl "^1.0.3"
+  optionalDependencies:
+    sodium-native "^4.1.1"
+
+"@stellar/stellar-sdk@^11.3.0":
   version "11.3.0"
   resolved "https://registry.yarnpkg.com/@stellar/stellar-sdk/-/stellar-sdk-11.3.0.tgz#7cb010651846a07e1853e0fe30e430ece4da340b"
   integrity sha512-i+heopibJNRA7iM8rEPz0AXphBPYvy2HDo8rxbDwWpozwCfw8kglP9cLkkhgJe8YicgLrdExz/iQZaLpqLC+6w==
@@ -585,6 +604,19 @@
   dependencies:
     "@stellar/stellar-base" "^12.0.0"
     axios "^1.7.2"
+    bignumber.js "^9.1.2"
+    eventsource "^2.0.2"
+    randombytes "^2.1.0"
+    toml "^3.0.0"
+    urijs "^1.19.1"
+
+"@stellar/stellar-sdk@^12.1.0":
+  version "12.3.0"
+  resolved "https://registry.yarnpkg.com/@stellar/stellar-sdk/-/stellar-sdk-12.3.0.tgz#d3c00364097f6717a66fd1a83d96a1ef5ba43306"
+  integrity sha512-F2DYFop/M5ffXF0lvV5Ezjk+VWNKg0QDX8gNhwehVU3y5LYA3WAY6VcCarMGPaG9Wdgoeh1IXXzOautpqpsltw==
+  dependencies:
+    "@stellar/stellar-base" "^12.1.1"
+    axios "^1.7.7"
     bignumber.js "^9.1.2"
     eventsource "^2.0.2"
     randombytes "^2.1.0"
@@ -954,6 +986,15 @@ axios@^1.6.7:
   integrity sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==
   dependencies:
     follow-redirects "^1.15.4"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
+axios@^1.7.7:
+  version "1.7.8"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.8.tgz#1997b1496b394c21953e68c14aaa51b7b5de3d6e"
+  integrity sha512-Uu0wb7KNqK2t5K+YQyVCLM76prD5sRFjKHbJYCP1J7JFGEQ6nN7HWn9+04LAeiJ3ji54lgS/gZCH1oxyrf1SPw==
+  dependencies:
+    follow-redirects "^1.15.6"
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
@@ -2445,12 +2486,12 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-mercury-sdk@^0.1.22:
-  version "0.1.22"
-  resolved "https://registry.yarnpkg.com/mercury-sdk/-/mercury-sdk-0.1.22.tgz#527fd3478c92229b07346ac1ff84600c9690cfed"
-  integrity sha512-Hae9cUIXPmURfcNxdzpaQWZU/l7C+fCUv+IYskB3ckEnbptc3iNwO+tC7W05WcGWjG6tUINPqS+t9R4J4XSK4A==
+mercury-sdk@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/mercury-sdk/-/mercury-sdk-1.0.0.tgz#4863c9bf49c3de7fd0a267fd651996dacdebb750"
+  integrity sha512-VrdwNNWtBM5agkxV8HKaT6rG+bAICYusfT3XfZ8FWxLneyprSvDxISwcl+3eMy8ekY2jpjM3NHm2VmwUpqVovQ==
   dependencies:
-    "@stellar/stellar-sdk" "^11.1.0"
+    "@stellar/stellar-sdk" "^12.1.0"
     axios "^1.6.2"
     bigint-conversion "^2.4.3"
     dotenv "^16.3.1"
