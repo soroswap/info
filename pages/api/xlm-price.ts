@@ -30,7 +30,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       stellarNetwork = Networks.TESTNET;
     }
 
-    const router = getRouterFromPools(pools, stellarNetwork);
+    const filteredData = pools.filter((pool) => {
+      const tokenAExists = tokenList.some((token) => token.contract === pool.tokenA);
+      const tokenBExists = tokenList.some((token) => token.contract === pool.tokenB);
+      return tokenAExists && tokenBExists;
+    });
+
+    const router = getRouterFromPools(filteredData, stellarNetwork);
 
     const XLM = tokenList.find(
       (token) => token.contract === xlmToken[network]?.contract

@@ -52,29 +52,29 @@ export default function Home() {
     return acc + (pool.tvl || 0);
   }, 0);
 
-  const getSoroswapTvlChartData = () => {
-    const tvlChartData: { [x: string]: { tvl: number; date: string } } = {};
+  // const getSoroswapTvlChartData = () => {
+  //   const tvlChartData: { [x: string]: { tvl: number; date: string } } = {};
 
-    pools.data?.forEach((pool) => {
-      pool.tvlChartData?.forEach((data) => {
-        tvlChartData[data.date] = {
-          tvl: (tvlChartData?.[data?.date]?.tvl || 0) + data.tvl,
-          date: data.date,
-        };
-      });
-    });
+  //   pools.data?.forEach((pool) => {
+  //     pool.tvlChartData?.forEach((data) => {
+  //       tvlChartData[data.date] = {
+  //         tvl: (tvlChartData?.[data?.date]?.tvl || 0) + data.tvl,
+  //         date: data.date,
+  //       };
+  //     });
+  //   });
 
-    const result = Object.keys(tvlChartData).map((key) => ({
-      date: tvlChartData[key].date,
-      tvl: tvlChartData[key].tvl,
-    }));
+  //   const result = Object.keys(tvlChartData).map((key) => ({
+  //     date: tvlChartData[key].date,
+  //     tvl: tvlChartData[key].tvl,
+  //   }));
 
-    const orderbyDate = result.sort((a, b) => {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
+  //   const orderbyDate = result.sort((a, b) => {
+  //     return new Date(a.date).getTime() - new Date(b.date).getTime();
+  //   });
 
-    return orderbyDate;
-  };
+  //   return orderbyDate;
+  // };
 
   return (
     <>
@@ -106,10 +106,10 @@ export default function Home() {
                   </LoadingSkeleton>
                 </Box>
               </Box>
-              <TVLChart
+              {/* <TVLChart
                 data={getSoroswapTvlChartData() ?? []}
                 isLoading={pools.isLoading}
-              />
+              /> */}
             </StyledCard>
           </Grid>
           {/*           <Grid item xs={12} md={6}>

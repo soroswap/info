@@ -42,26 +42,26 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     label: "TVL",
   },
-  {
-    id: "volume24h",
-    numeric: true,
-    label: "Volume 24H",
-  },
-  {
-    id: "volume7d",
-    numeric: true,
-    label: "Volume 7D",
-  },
-  {
-    id: "fees24h",
-    numeric: true,
-    label: "Fees 24H",
-  },
-  {
-    id: "feesYearly",
-    numeric: true,
-    label: "Fees Yearly",
-  },
+  // {
+  //   id: "volume24h",
+  //   numeric: true,
+  //   label: "Volume 24H",
+  // },
+  // {
+  //   id: "volume7d",
+  //   numeric: true,
+  //   label: "Volume 7D",
+  // },
+  // {
+  //   id: "fees24h",
+  //   numeric: true,
+  //   label: "Fees 24H",
+  // },
+  // {
+  //   id: "feesYearly",
+  //   numeric: true,
+  //   label: "Fees Yearly",
+  // },
 ];
 
 interface PoolsTableProps {
@@ -209,7 +209,7 @@ export default function PoolsTable({
                     <StyledTableCell align="right">
                       {formatNumberToMoney(row.tvl, 2)}
                     </StyledTableCell>
-                    <StyledTableCell align="right">
+                    {/* <StyledTableCell align="right">
                       {formatNumberToMoney(row.volume24h)}
                     </StyledTableCell>
                     <StyledTableCell align="right">
@@ -220,7 +220,7 @@ export default function PoolsTable({
                     </StyledTableCell>
                     <StyledTableCell align="right">
                       {formatNumberToMoney(row.feesYearly)}
-                    </StyledTableCell>
+                    </StyledTableCell> */}
                   </TableRow>
                 );
               })}

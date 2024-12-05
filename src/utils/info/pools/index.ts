@@ -19,7 +19,6 @@ import {
   getMercuryPools,
   getMercuryRsvCh,
 } from "zephyr/helpers";
-import { fetchTokenList } from "services/tokens";
 import { MercuryPair } from "../../../../pages/api/pairs";
 import { MercuryEvent } from "../../../../pages/api/events";
 import { adjustAmountByDecimals } from "utils/utils";
@@ -35,45 +34,29 @@ export const buildPoolsInfo = async (
   tokenList: TokenType[],
   network: Network
 ) => {
-  const sdkNetwork = stellarNetworkDict[network];
+  const filteredData = data.filter((pool) => {
+    const tokenAExists = tokenList.some((token) => token.contract === pool.tokenA);
+    const tokenBExists = tokenList.some((token) => token.contract === pool.tokenB);
+    return tokenAExists && tokenBExists;
+  });
 
-  const router = getRouterFromPools(data, sdkNetwork);
+  const sdkNetwork = stellarNetworkDict[network];
+  const router = getRouterFromPools(filteredData, sdkNetwork);
 
   const USDC = tokenList.find((token) => token.code === "USDC");
+  if (!USDC) throw new Error("USDC token not found in the token list.");
 
-  const rsvch = await getMercuryRsvCh(network);
+  // const rsvch = await getMercuryRsvCh(network);
+  // const events = await getMercuryEvents(network);
 
-  const events = await getMercuryEvents(network);
+  const result: Array<Pool> = await Promise.all(
+    filteredData.map(async (pool) => {
+      // Get tokens metadata
+      const tokenA = tokenList.find((token: TokenType) => token.contract === pool.tokenA)!;
+      const tokenB = tokenList.find((token: TokenType) => token.contract === pool.tokenB)!;
 
-  const tokens = await Promise.all(
-    tokenList.map(async (token) => {
-      const tokenPrice = await getTokenPrice(
-        token.contract,
-        USDC?.contract!,
-        sdkNetwork,
-        router
-      );
-
-      return {
-        ...token,
-        price: Number(tokenPrice || 0),
-      };
-    })
-  );
-
-  const result: Pool[] = await Promise.all(
-    data.map(async (pool) => {
-      const tokenA = tokens.find(
-        (token: TokenType) => token.contract === pool.tokenA
-      );
-
-      const tokenB = tokens.find(
-        (token: TokenType) => token.contract === pool.tokenB
-      );
-
-      const tokenAPrice = tokenA?.price || 0;
-      const tokenBPrice = tokenB?.price || 0;
-
+      const { tokenAPrice, tokenBPrice } = await getPoolTokenPrices(tokenA.contract, tokenB.contract, USDC.contract, sdkNetwork, router)
+   
       const tvl = getPoolTVL(
         pool.reserveA,
         pool.reserveB,
@@ -99,65 +82,64 @@ export const buildPoolsInfo = async (
         volume24h: 0,
         volume7d: 0,
       };
+      
+      // const tvlChartData = getPoolTVLChartData(rsvch, poolData);
+      // const volumeChartData = getPoolVolumeChartData(events, poolData);
+      // const feesChartData = getPoolFeesChartData(events, poolData);
 
-      const tvlChartData = getPoolTVLChartData(rsvch, poolData);
-      const volumeChartData = getPoolVolumeChartData(events, poolData);
-      const feesChartData = getPoolFeesChartData(events, poolData);
+      // const nowTimestamp = new Date().getTime() / 1000;
 
-      const nowTimestamp = new Date().getTime() / 1000;
+      // const volume7d = volumeChartData.reduce((acc, item) => {
+      //   const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-      const volume7d = volumeChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
+      //   if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
+      //     return acc + item.volume;
+      //   }
+      //   return acc;
+      // }, 0);
 
-        if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
-          return acc + item.volume;
-        }
-        return acc;
-      }, 0);
+      // const volume24h = volumeChartData.reduce((acc, item) => {
+      //   const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-      const volume24h = volumeChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
+      //   if (nowTimestamp - itemTimestamp <= 24 * 3600) {
+      //     return acc + item.volume;
+      //   }
+      //   return acc;
+      // }, 0);
 
-        if (nowTimestamp - itemTimestamp <= 24 * 3600) {
-          return acc + item.volume;
-        }
-        return acc;
-      }, 0);
+      // const fees24h = feesChartData.reduce((acc, item) => {
+      //   const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-      const fees24h = feesChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
+      //   if (nowTimestamp - itemTimestamp < 24 * 3600) {
+      //     return acc + item.fees;
+      //   }
+      //   return acc;
+      // }, 0);
 
-        if (nowTimestamp - itemTimestamp < 24 * 3600) {
-          return acc + item.fees;
-        }
-        return acc;
-      }, 0);
+      // const fees7d = feesChartData.reduce((acc, item) => {
+      //   const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-      const fees7d = feesChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
+      //   if (nowTimestamp - itemTimestamp < 7 * 24 * 3600) {
+      //     return acc + item.fees;
+      //   }
+      //   return acc;
+      // }, 0);
 
-        if (nowTimestamp - itemTimestamp < 7 * 24 * 3600) {
-          return acc + item.fees;
-        }
-        return acc;
-      }, 0);
-
-      const feesYearly = fees7d * 52;
+      // const feesYearly = fees7d * 52;
 
       return {
         ...poolData,
-        tvlChartData,
-        volumeChartData,
-        feesChartData,
-        volume7d,
-        volume24h,
-        fees24h,
-        feesYearly,
+        // tvlChartData ,
+        // volumeChartData,
+        // feesChartData,
+        // volume7d,
+        // volume24h,
+        // fees24h,
+        // feesYearly,
       };
     })
   );
-
-  return result;
+  return result
 };
 
 export const getDate = (timestamp: string) => {
@@ -203,9 +185,7 @@ export const getTokenPrice = async (
     "10000000",
     network
   );
-
   const quoteCurrency = fromAddressToToken(usdcAddress, network);
-
   const route = await router.route(
     currencyAmount,
     quoteCurrency,
@@ -213,9 +193,7 @@ export const getTokenPrice = async (
   );
 
   if (!route || !route.trade?.amountOutMin) return 0;
-
   const price = adjustAmountByDecimals(route.trade.amountOutMin, 7);
-
   return price;
 };
 
@@ -230,7 +208,6 @@ export const getPoolTokenPrices = async (
     return { tokenAPrice: 0, tokenBPrice: 0 };
 
   const tokenAPrice = await getTokenPrice(tokenA, usdcAddress, network, router);
-
   const tokenBPrice = await getTokenPrice(tokenB, usdcAddress, network, router);
 
   return {
