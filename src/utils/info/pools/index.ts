@@ -63,8 +63,8 @@ export const buildPoolsInfo = async (
   
     const rsvch = await getMercuryRsvCh(network);
     const events = await getMercuryEvents(network);
+ 
     
-  
     // Utility to fetch token price dynamically or use static price
     const getTokenPriceOrStatic = async (tokenContract: string) => {
       if (!tokenContract) return 0;
@@ -74,7 +74,7 @@ export const buildPoolsInfo = async (
       }
   
       return Number(
-        await getTokenPrice(tokenContract, USDC.contract, sdkNetwork, router, USDx.contract)
+        await getTokenPrice(tokenContract, USDC.contract, sdkNetwork, router)
       );
     };
   
@@ -83,16 +83,11 @@ export const buildPoolsInfo = async (
         // Fetch token information
         const tokenA = tokenList.find((token) => token.contract === pool.tokenA)!;
         const tokenB = tokenList.find((token) => token.contract === pool.tokenB)!;
-        console.log("tokenA", tokenA);
-        console.log("tokenB", tokenB);
-        console.log("events", events);
-  
+     
         // Fetch token prices
         const tokenAPrice = await getTokenPriceOrStatic(tokenA.contract);
         const tokenBPrice = await getTokenPriceOrStatic(tokenB.contract);
-        console.log("tokenAPrice", tokenAPrice);
-        console.log("tokenBPrice", tokenBPrice);
-        
+    
   
         // Calculate TVL
         const tvl = getPoolTVL(
