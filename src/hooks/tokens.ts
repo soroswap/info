@@ -77,7 +77,7 @@ export const useQueryTokenStats = () => {
   const { network, isValidQuery } = useQueryNetwork();
 
   return useQuery({
-    queryKey: [key, network],
+    queryKey: [key, network, "token-stats"],
     queryFn: () => fetchTokenStats({ network: network! }),
     enabled: isValidQuery,
   });

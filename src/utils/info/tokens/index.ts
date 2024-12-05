@@ -233,6 +233,7 @@ export const buildTokenStats = async (
     volume24hChange: 0,
     volume7d: 0,
     volume7dChange: 0,
+    issuer: "",
   }));
 
   const USDC = tokens.find((token) => token.asset.code === "USDC");
