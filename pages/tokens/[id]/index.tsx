@@ -31,6 +31,8 @@ import useEventTopicFilter from "hooks/use-event-topic-filter";
 import { useQueryAllEvents } from "hooks/events";
 import { shouldFilterEvent, shouldFilterPool } from "utils/filters";
 import { useState } from "react";
+import { stellarExpertUrl } from "constants/constants";
+import useQueryNetwork from "hooks/use-query-network";
 
 const TokenPage = () => {
   const router = useRouter();
@@ -49,7 +51,10 @@ const TokenPage = () => {
 
   const StarIcon = isTokenSaved(id as string) ? Star : StarBorderOutlined;
 
-  const stellarExpertUrl = `https://stellar.expert/explorer/public/asset/${id}`;
+  const { network } = useQueryNetwork();
+
+  const stellarIssuerUrl = `${stellarExpertUrl}/${network == "TESTNET"? "testnet": "public"}/account/${token.data?.asset.issuer}`;
+  const stellarAssetUrl = token.data?.asset.code && token.data?.asset?.issuer ? `${stellarExpertUrl}/${network == "TESTNET"? "testnet": "public"}/asset/${token.data.asset.code}-${token.data.asset.issuer}` : undefined;
 
   const [searchValue, setSearchValue] = useState("");
 
@@ -89,7 +94,7 @@ const TokenPage = () => {
                   <Link
                     sx={{ cursor: "pointer" }}
                     underline="hover"
-                    href={stellarExpertUrl}
+                    href={stellarAssetUrl}
                     target="_blank"
                   >
                     ({shortenAddress(id as string)})
@@ -130,7 +135,12 @@ const TokenPage = () => {
                 opacity: 0.8,
               },
             }}
-            onClick={() => openInNewTab(stellarExpertUrl)}
+            onClick={() => {
+              const { code, issuer } = token.data?.asset || {};
+              if (code && issuer) {
+                openInNewTab(stellarAssetUrl || "");
+              }
+            }}
           >
             <Share
               fontSize="small"
@@ -141,20 +151,38 @@ const TokenPage = () => {
           </Box>
         </Box>
       </Box>
-      <Box display="flex" alignItems="center" gap="6px" mt={4}>
-        <LoadingSkeleton
-          isLoading={token.isLoading}
-          height={40}
-          width={40}
-          variant="circular"
-        >
-          <Token imageUrl={token.data?.asset.icon} />
-        </LoadingSkeleton>
-        <LoadingSkeleton isLoading={token.isLoading} variant="text">
-          <Typography variant="h5">
-            {token.data?.asset.name} ({token.data?.asset.code}){" "}
-          </Typography>
-        </LoadingSkeleton>
+      <Box display="flex" flexDirection="column" >
+        <Box display="flex" alignItems="center" gap="6px" mt={4}>
+          <LoadingSkeleton
+            isLoading={token.isLoading}
+            height={40}
+            width={40}
+            variant="circular"
+          >
+            <Token imageUrl={token.data?.asset.icon} />
+          </LoadingSkeleton>
+          <LoadingSkeleton isLoading={token.isLoading} variant="text">
+              <Typography variant="h5">
+                {token.data?.asset.name} ({token.data?.asset.code}){" "}
+              </Typography>
+          </LoadingSkeleton>
+        </Box>
+        <Box display="flex" alignItems="center" gap="6px" mt={2}>
+            <Typography fontSize="15px">Issuer Domain: </Typography>
+            <LoadingSkeleton isLoading={token.isLoading} variant="text">
+              <Typography  sx={{ "&:hover": { textDecoration: `${token.data?.asset.domain ? "underline" : "none"}` } }} variant="h6" color="grey" fontSize="15px" mt="0px" component={token.data?.asset.domain ? "a" : "h6"} target={token.data?.asset.domain ? "_blank" : undefined} href={token.data?.asset.domain ? `https://${token.data?.asset.domain}` : undefined}>
+                {token.data?.asset.domain || "Unknown"}
+              </Typography>
+              </LoadingSkeleton>
+        </Box>
+        <Box display="flex" alignItems="center" gap="6px" mt="0px">
+            <Typography fontSize="15px">Issued by:</Typography>
+            <LoadingSkeleton isLoading={token.isLoading} variant="text">
+              <Typography sx={{ "&:hover": { textDecoration: `${token.data?.asset.issuer ? "underline" : "none"}` } }} variant="h6" color="grey" fontSize="15px" mt="0px"  component={token.data?.asset.issuer ? "a" : "h6"} target={token.data?.asset.issuer ? "_blank" : undefined}  href={token.data?.asset.issuer ? stellarIssuerUrl : undefined}>
+                {token.data?.asset.issuer ? shortenAddress(token.data?.asset.issuer || "") : token.data?.asset.code === "XLM" ? "Native" : "Unknown"}
+              </Typography>
+            </LoadingSkeleton>
+        </Box>
       </Box>
       <Box
         display="flex"
