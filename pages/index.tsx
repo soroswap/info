@@ -5,7 +5,7 @@ import PoolsTable from "../src/components/pools-table/pools-table";
 import TokensTable from "../src/components/tokens-table/tokens-table";
 import TVLChart from "../src/components/tvl-chart";
 import { useQueryPools } from "../src/hooks/pools";
-import { useQueryTokens } from "../src/hooks/tokens";
+import { useQueryTokens, useQueryTokenStats } from "../src/hooks/tokens";
 import TransactionsTable from "../src/components/transaction-table/transactions-table";
 import { useQueryAllEvents } from "../src/hooks/events";
 import useEventTopicFilter from "../src/hooks/use-event-topic-filter";
@@ -24,10 +24,12 @@ import { useRouter } from "next/router";
 import { StyledCard } from "components/styled/card";
 import LoadingSkeleton from "components/loading-skeleton";
 import { formatNumberToMoney } from "utils/utils";
+import { Text } from "components/styled/text";
 
 export default function Home() {
   const pools = useQueryPools();
   const tokens = useQueryTokens();
+  const tokenStats = useQueryTokenStats();
 
   const router = useRouter();
 
@@ -82,6 +84,60 @@ export default function Home() {
         <title>Soroswap Info</title>
       </Head>
       <Layout>
+        <Box display={"flex"} flexDirection={"column"} gap={4} mb={4}>
+          <StyledCard sx={{ p: 2 }}>
+            <Box mt={2}>
+              <Text>Total Volume 24h</Text>
+              <LoadingSkeleton isLoading={tokenStats.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatNumberToMoney(tokenStats.data?.volume24h)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
+            <Box mt={2}>
+              <Text>Total Volume 7d</Text>
+              <LoadingSkeleton isLoading={tokenStats.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatNumberToMoney(tokenStats.data?.volume7d)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
+            <Box mt={2}>
+              <Text>Total Volume All Time</Text>
+              <LoadingSkeleton isLoading={tokenStats.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatNumberToMoney(tokenStats.data?.volumeAllTime)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
+          </StyledCard>
+          <StyledCard sx={{ p: 2 }}>
+            <Box mt={2}>
+              <Text>Total Fees Generated 24h</Text>
+              <LoadingSkeleton isLoading={tokenStats.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatNumberToMoney(tokenStats.data?.fees24h)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
+            <Box mt={2}>
+              <Text>Total Fees Generated 7d</Text>
+              <LoadingSkeleton isLoading={tokenStats.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatNumberToMoney(tokenStats.data?.fees7d)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
+            <Box mt={2}>
+              <Text>Total Fees Generated All Time</Text>
+              <LoadingSkeleton isLoading={tokenStats.isLoading} variant="text">
+                <Typography variant="h6">
+                  {formatNumberToMoney(tokenStats.data?.feesAllTime)}
+                </Typography>
+              </LoadingSkeleton>
+            </Box>
+          </StyledCard>
+        </Box>
         <Typography variant="h6" sx={{ mb: 1 }}></Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={12}>

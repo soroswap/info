@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   fetchToken,
   fetchTokenPriceChart,
+  fetchTokenStats,
   fetchTokenTVLChart,
   fetchTokenVolumeChart,
   fetchTokens,
@@ -69,5 +70,15 @@ export const useQueryTokenVolumeChart = ({
     queryKey: [key, network, tokenAddress, "volume-chart"],
     queryFn: () => fetchTokenVolumeChart({ tokenAddress }),
     enabled: !!tokenAddress && isValidQuery,
+  });
+};
+
+export const useQueryTokenStats = () => {
+  const { network, isValidQuery } = useQueryNetwork();
+
+  return useQuery({
+    queryKey: [key, network],
+    queryFn: () => fetchTokenStats({ network: network! }),
+    enabled: isValidQuery,
   });
 };

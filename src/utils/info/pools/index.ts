@@ -144,6 +144,9 @@ export const buildPoolsInfo = async (
 
       const feesYearly = fees7d * 52;
 
+      const weeklyYield = fees7d / tvl;
+      const apy = weeklyYield * 52 * 100;
+
       return {
         ...poolData,
         tvlChartData,
@@ -152,6 +155,8 @@ export const buildPoolsInfo = async (
         volume7d,
         volume24h,
         fees24h,
+        fees7d,
+        apy,
         feesYearly,
       };
     })

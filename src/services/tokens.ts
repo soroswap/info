@@ -1,5 +1,5 @@
 import { ApiNetwork, Network } from "types/network";
-import { Token } from "../types/tokens";
+import { Token, TokenStats } from "../types/tokens";
 import { fillDatesAndSort } from "../utils/complete-chart";
 import axiosInstance from "./axios";
 import { xlmToken } from "constants/constants";
@@ -104,4 +104,12 @@ export const fetchTokenVolumeChart = async ({
   const filledData = fillDatesAndSort(data, "volume");
 
   return filledData;
+};
+
+export const fetchTokenStats = async ({ network }: ApiNetwork) => {
+  const { data } = await axiosInstance.get<TokenStats>("/api/token-stats", {
+    params: { network },
+  });
+
+  return data;
 };
