@@ -19,7 +19,6 @@ import {
   getMercuryPools,
   getMercuryRsvCh,
 } from "zephyr/helpers";
-import { fetchTokenList } from "services/tokens";
 import { MercuryPair } from "../../../../pages/api/pairs";
 import { MercuryEvent } from "../../../../pages/api/events";
 import { adjustAmountByDecimals } from "utils/utils";
@@ -47,39 +46,17 @@ export const buildPoolsInfo = async (
   const USDC = tokenList.find((token) => token.code === "USDC");
   if (!USDC) throw new Error("USDC token not found in the token list.");
 
-  const forceGetTokenPrice = true; // FALSE TO SET STATIC PRICES HARDCODE (XLM/USDC/USDx)
-  const staticTokenPrices: Record<string, number> = {
-    // [XLM.contract]: 0.529266,
-    // [USDx.contract]: 1,
-    [USDC.contract]: 1,
-  };
-
   // const rsvch = await getMercuryRsvCh(network);
-  const events = await getMercuryEvents(network);
+  // const events = await getMercuryEvents(network);
 
   const result: Array<Pool> = await Promise.all(
     filteredData.map(async (pool) => {
-      const getTokenPriceOrStatic = async (tokenContract: string) => {
-        if (!tokenContract) return 0;
-
-        if (!forceGetTokenPrice && staticTokenPrices[tokenContract] !== undefined) {
-          return staticTokenPrices[tokenContract];
-        }
-
-        const price = Number(
-          await getTokenPrice(tokenContract, USDC.contract, sdkNetwork, router)
-        );
-
-        return price;
-      };
-
-      // Tokens are guaranteed to exist in the filteredData
+      // Get tokens metadata
       const tokenA = tokenList.find((token: TokenType) => token.contract === pool.tokenA)!;
       const tokenB = tokenList.find((token: TokenType) => token.contract === pool.tokenB)!;
 
-      const tokenAPrice = await getTokenPriceOrStatic(tokenA.contract);
-      const tokenBPrice = await getTokenPriceOrStatic(tokenB.contract);
-
+      const { tokenAPrice, tokenBPrice } = await getPoolTokenPrices(tokenA.contract, tokenB.contract, USDC.contract, sdkNetwork, router)
+   
       const tvl = getPoolTVL(
         pool.reserveA,
         pool.reserveB,
@@ -105,59 +82,60 @@ export const buildPoolsInfo = async (
         volume24h: 0,
         volume7d: 0,
       };
+      
       // const tvlChartData = getPoolTVLChartData(rsvch, poolData);
-      const volumeChartData = getPoolVolumeChartData(events, poolData);
-      const feesChartData = getPoolFeesChartData(events, poolData);
+      // const volumeChartData = getPoolVolumeChartData(events, poolData);
+      // const feesChartData = getPoolFeesChartData(events, poolData);
 
-      const nowTimestamp = new Date().getTime() / 1000;
+      // const nowTimestamp = new Date().getTime() / 1000;
 
-      const volume7d = volumeChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
+      // const volume7d = volumeChartData.reduce((acc, item) => {
+      //   const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-        if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
-          return acc + item.volume;
-        }
-        return acc;
-      }, 0);
+      //   if (nowTimestamp - itemTimestamp <= 7 * 24 * 3600) {
+      //     return acc + item.volume;
+      //   }
+      //   return acc;
+      // }, 0);
 
-      const volume24h = volumeChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
+      // const volume24h = volumeChartData.reduce((acc, item) => {
+      //   const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-        if (nowTimestamp - itemTimestamp <= 24 * 3600) {
-          return acc + item.volume;
-        }
-        return acc;
-      }, 0);
+      //   if (nowTimestamp - itemTimestamp <= 24 * 3600) {
+      //     return acc + item.volume;
+      //   }
+      //   return acc;
+      // }, 0);
 
-      const fees24h = feesChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
+      // const fees24h = feesChartData.reduce((acc, item) => {
+      //   const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-        if (nowTimestamp - itemTimestamp < 24 * 3600) {
-          return acc + item.fees;
-        }
-        return acc;
-      }, 0);
+      //   if (nowTimestamp - itemTimestamp < 24 * 3600) {
+      //     return acc + item.fees;
+      //   }
+      //   return acc;
+      // }, 0);
 
-      const fees7d = feesChartData.reduce((acc, item) => {
-        const itemTimestamp = new Date(item.date).getTime() / 1000;
+      // const fees7d = feesChartData.reduce((acc, item) => {
+      //   const itemTimestamp = new Date(item.date).getTime() / 1000;
 
-        if (nowTimestamp - itemTimestamp < 7 * 24 * 3600) {
-          return acc + item.fees;
-        }
-        return acc;
-      }, 0);
+      //   if (nowTimestamp - itemTimestamp < 7 * 24 * 3600) {
+      //     return acc + item.fees;
+      //   }
+      //   return acc;
+      // }, 0);
 
-      const feesYearly = fees7d * 52;
+      // const feesYearly = fees7d * 52;
 
       return {
         ...poolData,
         // tvlChartData ,
-        volumeChartData,
-        feesChartData,
-        volume7d,
-        volume24h,
-        fees24h,
-        feesYearly,
+        // volumeChartData,
+        // feesChartData,
+        // volume7d,
+        // volume24h,
+        // fees24h,
+        // feesYearly,
       };
     })
   );
