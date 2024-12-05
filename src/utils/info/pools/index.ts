@@ -85,14 +85,18 @@ export const buildPoolsInfo = async (
         pool.reserveB,
         tokenAPrice,
         tokenBPrice,
-        tokenA.decimals,
-        tokenB.decimals
+        tokenA?.decimals,
+        tokenB?.decimals
       );
 
       const poolData = {
         ...pool,
-        tokenA,
-        tokenB,
+        tokenA: tokenA
+          ? tokenA
+          : { contract: pool.tokenA, code: pool.tokenA, name: pool.tokenA },
+        tokenB: tokenB
+          ? tokenB
+          : { contract: pool.tokenB, code: pool.tokenB, name: pool.tokenB },
         tokenAPrice,
         tokenBPrice,
         fees24h: 0,
