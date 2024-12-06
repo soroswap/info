@@ -300,10 +300,9 @@ export const getPoolFees = (
 };
 
 export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
-  // Filtrar eventos de tipo "swap" relacionados con el pool
   const poolEvents = events.filter((e) => {
     return (
-      e.eType === "swap" && // Verificar que sea un evento de tipo "swap"
+      e.eType === "swap" && 
       (
         (e.tokenA === pool?.tokenA.contract && e.tokenB === pool?.tokenB.contract) ||
         (e.tokenA === pool?.tokenB.contract && e.tokenB === pool?.tokenA.contract)
@@ -311,7 +310,6 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
     );
   });
 
-  // Ordenar los tokens si están en orden inverso
   const orderedPoolEvents = poolEvents.map((e) => {
     if (e.tokenA === pool?.tokenB.contract && e.tokenB === pool?.tokenA.contract) {
       return {
@@ -325,7 +323,6 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
     return e;
   });
 
-  // Calcular el volumen para cada evento
   const volumeChartData = orderedPoolEvents.map((e) => {
     const volumes = getPoolVolume(
       e.amountA,
@@ -335,27 +332,18 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
       pool?.tokenA.decimals,
       pool?.tokenB.decimals
     );
-    // // Parsear el timestamp
-    //  const readableDate = new Date(e.timestamp * 1000).toLocaleString(); // Convierte a una fecha legible
-    //  console.log(`Transacción en fecha: ${readableDate}`);
-    //  console.log(`Hash de la transacción: ${e.txHash}`); // <-- Aquí se muestra el hash
-    //  console.log(`Token A: ${pool.tokenA.code}, Precio: ${pool.tokenAPrice}`);
-    //  console.log(`Token B: ${pool.tokenB.code}, Precio: ${pool.tokenBPrice}`);
-    //  console.log(`Volúmenes calculados:`, volumes);
 
     return {
       timestamp: e.timestamp,
       date: getDate(e.timestamp),
-      volume: volumes.volumeA + volumes.volumeB, // Volumen total del evento
+      volume: volumes.volumeA + volumes.volumeB,
       valueA: volumes.volumeA,
       valueB: volumes.volumeB,
     };
   });
 
-  // Llenar los datos faltantes para el gráfico (p.ej., días sin eventos)
   const filledVolumeChartData = fillChart(volumeChartData, "volume", false);
 
-  // Retornar los datos completos como `VolumeChartData`
   return filledVolumeChartData as VolumeChartData[];
 };
 
