@@ -30,6 +30,7 @@ export const stellarNetworkDict = {
 };
 
 export const buildPoolsInfo = async (
+
   data: MercuryPair[],
   tokenList: TokenType[],
   network: Network
@@ -141,6 +142,7 @@ export const buildPoolsInfo = async (
   );
   return result
 };
+
 
 export const getDate = (timestamp: string) => {
   return new Date(parseInt(timestamp) * 1000).toISOString().split("T")[0];
@@ -263,41 +265,29 @@ export const getPoolFees = (
 
 export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
   const poolEvents = events.filter((e) => {
-    if (
-      e.tokenA === pool?.tokenA.contract &&
-      e.tokenB === pool?.tokenB.contract
-    ) {
-      return true;
-    }
-
-    if (
-      e.tokenA === pool?.tokenB.contract &&
-      e.tokenB === pool?.tokenA.contract
-    ) {
-      return true;
-    }
-
-    return false;
+    return (
+      e.eType === "swap" && 
+      (
+        (e.tokenA === pool?.tokenA.contract && e.tokenB === pool?.tokenB.contract) ||
+        (e.tokenA === pool?.tokenB.contract && e.tokenB === pool?.tokenA.contract)
+      )
+    );
   });
 
-  const poolsEventsWithTokensOrdered = poolEvents.map((e) => {
-    if (
-      e.tokenA === pool?.tokenA.contract &&
-      e.tokenB === pool?.tokenB.contract
-    ) {
-      return e;
+  const orderedPoolEvents = poolEvents.map((e) => {
+    if (e.tokenA === pool?.tokenB.contract && e.tokenB === pool?.tokenA.contract) {
+      return {
+        ...e,
+        tokenA: e.tokenB,
+        tokenB: e.tokenA,
+        amountA: e.amountB,
+        amountB: e.amountA,
+      };
     }
-
-    return {
-      ...e,
-      tokenA: e.tokenB,
-      tokenB: e.tokenA,
-      amountA: e.amountB,
-      amountB: e.amountA,
-    };
+    return e;
   });
 
-  const volumeChartData = poolsEventsWithTokensOrdered.map((e) => {
+  const volumeChartData = orderedPoolEvents.map((e) => {
     const volumes = getPoolVolume(
       e.amountA,
       e.amountB,
@@ -306,6 +296,7 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
       pool?.tokenA.decimals,
       pool?.tokenB.decimals
     );
+
     return {
       timestamp: e.timestamp,
       date: getDate(e.timestamp),
@@ -319,6 +310,7 @@ export const getPoolVolumeChartData = (events: MercuryEvent[], pool: Pool) => {
 
   return filledVolumeChartData as VolumeChartData[];
 };
+
 
 export const getPoolFeesChartData = (events: MercuryEvent[], pool: Pool) => {
   const poolEvents = events.filter((e) => {

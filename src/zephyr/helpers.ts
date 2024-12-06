@@ -19,12 +19,16 @@ export const parseMercuryScvalResponse = (data: any) => {
 
     for (let key in d) {
       const value = parseScvalValue(d[key]);
+      
       if (typeof value === "bigint" || typeof value === "number") {
         n[key] = value.toString();
-      } else if( key == 'txHash'){
+      } else if(key == 'txHash'){
         const txHash = StellarSdk.xdr.Hash.fromXDR(value, 'hex').toString('hex')
-        if(txHash.length != 64)throw new Error('Invalid txHash length');
+        if(txHash.length != 64) throw new Error('Invalid txHash length');
         n[key] = txHash;
+      } else if(key == 'eType') {
+        const eventType = String(value).toLowerCase();
+        n[key] = eventType;
       } else {
         n[key] = value;
       }
@@ -59,8 +63,6 @@ export const getMercuryPhoenixPools = async (network: Network) => {
     request: GET_ALL_PAIRS(phoenix_pairs),
   });
 
-  console.log(response);
-
   if (!response.ok) {
     return [];
   }
@@ -78,8 +80,6 @@ export const getMercuryAquaPools = async (network: Network) => {
   const response = await mercuryInstance.getCustomQuery({
     request: GET_ALL_PAIRS(aqua_pairs),
   });
-
-  console.log(response);
 
   if (!response.ok) {
     return [];
@@ -120,6 +120,7 @@ export const getMercuryRsvCh = async (network: Network) => {
 export const getMercuryEvents = async (network: Network) => {
   const mercuryInstance = getMercuryInstance(network);
   const { soroswap_events } = await fetchZephyrTables({ network });
+  
   const response = await mercuryInstance.getCustomQuery({
     request: GET_ALL_EVENTS(soroswap_events),
   });
